@@ -6,7 +6,7 @@
     "test:node": "vp test run --config vitest.node.config.ts",
     "test:integration": "vp test --config vitest.integration.config.ts",
     "dev:demo": "vp dev --config vite.demo.config.ts",
-    "dev:all": "concurrently --kill-others -n app,copilot,mcp -c cyan,green,yellow \"vp run dev:demo\" \"vp run dev:server\" \"vp run dev:mcp\"",
+    "dev:all": "concurrently --kill-others -n app,copilot,mcp -c cyan,green,yellow \"vp dev --config vite.demo.config.ts\" \"cd server && npm run dev\" \"cd server && npm run dev:mcp\"",
     "dev:server": "cd server && npm run dev",
     "dev:mcp": "cd server && npm run dev:mcp",
     "build:demo": "vp build --config vite.demo.config.ts",
