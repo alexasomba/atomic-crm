@@ -64,22 +64,25 @@ const proxyCopilotKit = async (context: {
 
   const incoming = new URL(context.req.raw.url);
   const target = new URL(runtimeUrl);
-  target.pathname = `${target.pathname.replace(/\/$/, "")}${incoming.pathname.replace(/^\/api\/copilotkit/, "") || "/"}`;
+  target.pathname = `${target.pathname.replace(/\/$/, "")}${incoming.pathname.replace(/^\/api\/copilotkit/, "")}`;
   target.search = incoming.search;
 
   const headers = new Headers(context.req.raw.headers);
   headers.delete("Host");
-  return fetch(
-    new Request(target, {
-      method: context.req.raw.method,
-      headers,
-      body:
-        context.req.raw.method === "GET" || context.req.raw.method === "HEAD"
-          ? undefined
-          : context.req.raw.body,
-      redirect: "manual",
-    }),
-  );
+  const body =
+    context.req.raw.method === "GET" || context.req.raw.method === "HEAD"
+      ? undefined
+      : context.req.raw.body;
+  const requestInit: RequestInit & { duplex?: "half" } = {
+    method: context.req.raw.method,
+    headers,
+    body,
+    redirect: "manual",
+  };
+  // Node's Fetch implementation requires this for streamed request bodies;
+  // Cloudflare accepts the same RequestInit without inspecting the extension.
+  if (body) requestInit.duplex = "half";
+  return fetch(new Request(target, requestInit));
 };
 
 app.all("/api/copilotkit", proxyCopilotKit);
