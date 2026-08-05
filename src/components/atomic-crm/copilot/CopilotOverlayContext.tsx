@@ -1,22 +1,7 @@
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
-
-interface CopilotOverlayContextValue {
-  isOpen: boolean;
-  open: () => void;
-  close: () => void;
-  registerPage: (handler: () => void) => () => void;
-}
-
-const CopilotOverlayContext = createContext<CopilotOverlayContextValue | null>(
-  null,
-);
+  CopilotOverlayContext,
+} from "./useCopilotOverlay";
 
 export function CopilotOverlayProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,14 +36,4 @@ export function CopilotOverlayProvider({ children }: { children: ReactNode }) {
       {children}
     </CopilotOverlayContext.Provider>
   );
-}
-
-export function useCopilotOverlay() {
-  const ctx = useContext(CopilotOverlayContext);
-  if (!ctx) {
-    throw new Error(
-      "useCopilotOverlay must be used inside CopilotOverlayProvider",
-    );
-  }
-  return ctx;
 }

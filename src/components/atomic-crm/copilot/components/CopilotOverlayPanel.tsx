@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { randomUUID } from "@copilotkit/shared";
 import { Users, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCopilotOverlay } from "../CopilotOverlayContext";
+import { useCopilotOverlay } from "../useCopilotOverlay";
 import { useCopilotSetup } from "../hooks/useCopilotSetup";
 import { CopilotWorkspace } from "./CopilotWorkspace";
 

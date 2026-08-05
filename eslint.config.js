@@ -8,11 +8,22 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  {
+    ignores: [
+      "**/dist/**",
+      "**/node_modules/**",
+      "**/build/**",
+      "**/lib/**",
+      "**/esm/**",
+      "**/prism.js",
+      "**/packages/create-react-admin/templates/**",
+      "**/.github/**",
+      "**/.astro/**",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
-    ignores: ["**/node_modules/**", "**/dist/**", "**/.astro/**"],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -37,6 +48,16 @@ export default tseslint.config(
       "no-console": ["error", { allow: ["warn", "error"] }],
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/consistent-type-imports": "warn",
+    },
+  },
+  {
+    files: [
+      "server/**/*.{ts,js}",
+      "test/**/*.{ts,js}",
+      "scripts/**/*.{mjs,ts,js}",
+    ],
+    rules: {
+      "no-console": "off",
     },
   },
   {

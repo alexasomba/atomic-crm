@@ -29,9 +29,7 @@ import { Avatar } from "./Avatar";
 import { ContactAside } from "./ContactAside";
 import { MobileBackButton } from "../misc/MobileBackButton";
 import { useCopilotSetup } from "../copilot/hooks/useCopilotSetup";
-import { useContactEnrichment } from "../copilot/useContactEnrichment";
-import { CopilotWorkspace } from "../copilot/components/CopilotWorkspace";
-import { useCopilotOverlay } from "../copilot/CopilotOverlayContext";
+import { useCopilotOverlay } from "../copilot/useCopilotOverlay";
 import { useDemoContext } from "../demo/DemoContext";
 
 export const ContactShow = () => {

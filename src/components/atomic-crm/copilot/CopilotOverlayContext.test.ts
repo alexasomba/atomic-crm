@@ -1,10 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { createElement } from "react";
-import {
-  CopilotOverlayProvider,
-  useCopilotOverlay,
-} from "./CopilotOverlayContext";
+import { CopilotOverlayProvider } from "./CopilotOverlayContext";
+import { useCopilotOverlay } from "./useCopilotOverlay";
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return createElement(CopilotOverlayProvider, null, children);

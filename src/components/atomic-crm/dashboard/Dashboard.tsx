@@ -7,8 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bot, ClipboardList, Users } from "lucide-react";
 
 import type { Contact, ContactNote } from "../types";
-import { CopilotWorkspace } from "../copilot/components/CopilotWorkspace";
-import { useCopilotOverlay } from "../copilot/CopilotOverlayContext";
+import { useCopilotOverlay } from "../copilot/useCopilotOverlay";
 import { useCopilotSetup } from "../copilot/hooks/useCopilotSetup";
 import { DashboardActivityLog } from "./DashboardActivityLog";
 import { DashboardStepper } from "./DashboardStepper";

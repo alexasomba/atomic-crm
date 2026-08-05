@@ -8,10 +8,8 @@ import { useConfigurationLoader } from "../root/useConfigurationLoader";
 import Header from "./Header";
 import { DemoProvider } from "../demo/DemoProvider";
 import { PersonaProvider } from "../copilot/PersonaProvider";
-import {
-  CopilotOverlayProvider,
-  useCopilotOverlay,
-} from "../copilot/CopilotOverlayContext";
+import { CopilotOverlayProvider } from "../copilot/CopilotOverlayContext";
+import { useCopilotOverlay } from "../copilot/useCopilotOverlay";
 import { CopilotOverlayPanel } from "../copilot/components/CopilotOverlayPanel";
 
 export const Layout = ({ children }: { children: ReactNode }) => {

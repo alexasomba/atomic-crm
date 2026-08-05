@@ -242,7 +242,7 @@ export function useDemoDriver({
       retryBtn?.remove();
       skipBtn?.remove();
     }
-  }, [canAdvance, errorCount]);
+  }, [canAdvance, errorCount, skipDriver]);
 
   return { driverRef };
 }

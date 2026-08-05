@@ -1,7 +1,6 @@
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useCopilotOverlay } from "./CopilotOverlayContext";
+import { useCopilotOverlay } from "./useCopilotOverlay";
 
 export function CopilotButton() {
   const { isOpen, open } = useCopilotOverlay();

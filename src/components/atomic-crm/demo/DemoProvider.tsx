@@ -14,7 +14,12 @@ import { DemoContext, type DemoContextValue } from "./DemoContext";
 import { useDemoStateMachine } from "./useDemoStateMachine";
 import { useDemoDriver } from "./useDemoDriver";
 import { useAutoAdvance } from "./useAutoAdvance";
-import { DEMO_CONTACT, DEMO_PROMPTS, type DemoMode } from "./demoConfig";
+const AGENT_PHASE_STATES = [
+  "S2_AGENT_REVIEW",
+  "S3_CONTRACT_ANALYSIS",
+  "S4_FORECAST_PROPOSAL",
+  "S5_APPROVAL_PENDING",
+];
 
 export function DemoProvider({ children }: { children: ReactNode }) {
   // Read from window.location directly — ra-core's router strips query params
@@ -130,30 +135,25 @@ function DemoActiveProvider({
   );
 
   const machine = useDemoStateMachine();
+  const { dispatch, reset } = machine;
 
   const reportError = useCallback(() => {
-    machine.dispatch({ type: "AGENT_ERROR" });
-  }, [machine.dispatch]);
+    dispatch({ type: "AGENT_ERROR" });
+  }, [dispatch]);
 
   // Wrap reset to also clean up URL params
   const resetWithCleanup = useCallback(() => {
-    machine.reset();
+    reset();
     const url = new URL(window.location.href);
     url.searchParams.delete("demo");
     url.searchParams.delete("autoAgent");
     window.history.replaceState({}, "", url.pathname + url.search);
     onExit();
-  }, [machine.reset, onExit]);
+  }, [reset, onExit]);
 
   // Track agent.isRunning transitions → dispatch agentPhase changes.
   // This handles both autoAgent mode (where we trigger the agent) and manual
   // mode (where the user clicks the action button themselves).
-  const AGENT_PHASE_STATES = [
-    "S2_AGENT_REVIEW",
-    "S3_CONTRACT_ANALYSIS",
-    "S4_FORECAST_PROPOSAL",
-    "S5_APPROVAL_PENDING",
-  ];
   const prevAgentRunning = useRef(false);
   useEffect(() => {
     const currentState = machine.machineState.state;
@@ -163,17 +163,17 @@ function DemoActiveProvider({
       return;
     }
     if (agent.isRunning && phase === "idle") {
-      machine.dispatch({ type: "AGENT_STARTED" });
+      dispatch({ type: "AGENT_STARTED" });
     }
     if (!agent.isRunning && prevAgentRunning.current && phase === "running") {
-      machine.dispatch({ type: "AGENT_FINISHED" });
+      dispatch({ type: "AGENT_FINISHED" });
     }
     prevAgentRunning.current = agent.isRunning;
   }, [
     agent.isRunning,
     machine.machineState.state,
     machine.machineState.agentPhase,
-    machine.dispatch,
+    dispatch,
   ]);
 
   useDemoDriver({
@@ -223,13 +223,13 @@ function DemoActiveProvider({
     const prompt = DEMO_PROMPTS[currentState as keyof typeof DEMO_PROMPTS];
     if (!prompt || !autoAgent) return;
 
-    machine.dispatch({ type: "AGENT_STARTED" });
+    dispatch({ type: "AGENT_STARTED" });
     triggerAgent(prompt)
       .then(() => {
-        machine.dispatch({ type: "AGENT_FINISHED" });
+        dispatch({ type: "AGENT_FINISHED" });
       })
       .catch(() => {
-        machine.dispatch({ type: "AGENT_ERROR" });
+        dispatch({ type: "AGENT_ERROR" });
       });
   }, [
     machine.machineState.state,
@@ -237,7 +237,8 @@ function DemoActiveProvider({
     triggerAgent,
     contactRoute,
     navigate,
-    machine.dispatch,
+    dispatch,
+    mode,
   ]);
 
   // Navigate to / on init (runs once when contactId is resolved)
