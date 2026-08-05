@@ -138,6 +138,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/settings/validateItemsInUse.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/settings/SettingsPage.tsx",
           "type": "registry:component"
         },
@@ -654,6 +658,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/copilot/useCopilotOverlay.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/copilot/useContactEnrichment.ts",
           "type": "registry:component"
         },
@@ -719,6 +727,10 @@
         },
         {
           "path": "src/components/atomic-crm/copilot/tools/auditLogger.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/copilot/tools/ForecastCard.tsx",
           "type": "registry:component"
         },
         {
