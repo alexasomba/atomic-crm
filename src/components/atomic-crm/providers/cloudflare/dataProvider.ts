@@ -165,6 +165,19 @@ const implementation = {
     await request<{ ok: boolean }>(`${apiOrigin}/api/health`);
     return true;
   },
+  async getConfiguration() {
+    const result = await request<{ data: Record<string, unknown> }>(
+      `${apiOrigin}/api/configuration`,
+    );
+    return result.data;
+  },
+  async updateConfiguration(config: Record<string, unknown>) {
+    const result = await request<{ data: Record<string, unknown> }>(
+      `${apiOrigin}/api/configuration`,
+      { method: "PATCH", body: JSON.stringify(config) },
+    );
+    return result.data;
+  },
 };
 
 export const dataProvider = implementation as DataProvider & {
@@ -175,4 +188,8 @@ export const dataProvider = implementation as DataProvider & {
     last_name: string;
   }) => Promise<unknown>;
   isInitialized: () => Promise<boolean>;
+  getConfiguration: () => Promise<Record<string, unknown>>;
+  updateConfiguration: (
+    config: Record<string, unknown>,
+  ) => Promise<Record<string, unknown>>;
 };

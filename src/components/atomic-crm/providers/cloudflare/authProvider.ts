@@ -43,12 +43,25 @@ export const authProvider: AuthProvider = {
     if (error?.status === 401 || error?.status === 403) throw error;
   },
   async getIdentity() {
-    const session = await authRequest<SessionResponse>("/get-session");
+    const response = await fetch(`${apiOrigin}/api/me`, {
+      credentials: "include",
+    });
+    const body = (await response.json()) as {
+      data?: {
+        id: number;
+        first_name: string;
+        last_name: string;
+        email: string;
+        avatar?: string | null;
+        administrator: boolean;
+      };
+    };
+    if (!response.ok || !body.data) throw new Error("CRM identity unavailable");
     return {
-      id: session.user.id,
-      fullName: session.user.name,
-      avatar: session.user.image ?? undefined,
-      administrator: false,
+      id: body.data.id,
+      fullName: `${body.data.first_name} ${body.data.last_name}`,
+      avatar: body.data.avatar ?? undefined,
+      administrator: body.data.administrator,
     };
   },
   async canAccess(params) {
