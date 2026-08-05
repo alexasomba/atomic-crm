@@ -159,13 +159,17 @@ export function ContactImportDialog({
                 <Alert>
                   <AlertDescription className="flex flex-col gap-4">
                     Here is a sample CSV file you can use as a template
-                    <Button asChild variant="outline" size="sm">
-                      <Link
-                        to={SAMPLE_URL}
-                        download={"crm_contacts_sample.csv"}
-                      >
-                        Download CSV sample
-                      </Link>
+                    <Button
+                      render={
+                        <Link
+                          to={SAMPLE_URL}
+                          download="crm_contacts_sample.csv"
+                        />
+                      }
+                      variant="outline"
+                      size="sm"
+                    >
+                      Download CSV sample
                     </Button>{" "}
                   </AlertDescription>
                 </Alert>

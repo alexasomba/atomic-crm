@@ -99,8 +99,12 @@ export const DashboardStepper = ({
                       Add note
                     </Button>
                   ) : (
-                    <Button asChild disabled={step < 2} className="w-[100px]">
-                      <Link to={`/contacts/${contactId}/show`}>Add note</Link>
+                    <Button
+                      render={<Link to={`/contacts/${contactId}/show`} />}
+                      disabled={step < 2}
+                      className="w-[100px]"
+                    >
+                      Add note
                     </Button>
                   )}
                 </div>

@@ -71,8 +71,12 @@ function EditHeader() {
         </div>
         <div className="flex gap-2 pr-12">
           <DeleteButton />
-          <Button asChild variant="outline" className="h-9">
-            <Link to={`/deals/${deal.id}/show`}>Back to deal</Link>
+          <Button
+            render={<Link to={`/deals/${deal.id}/show`} />}
+            variant="outline"
+            className="h-9"
+          >
+            Back to deal
           </Button>
         </div>
       </div>
