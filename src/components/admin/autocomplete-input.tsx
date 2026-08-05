@@ -39,7 +39,6 @@ import {
   useSupportCreateSuggestion,
 } from "ra-core";
 import { InputHelperText } from "./input-helper-text";
-import { PopoverProps } from "@radix-ui/react-popover";
 
 /**
  * Form control that lets users choose a value from a list using a dropdown with autocompletion.
@@ -88,7 +87,8 @@ export const AutocompleteInput = (
       inputText?:
         | React.ReactNode
         | ((option: any | undefined) => React.ReactNode);
-    } & Pick<PopoverProps, "modal">,
+      modal?: boolean;
+    },
 ) => {
   const {
     filterToQuery = DefaultFilterToQuery,
@@ -233,7 +233,7 @@ export const AutocompleteInput = (
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full max-w-(--radix-popover-trigger-width) p-0">
+            <PopoverContent className="w-full max-w-(--anchor-width) p-0">
               {/* We handle the filtering ourselves */}
               <Command shouldFilter={!isFromReference}>
                 <CommandInput
