@@ -338,20 +338,20 @@ catalogs:
       specifier: 2.5.1
       version: 2.5.1
     '@react-spring/animated':
-      specifier: ^9.7.5
-      version: 9.7.5
+      specifier: 10.1.2
+      version: 10.1.2
     '@react-spring/core':
-      specifier: ^9.7.5
-      version: 9.7.5
+      specifier: 10.1.2
+      version: 10.1.2
     '@react-spring/rafz':
-      specifier: ^9.7.5
-      version: 9.7.5
+      specifier: 10.1.2
+      version: 10.1.2
     '@react-spring/shared':
-      specifier: ^9.7.5
-      version: 9.7.5
+      specifier: 10.1.2
+      version: 10.1.2
     '@react-spring/types':
-      specifier: ^9.7.5
-      version: 9.7.5
+      specifier: 10.1.2
+      version: 10.1.2
     '@react-spring/web':
       specifier: 10.1.2
       version: 10.1.2
@@ -599,8 +599,8 @@ catalogs:
       specifier: ^5.0.0
       version: 5.0.0
     eslint-plugin-storybook:
-      specifier: ^9.1.20
-      version: 9.1.20
+      specifier: ^10.5.6
+      version: 10.5.6
     estree-util-is-identifier-name:
       specifier: ^3.0.0
       version: 3.0.0
@@ -653,8 +653,8 @@ catalogs:
       specifier: ^1.2.0
       version: 1.2.0
     graphql:
-      specifier: 17.0.2
-      version: 17.0.2
+      specifier: ^16.14.2
+      version: 16.14.2
     has-property-descriptors:
       specifier: ^1.0.2
       version: 1.0.2
@@ -1247,13 +1247,13 @@ importers:
         version: 0.5.0
       '@copilotkit/react-core':
         specifier: 'catalog:'
-        version: 1.66.2(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@17.0.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)
+        version: 1.66.2(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@16.14.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)
       '@copilotkit/react-ui':
         specifier: 'catalog:'
-        version: 1.66.2(@ag-ui/core@0.0.57)(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@17.0.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)
+        version: 1.66.2(@ag-ui/core@0.0.57)(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@16.14.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)
       '@copilotkit/runtime-client-gql':
         specifier: 'catalog:'
-        version: 1.66.2(@ag-ui/core@0.0.57)(graphql@17.0.2)(react@19.2.8)
+        version: 1.66.2(@ag-ui/core@0.0.57)(graphql@16.14.2)(react@19.2.8)
       '@copilotkit/shared':
         specifier: 'catalog:'
         version: 1.66.2(@ag-ui/core@0.0.57)
@@ -1337,19 +1337,19 @@ importers:
         version: 2.5.1(ra-core@5.15.0(@tanstack/react-query@5.101.4(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react-hook-form@7.84.0(react@19.2.8))(react-router-dom@7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-router@7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8))
       '@react-spring/animated':
         specifier: 'catalog:'
-        version: 9.7.5(react@19.2.8)
+        version: 10.1.2(react@19.2.8)
       '@react-spring/core':
         specifier: 'catalog:'
-        version: 9.7.5(react@19.2.8)
+        version: 10.1.2(react@19.2.8)
       '@react-spring/rafz':
         specifier: 'catalog:'
-        version: 9.7.5
+        version: 10.1.2
       '@react-spring/shared':
         specifier: 'catalog:'
-        version: 9.7.5(react@19.2.8)
+        version: 10.1.2(react@19.2.8)
       '@react-spring/types':
         specifier: 'catalog:'
-        version: 9.7.5
+        version: 10.1.2
       '@react-spring/web':
         specifier: 'catalog:'
         version: 10.1.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -2154,7 +2154,7 @@ importers:
         version: 0.5.16
       eslint-plugin-storybook:
         specifier: 'catalog:'
-        version: 9.1.20(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(storybook@10.5.6(@types/react@19.2.18)(react@19.2.8)(vite-plus@0.2.8(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.1)(typescript@6.0.3))(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(terser@5.49.1)(typescript@6.0.3)))(supports-color@10.2.2)(typescript@6.0.3)
+        version: 10.5.6(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(storybook@10.5.6(@types/react@19.2.18)(react@19.2.8)(vite-plus@0.2.8(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.1)(typescript@6.0.3))(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(terser@5.49.1)(typescript@6.0.3)))(supports-color@10.2.2)(typescript@6.0.3)
       expect-type:
         specifier: 'catalog:'
         version: 1.4.0
@@ -2172,7 +2172,7 @@ importers:
         version: 17.9.0
       graphql:
         specifier: 'catalog:'
-        version: 17.0.2
+        version: 16.14.2
       hasown:
         specifier: 'catalog:'
         version: 2.0.4
@@ -4333,42 +4333,21 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@react-spring/animated@9.7.5':
-    resolution: {integrity: sha512-Tqrwz7pIlsSDITzxoLS3n/v/YCUHQdOIKtOJf4yL6kYVSDTSmVK1LI1Q3M/uu2Sx4X3pIWF3xLUhlsA6SPNTNg==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-
   '@react-spring/core@10.1.2':
     resolution: {integrity: sha512-lPGOAg0V+PV3ucopOajD+YCxoe8twALqAeG4c/+sqVjBsyUNNdx8qfz/DcNSPKA8PV3+AyQELlCxlDfap9cmBQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@react-spring/core@9.7.5':
-    resolution: {integrity: sha512-rmEqcxRcu7dWh7MnCcMXLvrf6/SDlSokLaLTxiPlAYi11nN3B5oiCUAblO72o+9z/87j2uzxa2Inm8UbLjXA+w==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-
   '@react-spring/rafz@10.1.2':
     resolution: {integrity: sha512-KC6vSFZyPnRJ2rXqipV9QqR4SaYbYXjvKfdYKWipNK2mWuV79gr20WmpVUOsTiEHGRY3WSOdWCHN+P9Pdaqb7Q==}
-
-  '@react-spring/rafz@9.7.5':
-    resolution: {integrity: sha512-5ZenDQMC48wjUzPAm1EtwQ5Ot3bLIAwwqP2w2owG5KoNdNHpEJV263nGhCeKKmuA3vG2zLLOdu3or6kuDjA6Aw==}
 
   '@react-spring/shared@10.1.2':
     resolution: {integrity: sha512-47/8bNQ/o0uEmxEnPBuERlC29VSqiTn5P9ln9tUMSVkYKYxBtouYE686F5kAGj+eHRPoNCw7drxWE9nv2d1LMw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@react-spring/shared@9.7.5':
-    resolution: {integrity: sha512-wdtoJrhUeeyD/PP/zo+np2s1Z820Ohr/BbuVYv+3dVLW7WctoiN7std8rISoYoHpUXtbkpesSKuPIw/6U1w1Pw==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-
   '@react-spring/types@10.1.2':
     resolution: {integrity: sha512-G4CWowmVPz+rDG1y9QRVq/prZNxiNwQaHC0kgT/MgY6jAGgdRgTV4VThpvJDwWvUitk3xZB4soP4d36fjeQ09g==}
-
-  '@react-spring/types@9.7.5':
-    resolution: {integrity: sha512-HVj7LrZ4ReHWBimBvu2SKND3cDVUPWKLqRTmWe/fNY6o1owGOX0cAHbdPDTMelgBlVbrTKrre6lFkhqGZErK/g==}
 
   '@react-spring/web@10.1.2':
     resolution: {integrity: sha512-KxDB3zaDqy9qFsu7fdxjyraAxweHH4k5TW5WGT/OuMK6hKaxSDfhrQfRBzfFaSVvMBf+NghbJFanllV4ia6i7A==}
@@ -6416,12 +6395,11 @@ packages:
     resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
     engines: {node: '>=12'}
 
-  eslint-plugin-storybook@9.1.20:
-    resolution: {integrity: sha512-T7uqlzZABlOm0n36UQyyP0u7r+6/Bz5CTAvFK5n+FQPkAhba01mGovYVG61gcDeC06I0AlbZCZ0MP7MFxXAEVg==}
-    engines: {node: '>=20.0.0'}
+  eslint-plugin-storybook@10.5.6:
+    resolution: {integrity: sha512-uOXhNkIH+iTdyViSmWnCrwtapasL57M3nq5yfST1H7y9djRLyuAIfNcf9cPBedc2G1oqI8jn3up/VHdN3y3Btw==}
     peerDependencies:
       eslint: '>=8'
-      storybook: ^9.1.20
+      storybook: ^10.5.6
 
   eslint-scope@9.1.2:
     resolution: {integrity: sha512-xS90H51cKw0jltxmvmHy2Iai1LIqrfbw57b79w/J7MfvDfkIkFZ+kj6zC3BjtUwh150HsSSdxXZcsuv72miDFQ==}
@@ -6777,10 +6755,6 @@ packages:
   graphql@16.14.2:
     resolution: {integrity: sha512-Chq1s4CY7jmh8gO2qvLIJyfCDIN+EHLFW/9iShnp1z8FjBQMoodWP1kDC36VAMXXIvAjj4ARa7ntfAV2BrjsbA==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
-
-  graphql@17.0.2:
-    resolution: {integrity: sha512-FRWbddMxfkjiB7z+aQDWIR+E34xo9I8c9mtK2RPv8PmMzKRvrdsreHL/Ui/TmwHJfhHChEtsFPyMHKI+xuarQQ==}
-    engines: {node: ^22.0.0 || ^24.0.0 || ^25.0.0 || >=26.0.0}
 
   hachure-fill@0.5.2:
     resolution: {integrity: sha512-3GKBOn+m2LX9iq+JC1064cSFprJY4jL1jCXTcpnfER5HYE2l/4EfWSGzkPa/ZDBmYI0ZOEj5VHV/eKnPGkHuOg==}
@@ -9607,9 +9581,9 @@ packages:
 
 snapshots:
 
-  '@0no-co/graphql.web@1.3.3(graphql@17.0.2)':
+  '@0no-co/graphql.web@1.3.3(graphql@16.14.2)':
     optionalDependencies:
-      graphql: 17.0.2
+      graphql: 16.14.2
 
   '@a2ui/web_core@0.10.4':
     dependencies:
@@ -10423,13 +10397,13 @@ snapshots:
 
   '@copilotkit/license-verifier@0.5.0': {}
 
-  '@copilotkit/react-core@1.66.2(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@17.0.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)':
+  '@copilotkit/react-core@1.66.2(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@16.14.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)':
     dependencies:
       '@ag-ui/client': 0.0.57
       '@ag-ui/core': 0.0.57
       '@copilotkit/a2ui-renderer': 1.66.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@copilotkit/core': 1.66.2(@ag-ui/core@0.0.57)(zod@4.4.3)
-      '@copilotkit/runtime-client-gql': 1.66.2(@ag-ui/core@0.0.57)(graphql@17.0.2)(react@19.2.8)
+      '@copilotkit/runtime-client-gql': 1.66.2(@ag-ui/core@0.0.57)(graphql@16.14.2)(react@19.2.8)
       '@copilotkit/shared': 1.66.2(@ag-ui/core@0.0.57)
       '@copilotkit/web-components': 1.66.2(lit@3.3.3)
       '@copilotkit/web-inspector': 1.66.2(@ag-ui/core@0.0.57)(zod@4.4.3)
@@ -10466,10 +10440,10 @@ snapshots:
       - micromark-util-types
       - supports-color
 
-  '@copilotkit/react-ui@1.66.2(@ag-ui/core@0.0.57)(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@17.0.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)':
+  '@copilotkit/react-ui@1.66.2(@ag-ui/core@0.0.57)(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@16.14.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)':
     dependencies:
-      '@copilotkit/react-core': 1.66.2(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@17.0.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)
-      '@copilotkit/runtime-client-gql': 1.66.2(@ag-ui/core@0.0.57)(graphql@17.0.2)(react@19.2.8)
+      '@copilotkit/react-core': 1.66.2(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@16.14.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.4.3)
+      '@copilotkit/runtime-client-gql': 1.66.2(@ag-ui/core@0.0.57)(graphql@16.14.2)(react@19.2.8)
       '@copilotkit/shared': 1.66.2(@ag-ui/core@0.0.57)
       '@headlessui/react': 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react: 19.2.8
@@ -10492,13 +10466,13 @@ snapshots:
       - supports-color
       - zod
 
-  '@copilotkit/runtime-client-gql@1.66.2(@ag-ui/core@0.0.57)(graphql@17.0.2)(react@19.2.8)':
+  '@copilotkit/runtime-client-gql@1.66.2(@ag-ui/core@0.0.57)(graphql@16.14.2)(react@19.2.8)':
     dependencies:
       '@copilotkit/shared': 1.66.2(@ag-ui/core@0.0.57)
-      '@urql/core': 5.2.0(graphql@17.0.2)
+      '@urql/core': 5.2.0(graphql@16.14.2)
       react: 19.2.8
       untruncate-json: 0.0.1
-      urql: 4.2.2(@urql/core@5.2.0(graphql@17.0.2))(react@19.2.8)
+      urql: 4.2.2(@urql/core@5.2.0(graphql@16.14.2))(react@19.2.8)
     transitivePeerDependencies:
       - '@ag-ui/core'
       - encoding
@@ -11765,12 +11739,6 @@ snapshots:
       '@react-spring/types': 10.1.2
       react: 19.2.8
 
-  '@react-spring/animated@9.7.5(react@19.2.8)':
-    dependencies:
-      '@react-spring/shared': 9.7.5(react@19.2.8)
-      '@react-spring/types': 9.7.5
-      react: 19.2.8
-
   '@react-spring/core@10.1.2(react@19.2.8)':
     dependencies:
       '@react-spring/animated': 10.1.2(react@19.2.8)
@@ -11778,16 +11746,7 @@ snapshots:
       '@react-spring/types': 10.1.2
       react: 19.2.8
 
-  '@react-spring/core@9.7.5(react@19.2.8)':
-    dependencies:
-      '@react-spring/animated': 9.7.5(react@19.2.8)
-      '@react-spring/shared': 9.7.5(react@19.2.8)
-      '@react-spring/types': 9.7.5
-      react: 19.2.8
-
   '@react-spring/rafz@10.1.2': {}
-
-  '@react-spring/rafz@9.7.5': {}
 
   '@react-spring/shared@10.1.2(react@19.2.8)':
     dependencies:
@@ -11795,15 +11754,7 @@ snapshots:
       '@react-spring/types': 10.1.2
       react: 19.2.8
 
-  '@react-spring/shared@9.7.5(react@19.2.8)':
-    dependencies:
-      '@react-spring/rafz': 9.7.5
-      '@react-spring/types': 9.7.5
-      react: 19.2.8
-
   '@react-spring/types@10.1.2': {}
-
-  '@react-spring/types@9.7.5': {}
 
   '@react-spring/web@10.1.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
@@ -12652,9 +12603,9 @@ snapshots:
       d3-selection: 3.0.0
       d3-transition: 3.0.1(d3-selection@3.0.0)
 
-  '@urql/core@5.2.0(graphql@17.0.2)':
+  '@urql/core@5.2.0(graphql@16.14.2)':
     dependencies:
-      '@0no-co/graphql.web': 1.3.3(graphql@17.0.2)
+      '@0no-co/graphql.web': 1.3.3(graphql@16.14.2)
       wonka: 6.3.6
     transitivePeerDependencies:
       - graphql
@@ -13759,8 +13710,9 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  eslint-plugin-storybook@9.1.20(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(storybook@10.5.6(@types/react@19.2.18)(react@19.2.8)(vite-plus@0.2.8(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.1)(typescript@6.0.3))(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(terser@5.49.1)(typescript@6.0.3)))(supports-color@10.2.2)(typescript@6.0.3):
+  eslint-plugin-storybook@10.5.6(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(storybook@10.5.6(@types/react@19.2.18)(react@19.2.8)(vite-plus@0.2.8(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.1)(typescript@6.0.3))(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(terser@5.49.1)(typescript@6.0.3)))(supports-color@10.2.2)(typescript@6.0.3):
     dependencies:
+      '@typescript-eslint/types': 8.66.0
       '@typescript-eslint/utils': 8.66.0(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@10.2.2)
       storybook: 10.5.6(@types/react@19.2.18)(react@19.2.8)(vite-plus@0.2.8(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.1)(typescript@6.0.3))(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(terser@5.49.1)(typescript@6.0.3))
@@ -14193,8 +14145,6 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   graphql@16.14.2: {}
-
-  graphql@17.0.2: {}
 
   hachure-fill@0.5.2: {}
 
@@ -17265,9 +17215,9 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  urql@4.2.2(@urql/core@5.2.0(graphql@17.0.2))(react@19.2.8):
+  urql@4.2.2(@urql/core@5.2.0(graphql@16.14.2))(react@19.2.8):
     dependencies:
-      '@urql/core': 5.2.0(graphql@17.0.2)
+      '@urql/core': 5.2.0(graphql@16.14.2)
       react: 19.2.8
       wonka: 6.3.6
 
