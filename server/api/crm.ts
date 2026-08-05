@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { Context } from "hono";
 import { count, eq, like, or } from "drizzle-orm";
 import { z } from "zod";
 import { createAuth } from "../auth.js";
@@ -9,6 +10,7 @@ import {
   contacts,
   deals,
   notes,
+  sales,
   tasks,
 } from "../db/schema.js";
 
@@ -22,7 +24,12 @@ const contactInput = z.object({
   tags: z.array(z.string().max(100)).max(100).optional(),
 });
 
-const api = new Hono<{ Bindings: Env }>();
+type CrmEnv = {
+  Bindings: Env;
+  Variables: { sale: typeof sales.$inferSelect };
+};
+
+const api = new Hono<CrmEnv>();
 
 const readTables = { activities, deals, notes, tasks } as const;
 
@@ -31,13 +38,76 @@ api.use("/*", async (context, next) => {
     headers: context.req.raw.headers,
   });
   if (!session) return context.json({ error: "Unauthorized" }, 401);
+  const [sale] = await createDb(context.env.DB)
+    .select()
+    .from(sales)
+    .where(eq(sales.userId, session.user.id))
+    .limit(1)
+    .all();
+  if (!sale || sale.disabled)
+    return context.json({ error: "Account disabled" }, 403);
+  context.set("sale", sale);
   await next();
 });
+
+const requireAdministrator = (context: Context<CrmEnv>) => {
+  const sale = context.get("sale");
+  return sale.role === "admin";
+};
 
 api.get("/companies", async (context) => {
   const db = createDb(context.env.DB);
   const rows = await db.select().from(companies).orderBy(companies.name).all();
   return context.json({ data: rows, total: rows.length });
+});
+
+api.get("/sales", async (context) => {
+  if (!requireAdministrator(context))
+    return context.json({ error: "Forbidden" }, 403);
+  const rows = await createDb(context.env.DB).select().from(sales).all();
+  return context.json({
+    data: rows.map((sale) => ({
+      id: sale.id,
+      user_id: sale.userId,
+      first_name: sale.firstName,
+      last_name: sale.lastName,
+      email: sale.email,
+      administrator: sale.role === "admin",
+      disabled: sale.disabled,
+    })),
+    total: rows.length,
+  });
+});
+
+api.patch("/sales/:id", async (context) => {
+  if (!requireAdministrator(context))
+    return context.json({ error: "Forbidden" }, 403);
+  const id = Number(context.req.param("id"));
+  const body = z
+    .object({
+      administrator: z.boolean().optional(),
+      disabled: z.boolean().optional(),
+    })
+    .safeParse(await context.req.json());
+  if (!Number.isSafeInteger(id) || !body.success)
+    return context.json({ error: "Invalid sales update" }, 400);
+  const [sale] = await createDb(context.env.DB)
+    .update(sales)
+    .set({
+      ...(body.data.administrator === undefined
+        ? {}
+        : { role: body.data.administrator ? "admin" : "user" }),
+      ...(body.data.disabled === undefined
+        ? {}
+        : { disabled: body.data.disabled }),
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(sales.id, id))
+    .returning()
+    .all();
+  return sale
+    ? context.json({ data: sale })
+    : context.json({ error: "Sales record not found" }, 404);
 });
 
 api.get("/:resource", async (context) => {
@@ -200,6 +270,75 @@ api.delete("/contacts/:id", async (context) => {
   return contact
     ? context.json({ data: contact })
     : context.json({ error: "Contact not found" }, 404);
+});
+
+api.post("/contacts/merge", async (context) => {
+  const body = z
+    .object({
+      sourceId: z.number().int().positive(),
+      targetId: z.number().int().positive(),
+    })
+    .safeParse(await context.req.json());
+  if (!body.success || body.data.sourceId === body.data.targetId)
+    return context.json({ error: "Invalid contact merge" }, 400);
+
+  const db = createDb(context.env.DB);
+  const [source, target] = await Promise.all([
+    db
+      .select({ id: contacts.id })
+      .from(contacts)
+      .where(eq(contacts.id, body.data.sourceId))
+      .limit(1)
+      .all(),
+    db
+      .select({ id: contacts.id })
+      .from(contacts)
+      .where(eq(contacts.id, body.data.targetId))
+      .limit(1)
+      .all(),
+  ]);
+  if (!source[0] || !target[0])
+    return context.json({ error: "Contact not found" }, 404);
+
+  await db.batch([
+    db
+      .update(tasks)
+      .set({ contactId: body.data.targetId })
+      .where(eq(tasks.contactId, body.data.sourceId)),
+    db
+      .update(deals)
+      .set({ contactId: body.data.targetId })
+      .where(eq(deals.contactId, body.data.sourceId)),
+    db
+      .update(notes)
+      .set({ contactId: body.data.targetId })
+      .where(eq(notes.contactId, body.data.sourceId)),
+    db
+      .update(activities)
+      .set({ contactId: body.data.targetId })
+      .where(eq(activities.contactId, body.data.sourceId)),
+    db.delete(contacts).where(eq(contacts.id, body.data.sourceId)),
+  ]);
+  return context.json({ data: { id: body.data.targetId } });
+});
+
+api.post("/deals/:id/unarchive", async (context) => {
+  const id = Number(context.req.param("id"));
+  if (!Number.isSafeInteger(id))
+    return context.json({ error: "Invalid deal id" }, 400);
+  const [deal] = await createDb(context.env.DB)
+    .update(deals)
+    .set({
+      archivedAt: null,
+      status: "open",
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(deals.id, id))
+    .returning()
+    .all();
+  return deal
+    ? context.json({ data: deal })
+    : context.json({ error: "Deal not found" }, 404);
 });
 
 export { api as crmApi };

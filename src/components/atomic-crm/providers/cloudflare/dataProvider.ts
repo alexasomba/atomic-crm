@@ -178,6 +178,23 @@ const implementation = {
     );
     return result.data;
   },
+  async mergeContacts(sourceId: Identifier, targetId: Identifier) {
+    const result = await request<{ data: unknown }>(
+      `${apiOrigin}/api/crm/contacts/merge`,
+      {
+        method: "POST",
+        body: JSON.stringify({ sourceId, targetId }),
+      },
+    );
+    return result.data;
+  },
+  async unarchiveDeal(deal: { id: Identifier }) {
+    const result = await request<{ data: unknown }>(
+      `${apiOrigin}/api/crm/deals/${deal.id}/unarchive`,
+      { method: "POST", body: "{}" },
+    );
+    return result.data;
+  },
 };
 
 export const dataProvider = implementation as DataProvider & {
@@ -192,4 +209,9 @@ export const dataProvider = implementation as DataProvider & {
   updateConfiguration: (
     config: Record<string, unknown>,
   ) => Promise<Record<string, unknown>>;
+  mergeContacts: (
+    sourceId: Identifier,
+    targetId: Identifier,
+  ) => Promise<unknown>;
+  unarchiveDeal: (deal: { id: Identifier }) => Promise<unknown>;
 };

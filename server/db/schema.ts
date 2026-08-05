@@ -88,6 +88,8 @@ export const deals = sqliteTable(
     amount: integer("amount"),
     stage: text("stage").notNull(),
     status: text("status").notNull(),
+    archivedAt: text("archived_at"),
+    position: integer("position").notNull().default(0),
     metadata: jsonText<Record<string, unknown>>("metadata")
       .notNull()
       .default({}),
