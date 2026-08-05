@@ -181,7 +181,8 @@ const ProfileForm = ({
           </div>
         </CardContent>
       </Card>
-      {import.meta.env.VITE_INBOUND_EMAIL && (
+      {(import.meta.env.VITE_INBOUND_EMAIL_ADDRESS ??
+        import.meta.env.VITE_INBOUND_EMAIL) && (
         <Card>
           <CardContent>
             <div className="space-y-4 justify-between">
@@ -224,7 +225,10 @@ const CopyPaste = () => {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     setCopied(true);
-    void navigator.clipboard.writeText(import.meta.env.VITE_INBOUND_EMAIL);
+    void navigator.clipboard.writeText(
+      import.meta.env.VITE_INBOUND_EMAIL_ADDRESS ??
+        import.meta.env.VITE_INBOUND_EMAIL,
+    );
     setTimeout(() => {
       setCopied(false);
     }, 1500);
@@ -240,7 +244,8 @@ const CopyPaste = () => {
             className="normal-case justify-between w-full"
           >
             <span className="overflow-hidden text-ellipsis">
-              {import.meta.env.VITE_INBOUND_EMAIL}
+              {import.meta.env.VITE_INBOUND_EMAIL_ADDRESS ??
+                import.meta.env.VITE_INBOUND_EMAIL}
             </span>
             <Copy className="h-4 w-4 ml-2" />
           </Button>

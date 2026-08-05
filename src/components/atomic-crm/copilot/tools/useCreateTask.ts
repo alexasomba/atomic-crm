@@ -28,7 +28,7 @@ export function useCreateTask() {
       } catch {
         return {
           ok: false,
-          error: `No contact found with id ${params.contactId}. Call searchContacts first to find a real contact, then retry with that contact's id.`,
+          error: `No contact found with id ${String(params.contactId)}. Call searchContacts first to find a real contact, then retry with that contact's id.`,
         };
       }
 

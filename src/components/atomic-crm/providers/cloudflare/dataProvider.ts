@@ -7,6 +7,9 @@ import type {
   Identifier,
   UpdateParams,
 } from "ra-core";
+import type { Activity, Sale, SalesFormData, SignUpData } from "../../types";
+import type { ConfigurationContextValue } from "../../root/ConfigurationContext";
+import { getActivityLog } from "../commons/activity";
 
 const apiOrigin = (import.meta.env.VITE_CLOUDFLARE_API_URL ?? "").replace(
   /\/$/,
@@ -146,37 +149,73 @@ const implementation = {
     );
     return { data: params.ids };
   },
-  async signUp(data: {
-    email: string;
-    password: string;
-    first_name: string;
-    last_name: string;
-  }) {
-    return request("/api/auth/sign-up/email", {
+  async signUp(data: SignUpData) {
+    const result = await request<{ user?: { id: string } }>(
+      "/api/auth/sign-up/email",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          name: `${data.first_name} ${data.last_name}`,
+        }),
+      },
+    );
+    if (!result.user?.id) throw new Error("Account creation failed");
+    return { id: result.user.id, email: data.email, password: data.password };
+  },
+  async salesCreate(data: SalesFormData) {
+    const result = await request<{ data: Sale }>(`${apiOrigin}/api/crm/sales`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    return result.data;
+  },
+  async salesUpdate(
+    id: Identifier,
+    data: Partial<Omit<SalesFormData, "password">>,
+  ) {
+    const result = await request<{ data: Sale }>(
+      `${apiOrigin}/api/crm/sales/${id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      },
+    );
+    return result.data;
+  },
+  async updatePassword(_id: Identifier) {
+    const identity = await request<{ data: { email: string } }>(
+      `${apiOrigin}/api/me`,
+    );
+    await request(`${apiOrigin}/api/auth/request-password-reset`, {
       method: "POST",
       body: JSON.stringify({
-        email: data.email,
-        password: data.password,
-        name: `${data.first_name} ${data.last_name}`,
+        email: identity.data.email,
+        redirectTo: `${window.location.origin}/reset-password`,
       }),
     });
+    return true as const;
+  },
+  async getActivityLog(companyId?: Identifier): Promise<Activity[]> {
+    return getActivityLog(implementation as DataProvider, companyId);
   },
   async isInitialized() {
     await request<{ ok: boolean }>(`${apiOrigin}/api/health`);
     return true;
   },
-  async getConfiguration() {
+  async getConfiguration(): Promise<ConfigurationContextValue> {
     const result = await request<{ data: Record<string, unknown> }>(
       `${apiOrigin}/api/configuration`,
     );
-    return result.data;
+    return result.data as unknown as ConfigurationContextValue;
   },
-  async updateConfiguration(config: Record<string, unknown>) {
+  async updateConfiguration(config: ConfigurationContextValue) {
     const result = await request<{ data: Record<string, unknown> }>(
       `${apiOrigin}/api/configuration`,
       { method: "PATCH", body: JSON.stringify(config) },
     );
-    return result.data;
+    return result.data as unknown as ConfigurationContextValue;
   },
   async mergeContacts(sourceId: Identifier, targetId: Identifier) {
     const result = await request<{ data: unknown }>(
@@ -198,17 +237,23 @@ const implementation = {
 };
 
 export const dataProvider = implementation as DataProvider & {
-  signUp: (data: {
+  signUp: (data: SignUpData) => Promise<{
+    id: Identifier;
     email: string;
     password: string;
-    first_name: string;
-    last_name: string;
-  }) => Promise<unknown>;
+  }>;
+  salesCreate: (data: SalesFormData) => Promise<Sale>;
+  salesUpdate: (
+    id: Identifier,
+    data: Partial<Omit<SalesFormData, "password">>,
+  ) => Promise<Sale>;
+  updatePassword: (id: Identifier) => Promise<true>;
+  getActivityLog: (companyId?: Identifier) => Promise<Activity[]>;
   isInitialized: () => Promise<boolean>;
-  getConfiguration: () => Promise<Record<string, unknown>>;
+  getConfiguration: () => Promise<ConfigurationContextValue>;
   updateConfiguration: (
-    config: Record<string, unknown>,
-  ) => Promise<Record<string, unknown>>;
+    config: ConfigurationContextValue,
+  ) => Promise<ConfigurationContextValue>;
   mergeContacts: (
     sourceId: Identifier,
     targetId: Identifier,

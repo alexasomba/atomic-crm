@@ -38,6 +38,10 @@ import {
 } from "./ConfigurationContext";
 import type { CrmDataProvider } from "../providers/types";
 import {
+  authProvider as cloudflareAuthProvider,
+  dataProvider as cloudflareDataProvider,
+} from "../providers/cloudflare";
+import {
   defaultCompanySectors,
   defaultDarkModeLogo,
   defaultDealCategories,
@@ -59,6 +63,8 @@ import { NoteShowPage } from "../notes/NoteShowPage.tsx";
 import { AuditLogPage } from "../audit/AuditLogPage";
 
 const defaultStore = localStorageStore(undefined, "CRM");
+const useCloudflareProvider =
+  import.meta.env.VITE_CRM_PROVIDER?.toLowerCase() === "cloudflare";
 
 export type CRMProps = {
   dataProvider?: CrmDataProvider;
@@ -116,8 +122,12 @@ export const CRM = ({
   noteStatuses = defaultNoteStatuses,
   taskTypes = defaultTaskTypes,
   title = defaultTitle,
-  dataProvider = defaultDataProvider,
-  authProvider = defaultAuthProvider,
+  dataProvider = useCloudflareProvider
+    ? cloudflareDataProvider
+    : defaultDataProvider,
+  authProvider = useCloudflareProvider
+    ? cloudflareAuthProvider
+    : defaultAuthProvider,
   store = defaultStore,
   googleWorkplaceDomain = import.meta.env.VITE_GOOGLE_WORKPLACE_DOMAIN,
   disableEmailPasswordAuthentication = import.meta.env

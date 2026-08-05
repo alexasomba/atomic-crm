@@ -47,9 +47,15 @@ processed; CRM contact/note association remains the next strangler slice.
 The Cloudflare `ra-core` providers are available from
 `src/components/atomic-crm/providers/cloudflare`. Set
 `VITE_CLOUDFLARE_API_URL` to the Worker origin and pass those providers to the
-`CRM` component when testing the new path. Supabase remains the default until
-data reconciliation, sales-role synchronization, attachments, and all custom
-CRM resources have passed staging tests.
+`CRM` component when testing the new path. Alternatively, set
+`VITE_CRM_PROVIDER=cloudflare` to select them automatically. Supabase remains
+the default rollback path until data reconciliation, sales-role
+synchronization, attachments, and all custom CRM resources have passed staging
+tests.
+
+The profile page reads `VITE_INBOUND_EMAIL_ADDRESS`; the older
+`VITE_INBOUND_EMAIL` name remains a temporary fallback for existing Supabase
+deployments and should be removed after Cloudflare cutover.
 
 The Worker now exposes authenticated attachment upload/download/delete routes
 backed by R2 and a bounded `/api/ai` route backed by Workers AI. The AI route is

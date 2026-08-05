@@ -24,6 +24,14 @@ const contactInput = z.object({
   tags: z.array(z.string().max(100)).max(100).optional(),
 });
 
+const salesInput = z.object({
+  email: z.email(),
+  first_name: z.string().min(1).max(200),
+  last_name: z.string().min(1).max(200),
+  administrator: z.boolean().optional(),
+  disabled: z.boolean().optional(),
+});
+
 type CrmEnv = {
   Bindings: Env;
   Variables: { sale: typeof sales.$inferSelect };
@@ -79,21 +87,122 @@ api.get("/sales", async (context) => {
   });
 });
 
+api.post("/sales", async (context) => {
+  if (!requireAdministrator(context))
+    return context.json({ error: "Forbidden" }, 403);
+  const body = salesInput.safeParse(await context.req.json());
+  if (!body.success) return context.json({ error: body.error.flatten() }, 400);
+
+  // The user is created with a one-time random password and receives a
+  // Better Auth reset link immediately. The password never leaves this
+  // request and is not persisted by the CRM layer.
+  const temporaryPassword = `${crypto.randomUUID()}${crypto.randomUUID()}`;
+  const authResponse = await createAuth(context.env).handler(
+    new Request(`${context.env.APP_ORIGIN}/api/auth/sign-up/email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: body.data.email,
+        password: temporaryPassword,
+        name: `${body.data.first_name} ${body.data.last_name}`,
+      }),
+    }),
+  );
+  if (!authResponse.ok) {
+    const error = await authResponse.json().catch(() => ({}));
+    return context.json({ error }, authResponse.status as 400 | 409 | 422);
+  }
+
+  const created = (await authResponse.json()) as { user?: { id: string } };
+  if (!created.user?.id)
+    return context.json({ error: "Authentication user was not created" }, 502);
+
+  const db = createDb(context.env.DB);
+  const now = new Date().toISOString();
+  const [sale] = await db
+    .update(sales)
+    .set({
+      firstName: body.data.first_name,
+      lastName: body.data.last_name,
+      role: body.data.administrator ? "admin" : "user",
+      disabled: body.data.disabled ?? false,
+      updatedAt: now,
+    })
+    .where(eq(sales.userId, created.user.id))
+    .returning()
+    .all();
+
+  if (!sale)
+    return context.json({ error: "Sales record was not created" }, 502);
+
+  // Best-effort reset delivery: account creation remains successful even if
+  // the email provider is temporarily unavailable; the operator can retry
+  // the reset flow from the login screen.
+  await createAuth(context.env)
+    .handler(
+      new Request(`${context.env.APP_ORIGIN}/api/auth/request-password-reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: body.data.email,
+          redirectTo: `${context.env.APP_ORIGIN}/reset-password`,
+        }),
+      }),
+    )
+    .catch(() => undefined);
+
+  return context.json(
+    {
+      data: {
+        id: sale.id,
+        user_id: sale.userId,
+        first_name: sale.firstName,
+        last_name: sale.lastName,
+        email: sale.email,
+        administrator: sale.role === "admin",
+        disabled: sale.disabled,
+      },
+    },
+    201,
+  );
+});
+
 api.patch("/sales/:id", async (context) => {
   if (!requireAdministrator(context))
     return context.json({ error: "Forbidden" }, 403);
   const id = Number(context.req.param("id"));
   const body = z
     .object({
+      email: z.string().email().optional(),
+      first_name: z.string().min(1).max(200).optional(),
+      last_name: z.string().min(1).max(200).optional(),
       administrator: z.boolean().optional(),
       disabled: z.boolean().optional(),
     })
     .safeParse(await context.req.json());
   if (!Number.isSafeInteger(id) || !body.success)
     return context.json({ error: "Invalid sales update" }, 400);
+  const [current] = await createDb(context.env.DB)
+    .select({ email: sales.email })
+    .from(sales)
+    .where(eq(sales.id, id))
+    .limit(1)
+    .all();
+  if (!current) return context.json({ error: "Sales record not found" }, 404);
+  if (body.data.email !== undefined && body.data.email !== current.email)
+    return context.json(
+      { error: "Email changes require the Better Auth email-change flow" },
+      409,
+    );
   const [sale] = await createDb(context.env.DB)
     .update(sales)
     .set({
+      ...(body.data.first_name === undefined
+        ? {}
+        : { firstName: body.data.first_name }),
+      ...(body.data.last_name === undefined
+        ? {}
+        : { lastName: body.data.last_name }),
       ...(body.data.administrator === undefined
         ? {}
         : { role: body.data.administrator ? "admin" : "user" }),
