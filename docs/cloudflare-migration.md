@@ -16,6 +16,14 @@ alone.
    `pnpm run db:generate`.
 5. Apply local D1 migrations with `pnpm run d1:migrate:local`.
 
+For a Supabase export, provide `VITE_SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY`, then run `pnpm run data:export`. Review the
+generated `migration-data/d1-import.sql` from `pnpm run data:import`; it is a
+dry run by default. Set `MIGRATION_APPLY=1 MIGRATION_TARGET=local` only after
+reviewing the SQL. Run `MIGRATION_TARGET=local pnpm run data:reconcile` after
+import. Remote application requires the explicit `MIGRATION_TARGET=remote`
+choice and staging validation first.
+
 The repository pins the Drizzle v1 release candidate and the matching Better
 Auth release candidate. The beta Better Auth CLI is used because it emits
 Drizzle v1 `defineRelationsPart` output; the stable CLI currently emits the
