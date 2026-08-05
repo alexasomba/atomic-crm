@@ -7,6 +7,8 @@ const execFileAsync = promisify(execFile);
 const outputDirectory = process.env.MIGRATION_OUTPUT ?? "migration-data";
 const exportPath = `${outputDirectory}/supabase-export.json`;
 const sqlPath = `${outputDirectory}/d1-import.sql`;
+const storageDirectory = `${outputDirectory}/storage/attachments`;
+const storageManifestPath = `${outputDirectory}/storage-manifest.json`;
 const pageSize = 1_000;
 
 const tables = [
@@ -57,9 +59,91 @@ async function exportSupabase() {
     console.log(`${table}: ${rows.length} rows`);
   }
 
+  const authUsers = [];
+  for (let page = 1; ; page += 1) {
+    const { data: result, error } = await supabase.auth.admin.listUsers({
+      page,
+      perPage: pageSize,
+    });
+    if (error) throw new Error(`auth.users: ${error.message}`);
+    for (const user of result.users ?? []) {
+      authUsers.push({
+        id: user.id,
+        email: user.email,
+        emailConfirmedAt: user.email_confirmed_at,
+        phone: user.phone,
+        createdAt: user.created_at,
+        updatedAt: user.updated_at,
+        lastSignInAt: user.last_sign_in_at,
+        appMetadata: user.app_metadata,
+        userMetadata: user.user_metadata,
+      });
+    }
+    if (!result.users || result.users.length < pageSize) break;
+  }
+  data.authUsers = authUsers;
+  console.log(
+    `auth.users: ${authUsers.length} metadata records (password hashes are intentionally not exported)`,
+  );
+
   await mkdir(outputDirectory, { recursive: true });
+  if (process.env.MIGRATION_SKIP_STORAGE !== "1") {
+    const manifest = await exportStorage(supabase);
+    await writeFile(
+      storageManifestPath,
+      `${JSON.stringify(manifest, null, 2)}\n`,
+    );
+    console.log(
+      `storage.objects: ${manifest.length} files; wrote ${storageManifestPath}`,
+    );
+  }
+
   await writeFile(exportPath, `${JSON.stringify(data, null, 2)}\n`);
   console.log(`Wrote ${exportPath}`);
+}
+
+async function exportStorage(supabase) {
+  const manifest = [];
+  const pending = [""];
+  while (pending.length > 0) {
+    const prefix = pending.shift();
+    for (let offset = 0; ; offset += pageSize) {
+      const { data: entries, error } = await supabase.storage
+        .from("attachments")
+        .list(prefix, { limit: pageSize, offset });
+      if (error)
+        throw new Error(`storage.attachments/${prefix}: ${error.message}`);
+      for (const entry of entries ?? []) {
+        const path = prefix ? `${prefix}/${entry.name}` : entry.name;
+        if (entry.id === null) {
+          pending.push(path);
+          continue;
+        }
+        const { data: file, error: downloadError } = await supabase.storage
+          .from("attachments")
+          .download(path);
+        if (downloadError)
+          throw new Error(
+            `storage.attachments/${path}: ${downloadError.message}`,
+          );
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const destination = `${storageDirectory}/${path}`;
+        await mkdir(destination.slice(0, destination.lastIndexOf("/")), {
+          recursive: true,
+        });
+        await writeFile(destination, bytes);
+        manifest.push({
+          path,
+          size: bytes.byteLength,
+          contentType: entry.metadata?.mimetype ?? "application/octet-stream",
+          updatedAt: entry.updated_at ?? null,
+          etag: entry.etag ?? null,
+        });
+      }
+      if (!entries || entries.length < pageSize) break;
+    }
+  }
+  return manifest;
 }
 
 const sourceValue = (row, ...names) =>

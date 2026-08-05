@@ -17,12 +17,23 @@ alone.
 5. Apply local D1 migrations with `pnpm run d1:migrate:local`.
 
 For a Supabase export, provide `VITE_SUPABASE_URL` and
-`SUPABASE_SERVICE_ROLE_KEY`, then run `pnpm run data:export`. Review the
-generated `migration-data/d1-import.sql` from `pnpm run data:import`; it is a
-dry run by default. Set `MIGRATION_APPLY=1 MIGRATION_TARGET=local` only after
-reviewing the SQL. Run `MIGRATION_TARGET=local pnpm run data:reconcile` after
-import. Remote application requires the explicit `MIGRATION_TARGET=remote`
-choice and staging validation first.
+`SUPABASE_SERVICE_ROLE_KEY`, then run `pnpm run data:export`. The export now
+includes CRM tables, non-secret Auth user metadata, and an attachment byte
+archive under `migration-data/storage/attachments` with a
+`migration-data/storage-manifest.json` manifest. Password hashes are not
+exported: verify whether the existing Supabase hashes can be safely imported
+before cutover; otherwise require a one-time Better Auth password reset. Set
+`MIGRATION_SKIP_STORAGE=1` only when a storage export is intentionally being
+performed separately.
+
+Review the generated `migration-data/d1-import.sql` from `pnpm run data:import`;
+it is a dry run by default. Set `MIGRATION_APPLY=1 MIGRATION_TARGET=local` only
+after reviewing the SQL. Run `MIGRATION_TARGET=local pnpm run data:reconcile`
+after import. Remote application requires the explicit
+`MIGRATION_TARGET=remote` choice and staging validation first. The attachment
+archive is deliberately separate from the SQL import because D1 and R2 do not
+share a transaction; upload it to R2 with an idempotent, checksum-verified
+import job and reconcile the resulting D1 metadata before production cutover.
 
 The repository pins the Drizzle v1 release candidate and the matching Better
 Auth release candidate. The beta Better Auth CLI is used because it emits
