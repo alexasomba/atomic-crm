@@ -34,6 +34,15 @@ message in R2, records an idempotency row in D1, and queues MIME parsing. A
 temporary queue consumer currently records the parsed message and marks it
 processed; CRM contact/note association remains the next strangler slice.
 
+## Frontend provider
+
+The Cloudflare `ra-core` providers are available from
+`src/components/atomic-crm/providers/cloudflare`. Set
+`VITE_CLOUDFLARE_API_URL` to the Worker origin and pass those providers to the
+`CRM` component when testing the new path. Supabase remains the default until
+data reconciliation, sales-role synchronization, attachments, and all custom
+CRM resources have passed staging tests.
+
 No production database ID or email domain is committed. Replace the placeholder
 `database_id`, bucket, queue, and sender values in an environment-specific
 Wrangler configuration before deploying.
