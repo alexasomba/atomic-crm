@@ -3,7 +3,14 @@ import { count, eq, like, or } from "drizzle-orm";
 import { z } from "zod";
 import { createAuth } from "../auth.js";
 import { createDb } from "../db/client.js";
-import { companies, contacts } from "../db/schema.js";
+import {
+  activities,
+  companies,
+  contacts,
+  deals,
+  notes,
+  tasks,
+} from "../db/schema.js";
 
 const contactInput = z.object({
   first_name: z.string().min(1).max(200),
@@ -17,6 +24,8 @@ const contactInput = z.object({
 
 const api = new Hono<{ Bindings: Env }>();
 
+const readTables = { activities, deals, notes, tasks } as const;
+
 api.use("/*", async (context, next) => {
   const session = await createAuth(context.env).api.getSession({
     headers: context.req.raw.headers,
@@ -29,6 +38,45 @@ api.get("/companies", async (context) => {
   const db = createDb(context.env.DB);
   const rows = await db.select().from(companies).orderBy(companies.name).all();
   return context.json({ data: rows, total: rows.length });
+});
+
+api.get("/:resource", async (context) => {
+  const table =
+    readTables[context.req.param("resource") as keyof typeof readTables];
+  if (!table) return context.json({ error: "Resource not found" }, 404);
+
+  const page = Math.max(Number(context.req.query("page") ?? 1), 1);
+  const perPage = Math.min(
+    Math.max(Number(context.req.query("perPage") ?? 25), 1),
+    100,
+  );
+  const db = createDb(context.env.DB);
+  const rows = await db
+    .select()
+    .from(table as never)
+    .limit(perPage)
+    .offset((page - 1) * perPage)
+    .all();
+  return context.json({ data: rows, total: rows.length });
+});
+
+api.get("/:resource/:id", async (context) => {
+  const table =
+    readTables[context.req.param("resource") as keyof typeof readTables];
+  const id = Number(context.req.param("id"));
+  if (!table) return context.json({ error: "Resource not found" }, 404);
+  if (!Number.isSafeInteger(id))
+    return context.json({ error: "Invalid id" }, 400);
+
+  const [row] = await createDb(context.env.DB)
+    .select()
+    .from(table as never)
+    .where(eq((table as typeof tasks).id, id))
+    .limit(1)
+    .all();
+  return row
+    ? context.json({ data: row })
+    : context.json({ error: "Record not found" }, 404);
 });
 
 api.get("/contacts", async (context) => {

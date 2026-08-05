@@ -43,6 +43,12 @@ The Cloudflare `ra-core` providers are available from
 data reconciliation, sales-role synchronization, attachments, and all custom
 CRM resources have passed staging tests.
 
+The Worker now exposes authenticated attachment upload/download/delete routes
+backed by R2 and a bounded `/api/ai` route backed by Workers AI. The AI route is
+an isolated compatibility spike; CopilotKit remains on the existing Node
+runtime until streaming, MCP, and human-approval behavior are verified on the
+Worker runtime.
+
 No production database ID or email domain is committed. Replace the placeholder
 `database_id`, bucket, queue, and sender values in an environment-specific
 Wrangler configuration before deploying.

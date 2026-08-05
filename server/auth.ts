@@ -3,6 +3,8 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { drizzle } from "drizzle-orm/d1";
 import * as authSchema from "./db/auth-schema.js";
 import * as schema from "./db/schema.js";
+import { sales } from "./db/schema.js";
+import { createDb } from "./db/client.js";
 import { sendPasswordResetEmail, sendVerificationEmail } from "./email.js";
 
 type AuthEnvironment = {
@@ -38,7 +40,9 @@ export const createAuth = (env: AuthEnvironment) =>
     ...authOptions,
     baseURL: env.APP_ORIGIN,
     secret: env.BETTER_AUTH_SECRET,
+    trustedOrigins: [env.APP_ORIGIN],
     emailVerification: {
+      sendOnSignUp: true,
       sendVerificationEmail: async ({ user, url }) => {
         await sendVerificationEmail(env, user.email, url);
       },
@@ -47,6 +51,27 @@ export const createAuth = (env: AuthEnvironment) =>
       ...authOptions.emailAndPassword,
       sendResetPassword: async ({ user, url }) => {
         await sendPasswordResetEmail(env, user.email, url);
+      },
+    },
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (user) => {
+            const [firstName, ...lastNameParts] = user.name.trim().split(/\s+/);
+            await createDb(env.DB)
+              .insert(sales)
+              .values({
+                userId: user.id,
+                firstName: firstName || user.email,
+                lastName: lastNameParts.join(" ") || "User",
+                email: user.email,
+                role: "user",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              })
+              .run();
+          },
+        },
       },
     },
     database: drizzleAdapter(drizzle(env.DB), {

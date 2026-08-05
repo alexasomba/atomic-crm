@@ -1,11 +1,12 @@
 import { cors } from "hono/cors";
+import { bodyLimit } from "hono/body-limit";
 import { Hono } from "hono";
 import { z } from "zod";
 import PostalMime from "postal-mime";
 import { createAuth } from "./auth.js";
 import { crmApi } from "./api/crm.js";
 import { createDb } from "./db/client.js";
-import { inboundEmailEvents } from "./db/schema.js";
+import { attachments, inboundEmailEvents } from "./db/schema.js";
 import { eq } from "drizzle-orm";
 
 const app = new Hono<{ Bindings: Env }>();
@@ -41,22 +42,103 @@ app.all("/api/auth/*", (context) =>
 
 app.route("/api/crm", crmApi);
 
-app.post("/api/uploads/presign", async (context) => {
-  const body = z
+app.use("/api/uploads/*", bodyLimit({ maxSize: 10 * 1024 * 1024 }));
+
+app.post("/api/uploads", async (context) => {
+  const session = await createAuth(context.env).api.getSession({
+    headers: context.req.raw.headers,
+  });
+  if (!session) return context.json({ error: "Unauthorized" }, 401);
+
+  const form = await context.req.formData();
+  const file = form.get("file");
+  const noteIdValue = form.get("noteId");
+  if (!(file instanceof File))
+    return context.json({ error: "file is required" }, 400);
+
+  const filename = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const key = `attachments/${session.user.id}/${crypto.randomUUID()}-${filename}`;
+  await context.env.BUCKET.put(key, await file.arrayBuffer(), {
+    httpMetadata: { contentType: file.type || "application/octet-stream" },
+  });
+
+  const noteId = noteIdValue ? Number(noteIdValue) : null;
+  const attachment = {
+    id: crypto.randomUUID(),
+    noteId: Number.isSafeInteger(noteId) ? noteId : null,
+    objectKey: key,
+    filename: file.name,
+    contentType: file.type || "application/octet-stream",
+    size: file.size,
+    createdAt: new Date().toISOString(),
+  };
+  await createDb(context.env.DB).insert(attachments).values(attachment).run();
+  return context.json(
+    { data: { ...attachment, url: `/api/uploads/${key}` } },
+    201,
+  );
+});
+
+app.get("/api/uploads/*", async (context) => {
+  const session = await createAuth(context.env).api.getSession({
+    headers: context.req.raw.headers,
+  });
+  if (!session) return context.json({ error: "Unauthorized" }, 401);
+
+  const key = decodeURIComponent(context.req.path.replace("/api/uploads/", ""));
+  if (!key || key.includes(".."))
+    return context.json({ error: "Invalid key" }, 400);
+  const object = await context.env.BUCKET.get(key);
+  if (!object) return context.json({ error: "Attachment not found" }, 404);
+  const headers = new Headers();
+  object.writeHttpMetadata(headers);
+  headers.set("etag", object.httpEtag);
+  return new Response(object.body, { headers });
+});
+
+app.delete("/api/uploads/*", async (context) => {
+  const session = await createAuth(context.env).api.getSession({
+    headers: context.req.raw.headers,
+  });
+  if (!session) return context.json({ error: "Unauthorized" }, 401);
+
+  const key = decodeURIComponent(context.req.path.replace("/api/uploads/", ""));
+  if (!key || key.includes(".."))
+    return context.json({ error: "Invalid key" }, 400);
+  await context.env.BUCKET.delete(key);
+  await createDb(context.env.DB)
+    .delete(attachments)
+    .where(eq(attachments.objectKey, key))
+    .run();
+  return context.body(null, 204);
+});
+
+app.post("/api/ai", async (context) => {
+  const session = await createAuth(context.env).api.getSession({
+    headers: context.req.raw.headers,
+  });
+  if (!session) return context.json({ error: "Unauthorized" }, 401);
+
+  const parsed = z
     .object({
-      filename: z.string().min(1).max(255),
-      contentType: z.string().min(1).max(255),
+      messages: z
+        .array(
+          z.object({
+            role: z.enum(["system", "user", "assistant"]),
+            content: z.string().min(1).max(8_000),
+          }),
+        )
+        .min(1)
+        .max(30),
     })
     .safeParse(await context.req.json());
+  if (!parsed.success)
+    return context.json({ error: "Invalid AI request" }, 400);
 
-  if (!body.success)
-    return context.json({ error: "Invalid upload request" }, 400);
-  return context.json(
-    {
-      error: "Upload endpoints are enabled after the D1 migration is applied.",
-    },
-    501,
-  );
+  const result = await context.env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+    messages: parsed.data.messages,
+  });
+  return context.json(result);
 });
 
 app.notFound((context) => context.json({ error: "Not found" }, 404));
