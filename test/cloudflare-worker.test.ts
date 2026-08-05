@@ -1,5 +1,5 @@
 import { app } from "../server/worker";
-import { vi } from "vitest";
+import { vi } from "vite-plus/test";
 
 describe("Cloudflare Worker HTTP boundary", () => {
   it("returns a health response with a request id", async () => {
