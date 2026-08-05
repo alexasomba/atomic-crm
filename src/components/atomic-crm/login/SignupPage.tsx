@@ -45,19 +45,19 @@ export const SignupPage = () => {
         .then(() => {
           notify("Initial user successfully created");
           // FIXME: We should probably provide a hook for that in the ra-core package
-          queryClient.invalidateQueries({
+          void queryClient.invalidateQueries({
             queryKey: ["auth", "canAccess"],
           });
         })
         .catch((err) => {
           if (err.code === "email_not_confirmed") {
             // An email confirmation is required to continue.
-            navigate(ConfirmationRequired.path);
+            void navigate(ConfirmationRequired.path);
           } else {
             notify("Failed to log in.", {
               type: "error",
             });
-            navigate("/login");
+            void navigate("/login");
           }
         });
     },

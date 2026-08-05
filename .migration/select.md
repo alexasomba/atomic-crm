@@ -1,21 +1,22 @@
 # select
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/select.tsx`: Migrated from `@radix-ui/react-select` to `@base-ui/react/select` (Viewport -> List, ScrollUp/DownButton -> ScrollUp/DownArrow).
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/select.tsx` -> clean (0 matches).
+- `src/components/ui/select.tsx`: mapped Root, Trigger, Value, Icon, Portal, Positioner, Popup, List, arrows, GroupLabel, Item, and Indicator to Base UI.
+- `src/components/ui/select.tsx`: mapped `position="popper"` to `alignItemWithTrigger={false}` and rewrote Radix CSS variables/state hooks.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+Select call sites retain wrapper names and existing string values; unrelated form controls remain unchanged.
 
 ## Behavior changes
 
-- Position maps to `alignItemWithTrigger` boolean on Positioner.
+Base UI select values support wider types and its Value renders raw values unless item mapping is supplied. Current consumers use matching values/labels.
 
 ## Verify by hand
 
-- Test selecting options in all select menus (e.g. status, sector, filter dropdowns).
+Test task/status/category/team selectors, placeholder display, keyboard typeahead, scrolling arrows, collision placement, and disabled options.

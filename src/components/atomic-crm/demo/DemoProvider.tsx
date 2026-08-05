@@ -14,6 +14,7 @@ import { DemoContext, type DemoContextValue } from "./DemoContext";
 import { useDemoStateMachine } from "./useDemoStateMachine";
 import { useDemoDriver } from "./useDemoDriver";
 import { useAutoAdvance } from "./useAutoAdvance";
+import { DEMO_CONTACT, DEMO_PROMPTS, type DemoMode } from "./demoConfig";
 const AGENT_PHASE_STATES = [
   "S2_AGENT_REVIEW",
   "S3_CONTRACT_ANALYSIS",
@@ -212,11 +213,11 @@ function DemoActiveProvider({
       // Restarted loop — navigate to dashboard
       navigate("/");
     } else if (currentState === "S1_OPEN_CONTACT" && contactRoute) {
-      navigate(contactRoute);
+      void navigate(contactRoute);
     } else if (currentState === "S6_AUDIT_LOG") {
-      navigate("/audit");
+      void navigate("/audit");
     } else if (currentState === "DONE" && !isAutoplay) {
-      navigate("/");
+      void navigate("/");
     }
 
     // Auto-trigger agent if enabled and state has a prompt
@@ -246,9 +247,9 @@ function DemoActiveProvider({
   useEffect(() => {
     if (contactId && !hasInitNavigated.current && location.pathname !== "/") {
       hasInitNavigated.current = true;
-      navigate("/");
+      void navigate("/");
     }
-  }, [contactId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [contactId]); // oxlint-disable-line react-hooks/exhaustive-deps
 
   // requestCopilotTab: true when we are about to trigger agent (S2/S3/S4 entry)
   const requestCopilotTab =

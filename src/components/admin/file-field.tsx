@@ -25,7 +25,7 @@ import type { FieldProps } from "@/lib/field.type";
  * </div>
  */
 export const FileField = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line @typescript-eslint/no-explicit-any
   RecordType extends Record<string, any> = Record<string, any>,
 >(
   props: FileFieldProps<RecordType>,
@@ -109,10 +109,10 @@ export const FileField = <
 };
 
 export interface FileFieldProps<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line @typescript-eslint/no-explicit-any
   RecordType extends Record<string, any> = Record<string, any>,
-> extends FieldProps<RecordType>,
-    HTMLAttributes<HTMLElement> {
+>
+  extends FieldProps<RecordType>, HTMLAttributes<HTMLElement> {
   /**
    * The source of the link to the file, for an array of files.
    */

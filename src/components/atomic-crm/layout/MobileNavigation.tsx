@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -105,17 +106,15 @@ const NavigationButton = ({
   isActive: boolean;
 }) => (
   <Button
-    asChild
+    render={<Link to={href} />}
     variant="ghost"
     className={cn(
       "flex-col gap-1 h-auto py-2 px-1 rounded-md w-16",
       isActive ? null : "text-muted-foreground",
     )}
   >
-    <Link to={href}>
-      <Icon className="size-6" />
-      <span className="text-[0.6rem] font-medium">{label}</span>
-    </Link>
+    <Icon className="size-6" />
+    <span className="text-[0.6rem] font-medium">{label}</span>
   </Button>
 );
 
@@ -200,15 +199,16 @@ const SettingsButton = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel className="font-normal h-12 px-4">
-          <div className="flex flex-col justify-center h-full">
-            <p className="text-base font-medium leading-none">
-              {identity?.fullName}
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <ThemeMenu />
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="font-normal h-12 px-4">
+            <div className="flex flex-col justify-center h-full">
+              <p className="text-base font-medium leading-none">
+                {identity?.fullName}
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <ThemeMenu />
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => logout()}
@@ -227,10 +227,9 @@ const ThemeMenu = () => {
   return (
     <div className="px-3 py-2">
       <ToggleGroup
-        type="single"
-        value={theme}
+        value={theme ? [theme] : []}
         onValueChange={(value) =>
-          value && setTheme(value as "light" | "dark" | "system")
+          value[0] && setTheme(value[0] as "light" | "dark" | "system")
         }
         className="justify-start"
         size="lg"

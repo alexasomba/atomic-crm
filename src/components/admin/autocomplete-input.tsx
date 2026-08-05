@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* oxlint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { useCallback } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -87,8 +87,7 @@ export const AutocompleteInput = (
       inputText?:
         | React.ReactNode
         | ((option: any | undefined) => React.ReactNode);
-      modal?: boolean;
-    },
+    } & Pick<React.ComponentProps<typeof Popover>, "modal">,
 ) => {
   const {
     filterToQuery = DefaultFilterToQuery,

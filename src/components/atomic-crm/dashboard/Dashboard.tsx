@@ -9,6 +9,7 @@ import { Bot, ClipboardList, Users } from "lucide-react";
 import type { Contact, ContactNote } from "../types";
 import { useCopilotOverlay } from "../copilot/useCopilotOverlay";
 import { useCopilotSetup } from "../copilot/hooks/useCopilotSetup";
+import { CopilotWorkspace } from "../copilot/components/CopilotWorkspace";
 import { DashboardActivityLog } from "./DashboardActivityLog";
 import { DashboardStepper } from "./DashboardStepper";
 import { DealsChart } from "./DealsChart";
@@ -23,7 +24,11 @@ export const Dashboard = () => {
   // CopilotChat renders messages from a different cloned agent and the
   // panel never updates).
   const [threadId, setThreadId] = useState<string>(() => randomUUID());
-  const { agent } = useAgent({ threadId });
+  const { agent } = useAgent({
+    agentId: "default",
+    runtimeAgentId: "default",
+    threadId,
+  });
   const { copilotkit } = useCopilotKit();
   const [rightTab, setRightTab] = useState("tasks");
 

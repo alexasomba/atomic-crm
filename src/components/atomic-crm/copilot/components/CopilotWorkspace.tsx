@@ -95,9 +95,9 @@ const AGENT_ID = "default";
 interface CopilotWorkspaceProps {
   className?: string;
   children?: React.ReactNode;
-  threadId: string;
-  onNewConversation: () => void;
-  onSelectThread: (id: string) => void;
+  threadId?: string;
+  onNewConversation?: () => void;
+  onSelectThread?: (id: string) => void;
 }
 
 export function CopilotWorkspace({
@@ -119,14 +119,14 @@ export function CopilotWorkspace({
   }, []);
 
   const handleNewConversation = useCallback(() => {
-    onNewConversation();
+    onNewConversation?.();
     setChatKey((k) => k + 1);
     setView("chat");
   }, [onNewConversation]);
 
   const handleSelectThread = useCallback(
     (id: string) => {
-      onSelectThread(id);
+      onSelectThread?.(id);
       setChatKey((k) => k + 1);
       setView("chat");
     },

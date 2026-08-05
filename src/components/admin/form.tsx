@@ -15,8 +15,6 @@ import {
   warning,
 } from "ra-core";
 import { Loader2, Save } from "lucide-react";
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
 import { FormProvider, useFormContext, useFormState } from "react-hook-form";
 import type { UseMutationOptions } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
@@ -77,10 +75,7 @@ type FormItemProps = Omit<React.ComponentProps<"div">, "id"> & {
   name: string;
 };
 
-function FormLabel({
-  className,
-  ...props
-}: React.ComponentProps<typeof Label>) {
+function FormLabel({ className, ...props }: React.ComponentProps<"label">) {
   const { error, formItemId } = useFormField();
 
   return (
@@ -94,27 +89,25 @@ function FormLabel({
   );
 }
 
-function FormControl({ children, ...props }: useRender.ComponentProps<"div">) {
+function FormControl({ children, ...props }: React.ComponentProps<"div">) {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
 
-  return useRender({
-    defaultTagName: "div",
-    render: children,
-    props: mergeProps<"div">(
-      {
-        "data-slot": "form-control",
-        id: formItemId,
-        "aria-describedby": !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`,
-        "aria-invalid": !!error,
-      } as React.ComponentProps<"div">,
-      props
-    ),
-  });
+  return React.isValidElement(children)
+    ? React.cloneElement(
+        children as React.ReactElement<Record<string, unknown>>,
+        {
+          "data-slot": "form-control",
+          id: formItemId,
+          "aria-describedby": !error
+            ? formDescriptionId
+            : `${formDescriptionId} ${formMessageId}`,
+          "aria-invalid": !!error,
+          ...props,
+        },
+      )
+    : null;
 }
-
 
 function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
   const { formDescriptionId } = useFormField();
@@ -198,7 +191,7 @@ const SaveButton = <RecordType extends RaRecord = RaRecord>(
   );
 
   const handleSubmit = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     async (values: any) => {
       let errors;
       if (saveContext?.save) {
@@ -281,7 +274,7 @@ export type SaveButtonProps<RecordType extends RaRecord = RaRecord> =
   Props<RecordType> & React.ComponentProps<"button">;
 
 export {
-  // eslint-disable-next-line react-refresh/only-export-components
+  // oxlint-disable-next-line react-refresh/only-export-components
   useFormField,
   Form,
   FormField,

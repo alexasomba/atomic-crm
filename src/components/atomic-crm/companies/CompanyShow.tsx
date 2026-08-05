@@ -27,6 +27,7 @@ import { randomUUID } from "@copilotkit/shared";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ActivityLog } from "../activity/ActivityLog";
 import { Avatar } from "../contacts/Avatar";
+import { TagsList } from "../contacts/TagsList";
 import { useCopilotOverlay } from "../copilot/useCopilotOverlay";
 import { useCopilotSetup } from "../copilot/hooks/useCopilotSetup";
 import { useCompanyEnrichment } from "../copilot/useCompanyEnrichment";
@@ -324,15 +325,20 @@ const ContactsIterator = () => {
 const CreateRelatedContactButton = () => {
   const company = useRecordContext<Company>();
   return (
-    <Button variant="outline" asChild size="sm" className="h-9">
-      <RouterLink
-        to="/contacts/create"
-        state={company ? { record: { company_id: company.id } } : undefined}
-        className="flex items-center gap-2"
-      >
-        <UserPlus className="h-4 w-4" />
-        Add contact
-      </RouterLink>
+    <Button
+      variant="outline"
+      size="sm"
+      className="h-9"
+      render={
+        <RouterLink
+          to="/contacts/create"
+          state={company ? { record: { company_id: company.id } } : undefined}
+          className="flex items-center gap-2"
+        />
+      }
+    >
+      <UserPlus className="h-4 w-4" />
+      Add contact
     </Button>
   );
 };

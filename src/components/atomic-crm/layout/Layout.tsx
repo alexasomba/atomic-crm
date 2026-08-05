@@ -1,5 +1,5 @@
 import { Suspense, type ReactNode } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
 import { Notification } from "@/components/admin/notification";
 import { Error } from "@/components/admin/error";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -49,18 +49,12 @@ function CopilotOverlayPanelGate() {
   return <CopilotOverlayPanel />;
 }
 
-function CopilotErrorFallback({
-  error,
-  resetErrorBoundary,
-}: {
-  error: Error;
-  resetErrorBoundary: () => void;
-}) {
+function CopilotErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
     <div className="fixed right-4 top-14 z-50 w-92 max-w-[calc(100vw-2rem)] rounded-md border bg-background p-4 shadow-lg">
       <p className="text-sm font-medium">Copilot crashed</p>
       <p className="mt-1 text-xs text-muted-foreground break-words">
-        {error.message}
+        {(error as Error)?.message || String(error)}
       </p>
       <button
         type="button"

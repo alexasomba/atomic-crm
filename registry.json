@@ -438,10 +438,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/atomic-crm/misc/ImportFromJsonButton.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "src/components/atomic-crm/misc/ImageEditorField.tsx",
           "type": "registry:component"
         },
@@ -1075,6 +1071,10 @@
         },
         {
           "path": "src/lib/toSlug.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/segment-analytics-node-browser.ts",
           "type": "registry:lib"
         }
       ]

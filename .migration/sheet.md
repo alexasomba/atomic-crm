@@ -1,21 +1,23 @@
 # sheet
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/sheet.tsx`: Migrated from `@radix-ui/react-dialog` to `@base-ui/react/dialog` (Overlay -> Backdrop, Content -> Popup).
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/sheet.tsx` -> clean (0 matches).
+- `src/components/ui/sheet.tsx`: moved the dialog-backed sheet to Base UI Backdrop/Popup parts and preserved side-specific layout classes.
+- `src/components/atomic-crm/misc/ResponsiveFilters.tsx`: converted SheetTrigger/SheetClose `asChild` call sites to `render`.
+- `src/components/atomic-crm/misc/CreateSheet.tsx`: converted SheetClose `asChild` to `render`.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+`drawer.tsx` remains on Vaul by design; it is not a Radix migration target.
 
 ## Behavior changes
 
-- SheetOverlay migrated to Backdrop and SheetContent migrated to Popup.
+Sheet transitions now use Base UI starting/ending styles. Exact swipe/drawer behavior remains intentionally Vaul-only in `drawer.tsx`.
 
 ## Verify by hand
 
-- Open slide-out sheet menus and filters, test dismiss actions and side animations.
+Open mobile filters, create, and edit sheets from each side; confirm focus trap, Escape/backdrop close, buttons, and scrolling.

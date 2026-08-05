@@ -27,7 +27,7 @@ import type { FieldProps } from "@/lib/field.type";
  * );
  */
 const UrlFieldImpl = <
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //oxlint-disable-next-line @typescript-eslint/no-explicit-any
   RecordType extends Record<string, any> = Record<string, any>,
 >(
   inProps: UrlFieldProps<RecordType>,
@@ -72,10 +72,10 @@ UrlFieldImpl.displayName = "UrlFieldImpl";
 export const UrlField = genericMemo(UrlFieldImpl);
 
 export interface UrlFieldProps<
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //oxlint-disable-next-line @typescript-eslint/no-explicit-any
   RecordType extends Record<string, any> = Record<string, any>,
-> extends FieldProps<RecordType>,
-    AnchorHTMLAttributes<HTMLAnchorElement> {}
+>
+  extends FieldProps<RecordType>, AnchorHTMLAttributes<HTMLAnchorElement> {}
 
 // useful to prevent click bubbling in a DataTable with rowClick
 const stopPropagation = (e: React.MouseEvent<HTMLAnchorElement>) =>

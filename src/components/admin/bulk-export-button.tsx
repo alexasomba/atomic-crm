@@ -37,7 +37,9 @@ export const BulkExportButton = <T extends RaRecord>({
 }: BulkExportButtonProps<T>) => {
   const bulkExport = useBulkExport(props);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick: NonNullable<
+    React.ComponentProps<typeof Button>["onClick"]
+  > = (event) => {
     bulkExport();
     onClick?.(event);
   };

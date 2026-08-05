@@ -46,11 +46,9 @@ export const HotContacts = () => {
                 variant="ghost"
                 size="sm"
                 className="ml-auto text-muted-foreground"
-                asChild
+                render={<Link to="/contacts/create" />}
               >
-                <Link to="/contacts/create">
-                  <Plus className="w-4 h-4 text-primary" />
-                </Link>
+                <Plus className="w-4 h-4 text-primary" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Create contact</TooltipContent>

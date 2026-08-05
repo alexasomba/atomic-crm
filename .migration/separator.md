@@ -1,21 +1,21 @@
 # separator
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/separator.tsx`: Migrated from `@radix-ui/react-separator` to `@base-ui/react/separator`.
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/separator.tsx` -> clean (0 matches).
+- `src/components/ui/separator.tsx`: replaced Radix Separator with Base UI's callable Separator and removed unsupported `decorative` forwarding.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+All consumers and non-Radix wrappers were left alone.
 
 ## Behavior changes
 
-- `decorative` prop dropped from Base UI Separator primitive (prop accepted on wrapper for backward compatibility, unused internally).
+Base UI Separator is semantic; purely decorative usages should use a hidden plain divider if that distinction becomes necessary.
 
 ## Verify by hand
 
-- Check horizontal and vertical separator lines in layout and menus.
+Check horizontal and vertical separators in contact, deal, activity, and form layouts.

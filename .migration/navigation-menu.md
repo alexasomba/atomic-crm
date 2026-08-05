@@ -1,21 +1,22 @@
 # navigation-menu
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/navigation-menu.tsx`: Migrated from `radix-ui` to `@base-ui/react/navigation-menu` (Indicator -> Icon, viewport height/width vars -> popup height/width vars).
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/navigation-menu.tsx` -> clean (0 matches).
+- `src/components/ui/navigation-menu.tsx`: replaced the unified Radix Navigation Menu import with Base UI Root/List/Item/Trigger/Content/Portal/Positioner/Popup/Viewport/Link/Icon parts.
+- `src/components/ui/navigation-menu.tsx`: rewrote viewport variables and state selectors for Base UI positioning and transitions.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+There are currently no application consumers of this wrapper. Non-Radix wrappers remain untouched.
 
 ## Behavior changes
 
-- Indicator primitive mapped to Icon, viewport height/width CSS variables mapped to `--popup-height` and `--popup-width`.
+Base UI uses a 50ms navigation hover delay and a Positioner-managed viewport; this is flagged per migration guidance.
 
 ## Verify by hand
 
-- Hover navigation menu items and links.
+Add/open a navigation menu fixture and check hover delay, keyboard navigation, submenu focus, viewport sizing, and activation-direction transitions.

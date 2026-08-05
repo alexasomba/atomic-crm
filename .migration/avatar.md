@@ -1,21 +1,21 @@
 # avatar
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/avatar.tsx`: Migrated from `@radix-ui/react-avatar` to `@base-ui/react/avatar`.
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/avatar.tsx` -> clean (0 matches).
+- `src/components/ui/avatar.tsx`: switched Root, Image, and Fallback parts to `@base-ui/react/avatar`, preserving custom fallback color logic.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+Avatar consumers and unrelated image components were not changed.
 
 ## Behavior changes
 
-None.
+No intentional behavior change. The Base UI fallback delay prop is `delay` if a consumer needs it later.
 
 ## Verify by hand
 
-- Verify user and company avatar rendering with images and fallback text/initials.
+Check loaded images, fallback initials, delayed fallback, and hashed fallback colors.

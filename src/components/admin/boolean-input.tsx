@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* oxlint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback } from "react";
 import { Switch } from "@/components/ui/switch";
 import { FormError, FormField, FormLabel } from "@/components/admin/form";
@@ -81,7 +81,9 @@ export const BooleanInput = (props: BooleanInputProps) => {
         <Switch
           id={id}
           checked={Boolean(field.value)}
-          onFocus={onFocus}
+          onFocus={(event) =>
+            onFocus?.(event as unknown as React.FocusEvent<HTMLButtonElement>)
+          }
           onCheckedChange={handleChange}
         />
         <FormLabel htmlFor={id}>

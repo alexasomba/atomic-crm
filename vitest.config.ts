@@ -1,10 +1,21 @@
 import path from "node:path";
-import { defineConfig } from "vitest/config";
-import { playwright } from "@vitest/browser-playwright";
+import { defineConfig } from "vite-plus";
+import { playwright } from "vite-plus/test/browser-playwright";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: [
+      "@testing-library/dom",
+      "ansi-regex",
+      "ansi-styles",
+      "aria-query",
+      "dom-accessibility-api",
+      "pretty-format",
+      "react-is",
+    ],
+  },
   test: {
     globals: true,
     globalSetup: ["./test/globalSetup.ts"],

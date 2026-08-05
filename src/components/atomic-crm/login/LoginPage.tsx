@@ -50,7 +50,7 @@ export const LoginPage = (props: { redirectTo?: string }) => {
 
     searchParams.delete("passwordRecoveryEmailSent");
     const nextSearch = searchParams.toString();
-    navigate(
+    void navigate(
       {
         pathname: location.pathname,
         search: nextSearch ? `?${nextSearch}` : "",

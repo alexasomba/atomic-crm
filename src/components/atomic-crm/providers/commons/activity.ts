@@ -73,7 +73,7 @@ const getNewCompanies = async (
     company,
     sales_id: company.sales_id,
     date: company.created_at,
-  }));
+  })) as Activity[];
 };
 
 async function getNewContactsAndNotes(
@@ -123,7 +123,7 @@ async function getNewContactsAndNotes(
     date: contactNote.date,
   }));
 
-  return [...newContacts, ...newContactNotes];
+  return [...newContacts, ...newContactNotes] as Activity[];
 }
 
 async function getNewDealsAndNotes(
@@ -173,5 +173,5 @@ async function getNewDealsAndNotes(
     date: dealNote.date,
   }));
 
-  return [...newDeals, ...newDealNotes];
+  return [...newDeals, ...newDealNotes] as Activity[];
 }

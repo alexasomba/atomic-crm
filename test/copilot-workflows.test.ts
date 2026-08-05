@@ -1,4 +1,4 @@
-import { describe, it, expect, inject } from "vitest";
+import { describe, it, expect, inject } from "vite-plus/test";
 
 /**
  * These tests run in browser mode (Chromium). The aimock server runs in Node
@@ -7,8 +7,11 @@ import { describe, it, expect, inject } from "vitest";
  * importing @copilotkit/aimock in the browser, which would fail because aimock
  * extends Node-only classes (http.Server, etc.).
  */
-const aimockUrl = inject("aimockUrl");
-const fixtures = inject("aimockFixtures");
+const aimockUrl = (inject as (key: string) => any)("aimockUrl") as string;
+const fixtures = (inject as (key: string) => any)("aimockFixtures") as Array<{
+  match: Record<string, unknown>;
+  response: Record<string, unknown>;
+}>;
 
 describe("CopilotKit workflow fixtures", () => {
   it("loads all fixtures without errors", () => {

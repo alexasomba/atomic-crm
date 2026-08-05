@@ -29,8 +29,6 @@ import {
   authProvider as defaultAuthProvider,
   USER_STORAGE_KEY,
 } from "./authProvider";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import generateData from "./dataGenerator";
 import { generateFromCsv } from "./dataGenerator/generateFromCsv";
 import type { Db } from "./dataGenerator/types";
 import { withSupabaseFilterAdapter } from "./internal/supabaseAdapter";
@@ -154,14 +152,14 @@ export const createDataProvider = ({
     companyId: Identifier,
     updateFn: (company: Company) => Partial<Company>,
   ) => {
-    const { data: company } = await dataProvider.getOne<Company>("companies", {
+    const { data: company } = await dataProvider.getOne("companies", {
       id: companyId,
     });
 
     return await dataProvider.update("companies", {
       id: companyId,
       data: {
-        ...updateFn(company),
+        ...updateFn(company as Company),
       },
       previousData: company,
     });
@@ -235,7 +233,7 @@ export const createDataProvider = ({
       id: Identifier,
       data: Partial<Omit<SalesFormData, "password">>,
     ): Promise<Sale> => {
-      const { data: previousData } = await dataProvider.getOne<Sale>("sales", {
+      const { data: previousData } = await dataProvider.getOne("sales", {
         id,
       });
 
@@ -243,7 +241,7 @@ export const createDataProvider = ({
         throw new Error("User not found");
       }
 
-      const { data: sale } = await dataProvider.update<Sale>("sales", {
+      const { data: sale } = await dataProvider.update("sales", {
         id,
         data,
         previousData,
@@ -251,7 +249,7 @@ export const createDataProvider = ({
       return { ...sale, user_id: sale.id.toString() };
     },
     isInitialized: async (): Promise<boolean> => {
-      const sales = await dataProvider.getList<Sale>("sales", {
+      const sales = await dataProvider.getList("sales", {
         filter: {},
         pagination: { page: 1, perPage: 1 },
         sort: { field: "id", order: "ASC" },
@@ -266,7 +264,7 @@ export const createDataProvider = ({
       if (!currentUser) {
         throw new Error("User not found");
       }
-      const { data: previousData } = await dataProvider.getOne<Sale>("sales", {
+      const { data: previousData } = await dataProvider.getOne("sales", {
         id: currentUser.id,
       });
 

@@ -145,10 +145,10 @@ export const CreateSheet = ({
 
             <SheetFooter className="border-t">
               <div className="flex w-full gap-4">
-                <SheetClose asChild>
-                  <Button variant="ghost" className="flex-1">
-                    Close
-                  </Button>
+                <SheetClose
+                  render={<Button variant="ghost" className="flex-1" />}
+                >
+                  Close
                 </SheetClose>
                 <SaveButton className="flex-1" />
               </div>

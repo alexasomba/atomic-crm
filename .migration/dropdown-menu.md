@@ -1,21 +1,22 @@
 # dropdown-menu
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/dropdown-menu.tsx`: Migrated from `@radix-ui/react-dropdown-menu` to `@base-ui/react/menu` (Label -> GroupLabel, Sub -> SubmenuRoot, etc.).
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/dropdown-menu.tsx` -> clean (0 matches).
+- `src/components/ui/dropdown-menu.tsx`: mapped Radix Dropdown Menu to Base UI Menu, including Positioner/Popup, GroupLabel, submenu parts, and checkbox/radio indicators.
+- `src/components/ui/dropdown-menu.tsx`: rewrote open-state and transform-origin styling to Base UI attributes and variables.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+Context menus are not present in this project; non-Radix command/drawer/sonner wrappers remain untouched.
 
 ## Behavior changes
 
-- Submenu primitives renamed (SubmenuRoot, SubmenuTrigger), ItemIndicators mapped to CheckboxItemIndicator/RadioItemIndicator.
+Base UI checkbox/radio menu items do not close on click by default; this is flagged per migration guidance and was not silently overridden.
 
 ## Verify by hand
 
-- Open user menu, action menus in data table, check item selection and submenus.
+Open user, locale, sort, task, and tag menus; test keyboard navigation/typeahead, nested submenus, checkbox/radio selection, Escape, and focus return.

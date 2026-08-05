@@ -43,8 +43,8 @@ export const ProfilePage = () => {
       return dataProvider.salesUpdate(identity.id, data);
     },
     onSuccess: () => {
-      refetchIdentity();
-      refetchUser();
+      void refetchIdentity();
+      void refetchUser();
       setEditMode(false);
       notify("Your profile has been updated");
     },
@@ -110,7 +110,7 @@ const ProfileForm = ({
       return dataProvider.salesUpdate(record.id, data);
     },
     onSuccess: () => {
-      refetch();
+      void refetch();
       notify("Your profile has been updated");
     },
     onError: () => {
@@ -224,7 +224,7 @@ const CopyPaste = () => {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     setCopied(true);
-    navigator.clipboard.writeText(import.meta.env.VITE_INBOUND_EMAIL);
+    void navigator.clipboard.writeText(import.meta.env.VITE_INBOUND_EMAIL);
     setTimeout(() => {
       setCopied(false);
     }, 1500);

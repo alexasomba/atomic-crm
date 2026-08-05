@@ -5,6 +5,7 @@ import { Users, X } from "lucide-react";
 import { useCopilotOverlay } from "../useCopilotOverlay";
 import { useCopilotSetup } from "../hooks/useCopilotSetup";
 import { CopilotWorkspace } from "./CopilotWorkspace";
+import { Button } from "@/components/ui/button";
 
 export function CopilotOverlayPanel() {
   const { close } = useCopilotOverlay();
@@ -15,7 +16,11 @@ export function CopilotOverlayPanel() {
   // renders messages from a different cloned agent — meaning addMessage +
   // runAgent here would never appear in the chat panel.
   const [threadId, setThreadId] = useState<string>(() => randomUUID());
-  const { agent } = useAgent({ threadId });
+  const { agent } = useAgent({
+    agentId: "default",
+    runtimeAgentId: "default",
+    threadId,
+  });
   const { copilotkit } = useCopilotKit();
 
   useCopilotSetup({

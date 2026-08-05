@@ -106,7 +106,7 @@ export type ContactNote = {
   contact_id: Identifier;
   text: string;
   date: string;
-  sales_id: Identifier;
+  sales_id?: Identifier | null;
   status: string;
   attachments?: AttachmentNote[];
 } & Pick<RaRecord, "id">;
@@ -123,7 +123,7 @@ export type Deal = {
   updated_at: string;
   archived_at?: string;
   expected_closing_date: string;
-  sales_id: Identifier;
+  sales_id?: Identifier | null;
   index: number;
 } & Pick<RaRecord, "id">;
 
@@ -131,7 +131,7 @@ export type DealNote = {
   deal_id: Identifier;
   text: string;
   date: string;
-  sales_id: Identifier;
+  sales_id?: Identifier | null;
   attachments?: AttachmentNote[];
 
   // This is defined for compatibility with `ContactNote`

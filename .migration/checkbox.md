@@ -1,21 +1,21 @@
 # checkbox
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/checkbox.tsx`: Migrated from `@radix-ui/react-checkbox` to `@base-ui/react/checkbox`.
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/checkbox.tsx` -> clean (0 matches).
+- `src/components/ui/checkbox.tsx`: switched to Base UI Checkbox and rewrote Radix state selectors to `data-checked`/`data-disabled`.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+Checkbox consumers were unchanged because checked/value props remain compatible in current usage.
 
 ## Behavior changes
 
-- Added `data-checked` attribute styling for Base UI compatibility alongside `data-[state=checked]`.
+Base UI renders a non-native control root; disabled styling now uses data attributes.
 
 ## Verify by hand
 
-- Test checking and unchecking checkboxes across forms and data tables.
+Check contact selection, task completion, keyboard toggling, focus ring, and disabled state.

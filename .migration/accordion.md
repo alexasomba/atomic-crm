@@ -1,21 +1,22 @@
 # accordion
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/accordion.tsx`: Migrated from `@radix-ui/react-accordion` to `@base-ui/react/accordion` (Content -> Panel).
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/accordion.tsx` -> clean (0 matches).
+- `src/components/ui/accordion.tsx`: replaced Radix Accordion with Base UI Root, Item, Header, Trigger, and Panel parts; mapped open/disabled selectors.
+- `src/components/admin/error.tsx`: replaced Radix `type="multiple"` with Base UI `multiple`.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+No non-Radix wrappers were changed.
 
 ## Behavior changes
 
-- Accordion Content renamed to Panel per Base UI anatomy.
+Base UI uses `multiple` instead of Radix's `type`; Base UI defaults to manual activation semantics where applicable.
 
 ## Verify by hand
 
-- Test expanding and collapsing accordion items.
+Open and close error details, check keyboard focus, repeated toggles, and panel animation/layout.

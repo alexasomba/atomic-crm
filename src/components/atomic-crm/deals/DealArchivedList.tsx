@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+/* oxlint-disable react-refresh/only-export-components */
 import { useGetIdentity, useGetList } from "ra-core";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";

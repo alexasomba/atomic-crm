@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import { render } from "vitest-browser-react";
 
 import {
@@ -67,9 +67,11 @@ describe("TaskCreateSheet integration", () => {
 
     await screen.getByRole("button", { name: /^save$/i }).click();
 
-    await expect.element(screen.getByText("Task added")).toBeInTheDocument();
+    await (expect as any)
+      .element(screen.getByText("Task added"))
+      .toBeInTheDocument();
 
-    await expect
+    await (expect as any)
       .element(screen.getByText("Create Task"))
       .not.toBeInTheDocument();
 

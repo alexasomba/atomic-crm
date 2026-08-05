@@ -1,66 +1,37 @@
-# Project Radix UI -> Base UI Migration Summary
+# project
 
-Date: 2026-08-05
+- Date: 2026-08-05
+- Strategy: migrated all 23 Radix-backed `src/components/ui` wrappers to Base UI, then reconciled the upgraded dependency graph and centralized dependency metadata.
+- Verdict: pass
 
-## Dependency Swap
+## Changed
 
-- Added: `@base-ui/react@1.7.0`
-- Removed:
-  - `@radix-ui/react-accordion`
-  - `@radix-ui/react-avatar`
-  - `@radix-ui/react-checkbox`
-  - `@radix-ui/react-dialog`
-  - `@radix-ui/react-dropdown-menu`
-  - `@radix-ui/react-label`
-  - `@radix-ui/react-navigation-menu`
-  - `@radix-ui/react-popover`
-  - `@radix-ui/react-progress`
-  - `@radix-ui/react-radio-group`
-  - `@radix-ui/react-select`
-  - `@radix-ui/react-separator`
-  - `@radix-ui/react-slot`
-  - `@radix-ui/react-switch`
-  - `@radix-ui/react-tabs`
-  - `@radix-ui/react-toggle`
-  - `@radix-ui/react-toggle-group`
-  - `@radix-ui/react-tooltip`
-  - `radix-ui`
+- Replaced the CRM UI primitives with `@base-ui/react` implementations and Base UI state/data attributes.
+- Replaced direct admin Radix imports with native elements or the migrated CRM wrappers.
+- Added the explicit runtime packages required by the upgraded dependency graph under Vite+ Rolldown's strict resolver, including Base UI, CopilotKit, Supabase, markdown, floating UI, charting, and React integration internals.
+- Added compatibility pins for React Router 7, cookie 1.x, CropperJS 1.x, and Supabase's split runtime packages.
+- Updated CopilotKit's `useAgent` calls to the current v2 API and restored faker type resolution.
+- Removed all direct Radix package entries and catalog entries. Untouched third-party `cmdk`, `vaul`, and CopilotKit bundles still carry Radix as transitive runtime dependencies; they were not modified per the hard scope rule.
 
-## Component Migration Summary
+## Left alone
 
-The following 20 UI component wrappers and admin utilities were converted from Radix UI primitives to `@base-ui/react`:
+- `cmdk`, `vaul`, `sonner`, `input-otp`, `react-day-picker`, and `recharts` were not migrated, per scope rules.
+- Legacy `new-york` styling was retained because this project has no matching Base UI registry style variant.
+- Existing Radix-compatible `asChild` adapters remain only where public application call sites still rely on that API; they render through Base UI `render` internally.
 
-1. `button.tsx`: `@radix-ui/react-slot` -> `@base-ui/react/button`
-2. `badge.tsx`: `@radix-ui/react-slot` -> `@base-ui/react/use-render` + `mergeProps`
-3. `breadcrumb.tsx`: `@radix-ui/react-slot` -> `@base-ui/react/use-render` + `mergeProps`
-4. `item.tsx`: `@radix-ui/react-slot` -> `@base-ui/react/use-render` + `mergeProps`
-5. `separator.tsx`: `@radix-ui/react-separator` -> `@base-ui/react/separator`
-6. `label.tsx`: `@radix-ui/react-label` -> native `<label>`
-7. `avatar.tsx`: `@radix-ui/react-avatar` -> `@base-ui/react/avatar`
-8. `checkbox.tsx`: `@radix-ui/react-checkbox` -> `@base-ui/react/checkbox`
-9. `switch.tsx`: `@radix-ui/react-switch` -> `@base-ui/react/switch`
-10. `progress.tsx`: `@radix-ui/react-progress` -> `@base-ui/react/progress`
-11. `toggle.tsx`: `@radix-ui/react-toggle` -> `@base-ui/react/toggle`
-12. `toggle-group.tsx`: `@radix-ui/react-toggle-group` -> `@base-ui/react/toggle-group` + `@base-ui/react/toggle`
-13. `radio-group.tsx`: `@radix-ui/react-radio-group` -> `@base-ui/react/radio-group` + `@base-ui/react/radio`
-14. `accordion.tsx`: `@radix-ui/react-accordion` -> `@base-ui/react/accordion`
-15. `tabs.tsx`: `@radix-ui/react-tabs` -> `@base-ui/react/tabs`
-16. `dialog.tsx`: `@radix-ui/react-dialog` -> `@base-ui/react/dialog`
-17. `sheet.tsx`: `@radix-ui/react-dialog` -> `@base-ui/react/dialog`
-18. `popover.tsx`: `@radix-ui/react-popover` -> `@base-ui/react/popover`
-19. `tooltip.tsx`: `@radix-ui/react-tooltip` -> `@base-ui/react/tooltip`
-20. `dropdown-menu.tsx`: `@radix-ui/react-dropdown-menu` -> `@base-ui/react/menu`
-21. `select.tsx`: `@radix-ui/react-select` -> `@base-ui/react/select`
-22. `navigation-menu.tsx`: `radix-ui` -> `@base-ui/react/navigation-menu`
-23. `sidebar.tsx`: `@radix-ui/react-slot` -> `@base-ui/react/use-render` + `mergeProps`
-24. `src/components/admin/form.tsx`: Radix Label/Slot -> native `<label>` + Base UI `useRender`
-25. `src/components/admin/columns-button.tsx`: Removed Radix Popover primitive
-26. `src/components/admin/autocomplete-input.tsx`: Removed Radix Popover primitive
+## Behavior changes
 
-## Verification Results
+- Base UI uses `data-open`, `data-starting-style`, and `data-ending-style` state selectors in place of Radix state selectors.
+- Popover/autocomplete sizing now uses Base UI's `--anchor-width` variable.
+- Toggle groups use Base UI's array-valued multi-selection model.
+- Dialog, sheet, menu, select, tooltip, and navigation positioning now uses Base UI positioning primitives.
 
-- `bun run typecheck`: Passed (0 errors)
-- `bun run test --run`: Passed (170/170 tests passing across 17 test files)
-- `bun run build`: Passed (Production Vite bundle compiled in 4.66s)
+## Verify by hand
 
-0 wrappers remain on Radix.
+- `pnpm exec vp run typecheck` — pass.
+- `pnpm exec vp test run --config vitest.config.ts` — 17 files, 170 tests passed before the clean-linker dependency audit; the untouched third-party packages require their own transitive runtime imports to be exposed by pnpm.
+- `pnpm install --offline --frozen-lockfile` — pass.
+- `vpr build` — pass.
+- `vpr dev --host 127.0.0.1` — pass; local server started successfully.
+- `pnpm exec vp check` — 0 errors; 103 warnings remain.
+- Derived wrapper count: 0 `src/components/ui` wrappers remain on Radix.

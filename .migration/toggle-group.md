@@ -1,21 +1,22 @@
 # toggle-group
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/toggle-group.tsx`: Migrated from `@radix-ui/react-toggle-group` to `@base-ui/react/toggle-group` and `@base-ui/react/toggle`.
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/toggle-group.tsx` -> clean (0 matches).
+- `src/components/ui/toggle-group.tsx`: replaced Radix Toggle Group with Base UI Toggle Group and reused Base UI Toggle for items.
+- `src/components/atomic-crm/layout/MobileNavigation.tsx`: changed the single-selection value to Base UI's array shape.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+Non-Radix wrappers remain untouched.
 
 ## Behavior changes
 
-- ToggleGroup items delegate to `@base-ui/react/toggle`.
+Base UI uses `multiple` and array values; single selection remains the default.
 
 ## Verify by hand
 
-- Test selecting single/multiple items in toggle groups.
+Switch theme choices with mouse and keyboard; confirm only one option is pressed and theme changes persist.

@@ -1,21 +1,21 @@
 # switch
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/switch.tsx`: Migrated from `@radix-ui/react-switch` to `@base-ui/react/switch`.
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/switch.tsx` -> clean (0 matches).
+- `src/components/ui/switch.tsx`: switched Root and Thumb to Base UI and rewrote checked/unchecked selectors.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+No current consumers required call-site changes.
 
 ## Behavior changes
 
-- Added `data-checked` and `data-unchecked` styling hooks.
+Base UI renders a non-native switch root; disabled styling uses `data-disabled`.
 
 ## Verify by hand
 
-- Toggle switches in settings and forms.
+Toggle theme/settings switches with mouse, keyboard, and disabled states.

@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// oxlint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import * as diacritic from "diacritic";
 import {
@@ -26,6 +26,7 @@ import {
   type ExtractRecordPaths,
 } from "ra-core";
 import { Columns, Search } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FieldToggle } from "@/components/admin/field-toggle";
@@ -34,7 +35,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 /**
@@ -99,9 +104,9 @@ export const ColumnsButton = (props: ColumnsButtonProps) => {
           )}
         </PopoverTrigger>
         <PopoverContent
-          sideOffset={4}
           align="start"
-          className="p-0 min-w-[200px]"
+          sideOffset={4}
+          className="w-72 min-w-[200px] p-0"
         >
           <div id={`${storeKey}-columnsSelector`} className="p-2" />
         </PopoverContent>
@@ -109,7 +114,6 @@ export const ColumnsButton = (props: ColumnsButtonProps) => {
     </span>
   );
 };
-
 
 export interface ColumnsButtonProps extends ComponentProps<typeof Button> {
   resource?: string;

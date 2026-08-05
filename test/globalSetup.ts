@@ -1,4 +1,4 @@
-import type { GlobalSetupContext } from "vitest/node";
+import type { ProvidedContext } from "vite-plus/test";
 import { LLMock } from "@copilotkit/aimock";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -6,7 +6,14 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURES_DIR = path.join(__dirname, "fixtures");
 
-export default async function setup({ provide }: GlobalSetupContext) {
+export default async function setup({
+  provide,
+}: {
+  provide: <K extends keyof ProvidedContext>(
+    key: K,
+    value: ProvidedContext[K],
+  ) => void;
+}) {
   const mock = new LLMock({
     port: 0,
     latency: 0,
@@ -23,12 +30,13 @@ export default async function setup({ provide }: GlobalSetupContext) {
   mock.loadFixtureFile(path.join(FIXTURES_DIR, "tool-results-catchall.json"));
 
   const url = await mock.start();
+  // eslint-disable-next-line no-console
   console.log(`[aimock globalSetup] Running at ${url}`);
 
   // Provide the URL and serialized fixtures to browser tests.
   // Fixtures are static (loaded from JSON), so serializing them once is safe.
-  provide("aimockUrl", mock.baseUrl);
-  provide(
+  (provide as (key: string, value: any) => void)("aimockUrl", mock.baseUrl);
+  (provide as (key: string, value: any) => void)(
     "aimockFixtures",
     JSON.parse(JSON.stringify(mock.getFixtures())) as SerializedFixture[],
   );
@@ -37,6 +45,7 @@ export default async function setup({ provide }: GlobalSetupContext) {
   // its own server instance (Vitest may call globalSetup once per project).
   return async () => {
     await mock.stop();
+    // eslint-disable-next-line no-console
     console.log("[aimock globalSetup] Stopped");
   };
 }

@@ -10,8 +10,12 @@ const config: StorybookConfig = {
   },
   viteFinal: async (config) => {
     config.resolve ??= {};
+    const existingAlias = (config.resolve.alias ?? {}) as Record<
+      string,
+      string
+    >;
     config.resolve.alias = {
-      ...(config.resolve.alias ?? {}),
+      ...existingAlias,
       "@": path.resolve(__dirname, "../src"),
     };
     return config;

@@ -170,7 +170,7 @@ export const SelectInput = (props: SelectInputProps) => {
   }, [emptyText, translate]);
 
   const renderMenuItemOption = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     (choice: any) => getChoiceText(choice),
     [getChoiceText],
   );
@@ -262,10 +262,8 @@ export const SelectInput = (props: SelectInputProps) => {
         )}
         <div className="relative">
           <Select
-            //FIXME https://github.com/radix-ui/primitives/issues/3135
             // Setting a key based on the value fixes an issue where onValueChange
             // was called with an empty string when the controlled value was changed.
-            // See: https://github.com/radix-ui/primitives/issues/3135#issuecomment-2916908248
             key={`select:${field.value?.toString() ?? emptyValue}`}
             value={field.value?.toString() || emptyValue}
             onValueChange={handleChangeWithCreateSupport}
@@ -321,7 +319,7 @@ export type SelectInputProps = ChoicesProps &
   Partial<InputProps> &
   Omit<SupportCreateSuggestionOptions, "handleChange"> & {
     emptyText?: string | ReactElement;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     emptyValue?: any;
     onChange?: (value: string) => void;
   } & Omit<ComponentProps<typeof FormField>, "id" | "name" | "children">;

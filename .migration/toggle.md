@@ -1,21 +1,21 @@
 # toggle
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/toggle.tsx`: Migrated from `@radix-ui/react-toggle` to `@base-ui/react/toggle`.
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/toggle.tsx` -> clean (0 matches).
+- `src/components/ui/toggle.tsx`: switched to Base UI's callable Toggle and mapped `data-state=on` styling to `data-pressed`.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+Toggle group remains on Radix until its paired migration; unrelated controls are untouched.
 
 ## Behavior changes
 
-- Added `data-pressed` attribute styling.
+Base UI uses `pressed`/`defaultPressed` terminology internally; the wrapper preserves its public rendering contract.
 
 ## Verify by hand
 
-- Test toggling states on toggle buttons.
+Check pressed, unpressed, disabled, focus, and variant styling wherever toggle controls appear.

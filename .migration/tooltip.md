@@ -1,21 +1,22 @@
 # tooltip
 
-2026-08-05, strategy: classification + transformation engine, success
+2026-08-05, transformation engine on legacy `new-york`, migrated successfully.
 
 ## Changed
 
-- `src/components/ui/tooltip.tsx`: Migrated from `@radix-ui/react-tooltip` to `@base-ui/react/tooltip` using `Portal > Positioner > Popup`.
-Leftover check:
-`grep -n "radix-ui\|@radix-ui" src/components/ui/tooltip.tsx` -> clean (0 matches).
+- `src/components/ui/tooltip.tsx`: replaced Radix Provider/Content with Base UI Provider/Positioner/Popup, mapped `delayDuration` to `delay`, and rewrote transition selectors.
+- `src/components/ui/tooltip.tsx`: added the Base UI Positioner/Arrow composition and retained a compatibility `asChild` adapter for existing consumers.
+
+Leftover scan: clean.
 
 ## Left alone
 
-None.
+Non-Radix `sonner` notifications and `drawer` remain untouched.
 
 ## Behavior changes
 
-- TooltipProvider maps `delayDuration` to Base UI `delay`. Positioner wraps Popup.
+The default tooltip side offset is now 4px per Base UI's registry guidance; `disableHoverableContent` has no Base UI equivalent and remains to be reviewed if used.
 
 ## Verify by hand
 
-- Hover over icons and buttons with tooltips, verify delay and positioning.
+Hover and focus every tooltip family, confirm delay feel, arrow placement, side collision, Escape behavior, and keyboard accessibility.
