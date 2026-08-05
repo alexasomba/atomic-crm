@@ -227,10 +227,9 @@ const ThemeMenu = () => {
   return (
     <div className="px-3 py-2">
       <ToggleGroup
-        type="single"
-        value={theme}
+        value={theme ? [theme] : []}
         onValueChange={(value) =>
-          value && setTheme(value as "light" | "dark" | "system")
+          value[0] && setTheme(value[0] as "light" | "dark" | "system")
         }
         className="justify-start"
         size="lg"
