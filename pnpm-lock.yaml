@@ -406,9 +406,6 @@ catalogs:
     '@testing-library/react':
       specifier: ^16.3.2
       version: 16.3.2
-    '@types/dompurify':
-      specifier: ^3.2.0
-      version: 3.2.0
     '@types/faker':
       specifier: ^5.5.9
       version: 5.5.9
@@ -2104,9 +2101,6 @@ importers:
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@types/dompurify':
-        specifier: 'catalog:'
-        version: 3.2.0
       '@types/faker':
         specifier: 'catalog:'
         version: 5.5.9
@@ -5135,10 +5129,6 @@ packages:
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
 
-  '@types/dompurify@3.2.0':
-    resolution: {integrity: sha512-Fgg31wv9QbLDA0SpTOXO3MaxySc4DKGLi8sna4/Utjo4r3ZRPdCt4UQee8BWr+Q5z21yifghREPJGYaEOEIACg==}
-    deprecated: This is a stub types definition. dompurify provides its own type definitions, so you do not need this installed.
-
   '@types/esrecurse@4.3.1':
     resolution: {integrity: sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw==}
 
@@ -7646,8 +7636,8 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
-  mermaid@11.16.0:
-    resolution: {integrity: sha512-Zvm3kbstgdpvIJPPItlL7fppIZ3kibvc1oZIGxdvk9t6UFz6flv+Jw7FtRGKwfcI8OckmH04LqG6LlS6X4B1pA==}
+  mermaid@11.16.1:
+    resolution: {integrity: sha512-TQsq6u22fAn3rek5VOubrhKPo1g5hwC3FXUN9hiyupTckcYiGuuKGkNQrKYwGJkXUxZdojwRG46gsSCFZMDp4g==}
 
   micromark-core-commonmark@1.1.0:
     resolution: {integrity: sha512-BgHO1aRbolh2hcrzL2d1La37V0Aoz73ymF8rAcKnohLy93titmv62E0gP8Hrx9PKcKrqCZ1BbLGbP3bEhoXYlw==}
@@ -12514,10 +12504,6 @@ snapshots:
 
   '@types/doctrine@0.0.9': {}
 
-  '@types/dompurify@3.2.0':
-    dependencies:
-      dompurify: 3.4.13
-
   '@types/esrecurse@4.3.1': {}
 
   '@types/estree-jsx@1.0.5':
@@ -15121,7 +15107,7 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  mermaid@11.16.0:
+  mermaid@11.16.1:
     dependencies:
       '@braintree/sanitize-url': 7.1.2
       '@iconify/utils': 3.1.4
@@ -16813,7 +16799,7 @@ snapshots:
       katex: 0.16.47
       lucide-react: 0.542.0(react@19.2.8)
       marked: 16.4.2
-      mermaid: 11.16.0
+      mermaid: 11.16.1
       react: 19.2.8
       rehype-harden: 1.1.8
       rehype-katex: 7.0.1
@@ -16842,7 +16828,7 @@ snapshots:
       hast-util-to-jsx-runtime: 2.3.6(supports-color@10.2.2)
       html-url-attributes: 3.0.1
       marked: 17.0.6
-      mermaid: 11.16.0
+      mermaid: 11.16.1
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
       rehype-harden: 1.1.8
