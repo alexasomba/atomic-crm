@@ -2,6 +2,7 @@ allowBuilds:
   "@scarf/scarf": true
   esbuild: true
   msw: true
+  workerd: true
 overrides:
   "@supabase/supabase-js": "2.112.0"
   "@supabase/auth-js": "2.112.1"
@@ -42,8 +43,27 @@ minimumReleaseAgeExclude:
   - "@supabase/postgrest-js@2.112.1"
   - "@supabase/realtime-js@2.112.1"
   - "@supabase/storage-js@2.112.1"
+  - "@better-auth/core@1.7.0-rc.4"
+  - "@better-auth/drizzle-adapter@1.7.0-rc.4"
+  - "@better-auth/kysely-adapter@1.7.0-rc.4"
+  - "@better-auth/memory-adapter@1.7.0-rc.4"
+  - "@better-auth/mongo-adapter@1.7.0-rc.4"
+  - "@better-auth/prisma-adapter@1.7.0-rc.4"
+  - "@better-auth/telemetry@1.7.0-rc.4"
+  - better-auth@1.7.0-rc.4
+  - miniflare@5.20260801.0-alpha
+  - wrangler@4.119.0
 
 catalog:
+  "@supabase/auth-js": "2.112.1"
+  "@supabase/functions-js": "2.112.1"
+  "@supabase/phoenix": "^0.4.5"
+  "@supabase/postgrest-js": "2.112.1"
+  "@supabase/realtime-js": "2.112.1"
+  "@supabase/storage-js": "2.112.1"
+  "@supabase/supabase-js": "2.112.0"
+  "@better-auth/drizzle-adapter": "1.7.0-rc.4"
+  "@cloudflare/workers-types": "5.20260804.1"
   "@a2ui/web_core": "0.10.6"
   "@ag-ui/client": "0.0.57"
   "@ag-ui/core": "0.0.57"
@@ -51,6 +71,7 @@ catalog:
   "@ag-ui/proto": "0.0.57"
   "@base-ui/react": "^1.7.0"
   "@base-ui/utils": "0.3.2"
+  "better-auth": "1.7.0-rc.4"
   "@bufbuild/protobuf": "^2.13.0"
   "@babel/runtime": "^7.29.7"
   "@lit/react": "^1.0.8"
@@ -122,7 +143,6 @@ catalog:
   "@raphiniert/ra-data-postgrest": "2.5.1"
   "@streamparser/json-whatwg": "^0.0.23"
   "@streamparser/json": "0.0.23"
-  "@supabase/supabase-js": "2.112.0"
   "@tailwindcss/vite": "^4.3.3"
   "@tanstack/query-async-storage-persister": "^5.101.4"
   "@tanstack/devtools-event-client": "^0.4.4"
@@ -148,6 +168,9 @@ catalog:
   "cookie": "^1.1.1"
   "cropperjs": "^1.6.2"
   "date-fns": "^4.4.0"
+  "drizzle-orm": "1.0.0-rc.4"
+  "hono": "4.13.0"
+  "@hono/zod-validator": "0.9.0"
   "debug": "^4.4.3"
   "d3-scale": "^4.0.2"
   "d3-shape": "^3.2.0"
@@ -169,6 +192,7 @@ catalog:
   "magic-string": "^1.1.0"
   "marked": "^18.0.9"
   "mime": "^4.1.0"
+  "postal-mime": "2.7.5"
   "ms": "^2.1.3"
   "next-themes": "^0.4.6"
   "node-polyglot": "2.6.0"
@@ -219,7 +243,7 @@ catalog:
   "micromark-extension-gfm-tagfilter": "^2.0.0"
   "micromark-extension-gfm-task-list-item": "^2.1.0"
   "unist-util-stringify-position": "^4.0.0"
-  "jose": "^5.10.0"
+  "jose": "^6.2.8"
   "react-style-singleton": "^2.2.3"
   "micromark-util-character": "^2.1.1"
   "trim-lines": "^3.0.1"
@@ -374,12 +398,17 @@ catalog:
   "vite-plugin-pwa": "^1.3.0"
   "vite-plugin-simple-html": "^1.1.0"
   "vite-plus": 0.2.8
+  "drizzle-kit": "1.0.0-rc.4"
+  "wrangler": "4.119.0"
+  "iceberg-js": "^0.8.1"
   "vitest": 4.1.10
   "vitest-browser-react": "^2.2.0"
 peerDependencyRules:
   allowAny:
+    - drizzle-orm
     - vite
     - vitest
   allowedVersions:
+    drizzle-orm: "*"
     vite: "*"
     vitest: "*"

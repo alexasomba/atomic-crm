@@ -32,6 +32,8 @@ supabase/.temp
 dist/
 /lib/
 .env
+.dev.vars
+.wrangler/
 *storybook.log
 
 # Shadcn Registry
