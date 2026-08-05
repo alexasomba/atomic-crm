@@ -56,13 +56,16 @@ export const ResponsiveFilters = ({
           />
         </FilterLiveForm>
         <Sheet>
-          <SheetTrigger asChild>
-            <Button
+          <SheetTrigger
+            render={
+              <Button
               variant="ghost"
               size="icon"
               className="relative size-9"
               aria-label="Filter"
-            >
+              />
+            }
+          >
               <Filter className="size-5" />
               {activeFiltersCount > 0 && (
                 <Badge
@@ -86,18 +89,21 @@ export const ResponsiveFilters = ({
             <SheetFooter className="-p-4 relative">
               <div className="absolute -top-12 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
               <div className="flex w-full gap-4">
-                <SheetClose asChild>
-                  <Button
+                <SheetClose
+                  render={
+                    <Button
                     onClick={handleClearFilters}
                     type="button"
                     variant="secondary"
                     className="flex-1"
-                  >
+                    />
+                  }
+                >
                     Clear filters
                   </Button>
                 </SheetClose>
-                <SheetClose asChild>
-                  <Button className="flex-1">Apply</Button>
+                <SheetClose render={<Button className="flex-1" />}>
+                  Apply
                 </SheetClose>
               </div>
             </SheetFooter>
