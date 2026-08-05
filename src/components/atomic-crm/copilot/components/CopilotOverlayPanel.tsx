@@ -16,7 +16,11 @@ export function CopilotOverlayPanel() {
   // renders messages from a different cloned agent — meaning addMessage +
   // runAgent here would never appear in the chat panel.
   const [threadId, setThreadId] = useState<string>(() => randomUUID());
-  const { agent } = useAgent({ threadId });
+  const { agent } = useAgent({
+    agentId: "default",
+    runtimeAgentId: "default",
+    threadId,
+  });
   const { copilotkit } = useCopilotKit();
 
   useCopilotSetup({

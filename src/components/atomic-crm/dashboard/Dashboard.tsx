@@ -24,7 +24,11 @@ export const Dashboard = () => {
   // CopilotChat renders messages from a different cloned agent and the
   // panel never updates).
   const [threadId, setThreadId] = useState<string>(() => randomUUID());
-  const { agent } = useAgent({ threadId });
+  const { agent } = useAgent({
+    agentId: "default",
+    runtimeAgentId: "default",
+    threadId,
+  });
   const { copilotkit } = useCopilotKit();
   const [rightTab, setRightTab] = useState("tasks");
 
