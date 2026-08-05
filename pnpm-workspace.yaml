@@ -13,5 +13,5 @@ minimumReleaseAgeExclude:
   - "@voidzero-dev/vite-plus-win32-arm64-msvc@0.2.8"
   - "@voidzero-dev/vite-plus-win32-x64-msvc@0.2.8"
   - vite-plus@0.2.8
-  - '@base-ui/react@1.7.0'
-  - '@base-ui/utils@0.3.2'
+  - "@base-ui/react@1.7.0"
+  - "@base-ui/utils@0.3.2"

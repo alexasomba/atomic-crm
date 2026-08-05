@@ -55,8 +55,7 @@ function Item({
   variant = "default",
   size = "default",
   ...props
-}: React.ComponentProps<"div"> &
-  VariantProps<typeof itemVariants>) {
+}: React.ComponentProps<"div"> & VariantProps<typeof itemVariants>) {
   return (
     <div
       data-slot="item"

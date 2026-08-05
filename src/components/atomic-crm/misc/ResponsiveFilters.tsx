@@ -59,23 +59,22 @@ export const ResponsiveFilters = ({
           <SheetTrigger
             render={
               <Button
-              variant="ghost"
-              size="icon"
-              className="relative size-9"
-              aria-label="Filter"
+                variant="ghost"
+                size="icon"
+                className="relative size-9"
+                aria-label="Filter"
               />
             }
           >
-              <Filter className="size-5" />
-              {activeFiltersCount > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center"
-                >
-                  {activeFiltersCount}
-                </Badge>
-              )}
-            </Button>
+            <Filter className="size-5" />
+            {activeFiltersCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center"
+              >
+                {activeFiltersCount}
+              </Badge>
+            )}
           </SheetTrigger>
           <SheetContent side="bottom" className="h-dvh p-4 flex flex-col">
             <SheetHeader className="-p-4">
@@ -92,15 +91,14 @@ export const ResponsiveFilters = ({
                 <SheetClose
                   render={
                     <Button
-                    onClick={handleClearFilters}
-                    type="button"
-                    variant="secondary"
-                    className="flex-1"
+                      onClick={handleClearFilters}
+                      type="button"
+                      variant="secondary"
+                      className="flex-1"
                     />
                   }
                 >
-                    Clear filters
-                  </Button>
+                  Clear filters
                 </SheetClose>
                 <SheetClose render={<Button className="flex-1" />}>
                   Apply

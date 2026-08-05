@@ -37,7 +37,9 @@ function SelectTrigger({
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon render={<ChevronDownIcon className="size-4 opacity-50" />} />
+      <SelectPrimitive.Icon
+        render={<ChevronDownIcon className="size-4 opacity-50" />}
+      />
     </SelectPrimitive.Trigger>
   );
 }
@@ -46,33 +48,40 @@ function SelectContent({
   className,
   children,
   position = "popper",
+  side,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Popup> & {
   position?: "popper" | "item-aligned";
-}) {
+} & Pick<React.ComponentProps<typeof SelectPrimitive.Positioner>, "side">) {
   return (
     <SelectPrimitive.Portal>
-      <SelectPrimitive.Positioner alignItemWithTrigger={position !== "popper"} sideOffset={4} className="z-50">
+      <SelectPrimitive.Positioner
+        alignItemWithTrigger={position !== "popper"}
+        sideOffset={4}
+        side={side}
+        className="z-50"
+      >
         <SelectPrimitive.Popup
           data-slot="select-content"
           className={cn(
             "bg-popover text-popover-foreground relative isolate z-50 max-h-(--available-height) min-w-[8rem] origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md border shadow-md transition duration-100 data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0",
-            position === "popper" && "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+            position === "popper" &&
+              "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
             className,
           )}
           {...props}
         >
-        <SelectScrollUpButton />
-        <SelectPrimitive.List
-          className={cn(
-            "p-1",
-            position === "popper" &&
-              "h-[var(--anchor-height)] w-full min-w-[var(--anchor-width)] scroll-my-1",
-          )}
-        >
-          {children}
-        </SelectPrimitive.List>
-        <SelectScrollDownButton />
+          <SelectScrollUpButton />
+          <SelectPrimitive.List
+            className={cn(
+              "p-1",
+              position === "popper" &&
+                "h-[var(--anchor-height)] w-full min-w-[var(--anchor-width)] scroll-my-1",
+            )}
+          >
+            {children}
+          </SelectPrimitive.List>
+          <SelectScrollDownButton />
         </SelectPrimitive.Popup>
       </SelectPrimitive.Positioner>
     </SelectPrimitive.Portal>
@@ -82,7 +91,7 @@ function SelectContent({
 function SelectLabel({
   className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Label>) {
+}: React.ComponentProps<typeof SelectPrimitive.GroupLabel>) {
   return (
     <SelectPrimitive.GroupLabel
       data-slot="select-label"

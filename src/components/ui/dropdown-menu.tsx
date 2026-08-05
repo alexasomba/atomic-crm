@@ -22,7 +22,9 @@ function DropdownMenuTrigger({
   asChild = false,
   children,
   ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger> & { asChild?: boolean }) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger> & {
+  asChild?: boolean;
+}) {
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
@@ -39,18 +41,27 @@ function DropdownMenuContent({
   sideOffset = 4,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Popup> &
-  Pick<React.ComponentProps<typeof DropdownMenuPrimitive.Positioner>, "align" | "side" | "sideOffset" | "alignOffset">) {
+  Pick<
+    React.ComponentProps<typeof DropdownMenuPrimitive.Positioner>,
+    "align" | "side" | "sideOffset" | "alignOffset"
+  >) {
   return (
     <DropdownMenuPrimitive.Portal>
-      <DropdownMenuPrimitive.Positioner align={props.align} side={props.side} sideOffset={sideOffset} alignOffset={props.alignOffset} className="isolate z-50 outline-none">
-      <DropdownMenuPrimitive.Popup
-        data-slot="dropdown-menu-content"
-        className={cn(
-          "bg-popover text-popover-foreground z-50 max-h-(--available-height) min-w-[8rem] origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md outline-none transition duration-100 data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0",
-          className,
-        )}
-        {...props}
-      />
+      <DropdownMenuPrimitive.Positioner
+        align={props.align}
+        side={props.side}
+        sideOffset={sideOffset}
+        alignOffset={props.alignOffset}
+        className="isolate z-50 outline-none"
+      >
+        <DropdownMenuPrimitive.Popup
+          data-slot="dropdown-menu-content"
+          className={cn(
+            "bg-popover text-popover-foreground z-50 max-h-(--available-height) min-w-[8rem] origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md outline-none transition duration-100 data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0",
+            className,
+          )}
+          {...props}
+        />
       </DropdownMenuPrimitive.Positioner>
     </DropdownMenuPrimitive.Portal>
   );
@@ -206,7 +217,12 @@ function DropdownMenuShortcut({
 function DropdownMenuSub({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubmenuRoot>) {
-  return <DropdownMenuPrimitive.SubmenuRoot data-slot="dropdown-menu-sub" {...props} />;
+  return (
+    <DropdownMenuPrimitive.SubmenuRoot
+      data-slot="dropdown-menu-sub"
+      {...props}
+    />
+  );
 }
 
 function DropdownMenuSubTrigger({

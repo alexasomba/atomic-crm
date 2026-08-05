@@ -29,7 +29,7 @@ function SheetPortal({
 function SheetOverlay({
   className,
   ...props
-}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+}: React.ComponentProps<typeof SheetPrimitive.Backdrop>) {
   return (
     <SheetPrimitive.Backdrop
       data-slot="sheet-overlay"
@@ -61,10 +61,8 @@ function SheetContent({
             "inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
           side === "left" &&
             "inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm",
-          side === "top" &&
-            "inset-x-0 top-0 h-auto border-b",
-          side === "bottom" &&
-            "inset-x-0 bottom-0 h-auto border-t",
+          side === "top" && "inset-x-0 top-0 h-auto border-b",
+          side === "bottom" && "inset-x-0 bottom-0 h-auto border-t",
           className,
         )}
         {...props}

@@ -8,7 +8,9 @@ import { cn } from "@/lib/utils";
 function TooltipProvider({
   delayDuration = 0,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+}: Omit<React.ComponentProps<typeof TooltipPrimitive.Provider>, "delay"> & {
+  delayDuration?: number;
+}) {
   return (
     <TooltipPrimitive.Provider
       data-slot="tooltip-provider"
@@ -32,7 +34,9 @@ function TooltipTrigger({
   asChild = false,
   children,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Trigger> & { asChild?: boolean }) {
+}: React.ComponentProps<typeof TooltipPrimitive.Trigger> & {
+  asChild?: boolean;
+}) {
   return (
     <TooltipPrimitive.Trigger
       data-slot="tooltip-trigger"
@@ -50,10 +54,19 @@ function TooltipContent({
   children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Popup> &
-  Pick<React.ComponentProps<typeof TooltipPrimitive.Positioner>, "side" | "align" | "sideOffset" | "alignOffset">) {
+  Pick<
+    React.ComponentProps<typeof TooltipPrimitive.Positioner>,
+    "side" | "align" | "sideOffset" | "alignOffset"
+  >) {
   return (
     <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Positioner sideOffset={sideOffset} side={props.side} align={props.align} alignOffset={props.alignOffset} className="isolate z-50">
+      <TooltipPrimitive.Positioner
+        sideOffset={sideOffset}
+        side={props.side}
+        align={props.align}
+        alignOffset={props.alignOffset}
+        className="isolate z-50"
+      >
         <TooltipPrimitive.Popup
           data-slot="tooltip-content"
           className={cn(

@@ -59,7 +59,7 @@ function NavigationMenuItem({
 }
 
 const navigationMenuTriggerStyle = cva(
-        "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-open:hover:bg-accent data-open:text-accent-foreground data-open:focus:bg-accent data-open:bg-accent/50 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1",
+  "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-open:hover:bg-accent data-open:text-accent-foreground data-open:focus:bg-accent data-open:bg-accent/50 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1",
 );
 
 function NavigationMenuTrigger({
@@ -111,12 +111,11 @@ function NavigationMenuViewport({
       <NavigationMenuPrimitive.Portal>
         <NavigationMenuPrimitive.Positioner>
           <NavigationMenuPrimitive.Popup
-        data-slot="navigation-menu-viewport"
-        className={cn(
-          "origin-top-center bg-popover text-popover-foreground relative mt-1.5 h-[var(--popup-height)] w-full overflow-hidden rounded-md border shadow md:w-[var(--popup-width)]",
-          className,
-        )}
-        {...props}
+            data-slot="navigation-menu-viewport"
+            className={cn(
+              "origin-top-center bg-popover text-popover-foreground relative mt-1.5 h-[var(--popup-height)] w-full overflow-hidden rounded-md border shadow md:w-[var(--popup-width)]",
+              className,
+            )}
           >
             <NavigationMenuPrimitive.Viewport {...props} />
           </NavigationMenuPrimitive.Popup>

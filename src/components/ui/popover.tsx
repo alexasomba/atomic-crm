@@ -13,7 +13,9 @@ function PopoverTrigger({
   asChild = false,
   children,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Trigger> & { asChild?: boolean }) {
+}: React.ComponentProps<typeof PopoverPrimitive.Trigger> & {
+  asChild?: boolean;
+}) {
   return (
     <PopoverPrimitive.Trigger
       data-slot="popover-trigger"
@@ -29,12 +31,23 @@ function PopoverContent({
   className,
   align = "center",
   sideOffset = 4,
+  side,
+  alignOffset,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Popup> &
-  Pick<React.ComponentProps<typeof PopoverPrimitive.Positioner>, "align" | "side" | "sideOffset" | "alignOffset">) {
+  Pick<
+    React.ComponentProps<typeof PopoverPrimitive.Positioner>,
+    "align" | "side" | "sideOffset" | "alignOffset"
+  >) {
   return (
     <PopoverPrimitive.Portal>
-      <PopoverPrimitive.Positioner align={align} sideOffset={sideOffset} side={side} alignOffset={alignOffset} className="isolate z-50">
+      <PopoverPrimitive.Positioner
+        align={align}
+        sideOffset={sideOffset}
+        side={side}
+        alignOffset={alignOffset}
+        className="isolate z-50"
+      >
         <PopoverPrimitive.Popup
           data-slot="popover-content"
           className={cn(
@@ -48,9 +61,7 @@ function PopoverContent({
   );
 }
 
-function PopoverAnchor({
-  ...props
-}: React.ComponentProps<"span">) {
+function PopoverAnchor({ ...props }: React.ComponentProps<"span">) {
   return <span data-slot="popover-anchor" {...props} />;
 }
 
