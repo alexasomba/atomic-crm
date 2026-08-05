@@ -62,7 +62,12 @@ The Worker now exposes authenticated attachment upload/download/delete routes
 backed by R2 and a bounded `/api/ai` route backed by Workers AI. The AI route is
 an isolated compatibility spike; CopilotKit remains on the existing Node
 runtime until streaming, MCP, and human-approval behavior are verified on the
-Worker runtime.
+Worker runtime. When the frontend is served by the Worker, set
+`COPILOTKIT_RUNTIME_URL` to the Node CopilotKit service. The Worker forwards
+`/api/copilotkit` requests to that configured runtime, preserving streaming
+responses and the browser contract. If it is empty, the Worker returns an
+explicit `501` configuration response instead of a misleading route-not-found
+error.
 
 Run `pnpm run test:worker` for the Worker HTTP boundary tests. These use Hono's
 in-process request adapter and do not require a Cloudflare account.

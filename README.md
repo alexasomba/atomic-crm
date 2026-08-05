@@ -108,6 +108,9 @@ This runs the Vite frontend and Wrangler Worker together. Set
 it unset to keep the Supabase provider as the rollback default. Configure
 `BETTER_AUTH_SECRET` in `.dev.vars` before using authentication. Apply local
 D1 migrations with `pnpm run d1:migrate:local`.
+For CopilotKit, set `COPILOTKIT_RUNTIME_URL=http://localhost:4000` locally or
+to the deployed Node runtime; MCP and human-in-the-loop behavior remain on
+that runtime during the staged migration.
 
 ## Documentation
 

@@ -44,6 +44,47 @@ app.get("/api/health", (context) =>
   }),
 );
 
+const proxyCopilotKit = async (context: {
+  req: { raw: Request };
+  env: Env;
+}) => {
+  const runtimeUrl = context.env.COPILOTKIT_RUNTIME_URL.trim();
+  if (!runtimeUrl) {
+    return new Response(
+      JSON.stringify({
+        error:
+          "CopilotKit runtime is not configured for this Worker. Set COPILOTKIT_RUNTIME_URL or use the Node runtime.",
+      }),
+      {
+        status: 501,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
+
+  const incoming = new URL(context.req.raw.url);
+  const target = new URL(runtimeUrl);
+  target.pathname = `${target.pathname.replace(/\/$/, "")}${incoming.pathname.replace(/^\/api\/copilotkit/, "") || "/"}`;
+  target.search = incoming.search;
+
+  const headers = new Headers(context.req.raw.headers);
+  headers.delete("Host");
+  return fetch(
+    new Request(target, {
+      method: context.req.raw.method,
+      headers,
+      body:
+        context.req.raw.method === "GET" || context.req.raw.method === "HEAD"
+          ? undefined
+          : context.req.raw.body,
+      redirect: "manual",
+    }),
+  );
+};
+
+app.all("/api/copilotkit", proxyCopilotKit);
+app.all("/api/copilotkit/*", proxyCopilotKit);
+
 app.get("/api/me", async (context) => {
   const session = await createAuth(context.env).api.getSession({
     headers: context.req.raw.headers,
