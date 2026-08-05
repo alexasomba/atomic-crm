@@ -38,9 +38,10 @@ suppression settings configured before outbound auth mail is enabled.
 
 Inbound mail is routed to the Worker at `crm@example.com` in development (set
 `VITE_INBOUND_EMAIL_ADDRESS` for another address). The Worker stores the raw
-message in R2, records an idempotency row in D1, and queues MIME parsing. A
-temporary queue consumer currently records the parsed message and marks it
-processed; CRM contact/note association remains the next strangler slice.
+message in R2, records an idempotency row in D1, queues MIME parsing, matches
+known contacts, and writes notes, activities, and attachment metadata in a D1
+batch. Unmatched messages remain in R2 and are marked `unmatched` for
+operational follow-up.
 
 ## Frontend provider
 

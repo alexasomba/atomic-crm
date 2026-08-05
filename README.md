@@ -95,6 +95,20 @@ When using the default local proxy target, start the CopilotKit runtime with
 proxy errors for `/api/copilotkit`. Set `COPILOTKIT_PROXY_TARGET` when using a
 remote runtime.
 
+### Cloudflare Worker workflow
+
+The staged Cloudflare runtime can be started with:
+
+```sh
+vp run dev:cloudflare
+```
+
+This runs the Vite frontend and Wrangler Worker together. Set
+`VITE_CRM_PROVIDER=cloudflare` to exercise the D1/Better Auth provider; leave
+it unset to keep the Supabase provider as the rollback default. Configure
+`BETTER_AUTH_SECRET` in `.dev.vars` before using authentication. Apply local
+D1 migrations with `pnpm run d1:migrate:local`.
+
 ## Documentation
 
 The user and developer documentation for this project is available [in the `doc/` directory](./doc/). You can also read it online at [https://marmelab.com/atomic-crm/doc/](https://marmelab.com/atomic-crm/doc/).
