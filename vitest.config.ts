@@ -36,6 +36,7 @@ export default defineConfig({
     exclude: [
       "**/node_modules/**",
       "doc/**",
+      "test/cloudflare-worker.test.ts",
       "src/**/*.integration.test.{ts,tsx}",
     ],
   },
