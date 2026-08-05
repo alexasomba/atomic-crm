@@ -123,8 +123,7 @@ Rules for persona narration:
 - Be concise and actionable.`,
 });
 
-const runtime = new CopilotRuntime({
-  intelligence,
+const runtimeOptions = {
   identifyUser: () => ({ id: "jordan-beamson", name: "Jordan Beamson" }),
   // identifyUser: () => ({ id: process.env.INTELLIGENCE_USER_ID ?? "crm-user" }),
   licenseToken: process.env.COPILOTKIT_LICENSE_TOKEN,
@@ -141,7 +140,11 @@ const runtime = new CopilotRuntime({
       },
     ],
   },
-});
+};
+
+const runtime = intelligence
+  ? new CopilotRuntime({ ...runtimeOptions, intelligence })
+  : new CopilotRuntime(runtimeOptions);
 
 // Main Hono app
 const app = new Hono();

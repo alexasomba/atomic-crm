@@ -2,7 +2,12 @@ allowBuilds:
   "@scarf/scarf": true
   esbuild: true
   msw: true
+  rolldown: true
   workerd: true
+packages:
+  - "."
+  - "server"
+  - "packages/*"
 overrides:
   "@supabase/supabase-js": "2.112.0"
   "@supabase/auth-js": "2.112.1"
@@ -53,8 +58,10 @@ minimumReleaseAgeExclude:
   - better-auth@1.7.0-rc.4
   - miniflare@5.20260801.0-alpha
   - wrangler@4.119.0
+  - tsx@4.23.8
 
 catalog:
+  "@ag-ui/mcp-apps-middleware": "0.0.3"
   "@supabase/auth-js": "2.112.1"
   "@supabase/functions-js": "2.112.1"
   "@supabase/phoenix": "^0.4.5"
@@ -63,7 +70,11 @@ catalog:
   "@supabase/storage-js": "2.112.1"
   "@supabase/supabase-js": "2.112.0"
   "@better-auth/drizzle-adapter": "1.7.0-rc.4"
+  "@copilotkit/runtime": "1.66.2"
   "@cloudflare/workers-types": "5.20260804.1"
+  "@hono/node-server": "2.1.0"
+  "@modelcontextprotocol/ext-apps": "1.7.5"
+  "@modelcontextprotocol/sdk": "1.30.0"
   "@a2ui/web_core": "0.10.6"
   "@ag-ui/client": "0.0.57"
   "@ag-ui/core": "0.0.57"
@@ -304,6 +315,7 @@ catalog:
   "tslib": "^2.8.1"
   "set-function-length": "^1.2.2"
   "papaparse": "^5.5.4"
+  "openai": "^7.4.0"
   "partial-json": "0.1.7"
   "phoenix": "^1.8.9"
   "pathe": "^2.0.3"
@@ -375,6 +387,7 @@ catalog:
   "@types/ms": "^2.1.0"
   "@types/node": "^24.13.3"
   "@types/papaparse": "^5.5.2"
+  "tsx": "^4.23.8"
   "@types/react": "^19.2.18"
   "@types/react-dom": "^19.2.4"
   "@vitejs/plugin-react": "^6.0.5"
@@ -393,7 +406,7 @@ catalog:
   "playwright": "^1.62.1"
   "shadcn": "^4.16.1"
   "storybook": "^10.5.6"
-  "typescript": "~6.0.3"
+  "typescript": "~5.9.3"
   "vite": npm:@voidzero-dev/vite-plus-core@0.2.8
   "vite-plugin-pwa": "^1.3.0"
   "vite-plugin-simple-html": "^1.1.0"
