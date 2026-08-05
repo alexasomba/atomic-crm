@@ -3,7 +3,6 @@ title: Getting Started
 description: Atomic CRM is designed to be easy to customize and extend by developers with basic React and SQL skills.
 ---
 
-
 Atomic CRM is designed to be easy to customize and extend by developers with basic React and SQL skills. This guide will help you get started with installing, configuring, and deploying Atomic CRM.
 
 ## Prerequisites
@@ -18,34 +17,34 @@ Atomic CRM is designed to be easy to customize and extend by developers with bas
 
 1. Fork the Atomic CRM repository on GitHub to your own account.
 
-    ![Fork the repository](../images/atomic-crm-repository.png)
+   ![Fork the repository](../images/atomic-crm-repository.png)
 
 2. Clone your forked repository to your local machine:
 
-    ```bash
-    git clone https://github.com/[username]/atomic-crm.git
-    cd atomic-crm
-    ```
+   ```bash
+   git clone https://github.com/[username]/atomic-crm.git
+   cd atomic-crm
+   ```
 
 3. Install the dependencies:
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
 ## Running Locally
 
 1. Start the database and API, powered by Supabase:
 
-    ```bash
-    npx supabase start
-    ```
+   ```bash
+   npx supabase start
+   ```
 
 2. Start the development server, powered by Vite:
 
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 
 Atomic CRM now runs at [http://localhost:5173/](http://localhost:5173/).
 
@@ -58,13 +57,17 @@ If you need debug the backend, you can access the following services:
 - REST API: [http://127.0.0.1:54321](http://127.0.0.1:54321)
 - Attachments storage: [http://localhost:54323/project/default/storage/buckets/attachments](http://localhost:54323/project/default/storage/buckets/attachments)
 - Inbucket email testing service: [http://localhost:54324/](http://localhost:54324/)
-:::
+  :::
 
 ## Admin User Setup
 
 When you first access the application at [http://localhost:5173/](http://localhost:5173/), you will be prompted to create the first admin user. This user will have full access to the application and will be able to manage other users.
 
-<video src="https://github.com/user-attachments/assets/2e5fa809-bd46-4ea1-926f-6f53358de681" controls className="w-full aspect-884/724"></video>
+<video
+  src="https://github.com/user-attachments/assets/2e5fa809-bd46-4ea1-926f-6f53358de681"
+  controls
+  className="w-full aspect-884/724"
+></video>
 
 Once the admin user is created, you will be redirected to the dashboard. It's currently showing an onboarding screen to help you get started as long as there is no data in the database.
 
@@ -100,19 +103,19 @@ export default App;
 import { CRM } from "@/components/atomic-crm/root/CRM";
 
 const App = () => (
-    <CRM
-        title="Acme CRM"
-        taskTypes={[
-            { value: 'call', label: 'Call' },
-            { value: 'email', label: 'Email' },
-            { value: 'meeting', label: 'Meeting' },
-        ]}
-        dealCategories={[
-            { value: 'ecommerce', label: 'eCommerce' },
-            { value: 'saas', label: 'SaaS' },
-            { value: 'consulting', label: 'Consulting' },
-        ]}
-    />
+  <CRM
+    title="Acme CRM"
+    taskTypes={[
+      { value: "call", label: "Call" },
+      { value: "email", label: "Email" },
+      { value: "meeting", label: "Meeting" },
+    ]}
+    dealCategories={[
+      { value: "ecommerce", label: "eCommerce" },
+      { value: "saas", label: "SaaS" },
+      { value: "consulting", label: "Consulting" },
+    ]}
+  />
 );
 
 export default App;
@@ -137,52 +140,52 @@ We're going to add a custom field to the Contacts table: a "Referred By" text fi
 3. Click on the `contacts` table in the list of tables.
 4. Click on the "New Column" button to add a new column to the table.
 
-    ![Supabase Tables](../images/supabase-tables.png)
+   ![Supabase Tables](../images/supabase-tables.png)
 
 5. In the "Add new column to contacts" dialog, enter the following details:
-    - Name: `referred_by`
-    - Type: `text`
-    - Default value: leave empty
-    - Allow Nullable: checked
+   - Name: `referred_by`
+   - Type: `text`
+   - Default value: leave empty
+   - Allow Nullable: checked
 6. Finally, click on the "Save" button to add the new column to the table.
 
-    ![Supabase New Column](../images/supabase-new-column.png)
+   ![Supabase New Column](../images/supabase-new-column.png)
 
 Atomic CRM uses views to simplify the queries. You need to update the `contacts_summary` view to include the new `referred_by` field.
 
 1. Click on the "SQL Editor" menu in the left sidebar.
 2. Enter the following SQL query to update the `contacts_summary` view:
 
-    ```sql
-    drop view "public"."contacts_summary";
-    create view "public"."contacts_summary"
-        with (security_invoker=on)
-        as
-    select
-        co.*,
-        c.name as company_name,
-        count(distinct t.id) as nb_tasks
-    from
-        "public"."contacts" co
-    left join
-        "public"."tasks" t on co.id = t.contact_id
-    left join
-        "public"."companies" c on co.company_id = c.id
-    group by
-        co.id, c.name;
-    ```
+   ```sql
+   drop view "public"."contacts_summary";
+   create view "public"."contacts_summary"
+       with (security_invoker=on)
+       as
+   select
+       co.*,
+       c.name as company_name,
+       count(distinct t.id) as nb_tasks
+   from
+       "public"."contacts" co
+   left join
+       "public"."tasks" t on co.id = t.contact_id
+   left join
+       "public"."companies" c on co.company_id = c.id
+   group by
+       co.id, c.name;
+   ```
 
-    ![Supabase SQL Editor](../images/supabase-sql-editor.png)
+   ![Supabase SQL Editor](../images/supabase-sql-editor.png)
 
 3. Click on the "Run" button to execute the SQL command. You will need to confirm the action since it will drop and recreate the view.
 
 4. Create a migration for these schema changes, to allow them to be replicated in production. Run the following command in your terminal:
 
-    ```sh
-    npx supabase db diff -f create_referred_by
-    ```
+   ```sh
+   npx supabase db diff -f create_referred_by
+   ```
 
-    This will create a new migration file in the `supabase/migrations` folder. Supabase will automatically apply this migration when you deploy to production.
+   This will create a new migration file in the `supabase/migrations` folder. Supabase will automatically apply this migration when you deploy to production.
 
 That's it! You've just added a custom field to the Contacts entity. Supabase automatically updates the API to include the new field.
 
@@ -230,10 +233,7 @@ const ContactMiscInputs = () => {
   return (
     <div className="flex flex-col gap-4">
       <h6 className="text-lg font-semibold">Misc</h6>
-      <TextInput
-        source="referred_by"
-        helperText={false}
-      />
+      <TextInput source="referred_by" helperText={false} />
       <TextInput
         source="background"
         label="Background info (bio, how you met, etc)"
@@ -358,5 +358,5 @@ Explore the documentation to learn more about Atomic CRM:
 
 - Deploying to Production
   - [Configuring Supabase](./developers/supabase-configuration)
-  - [Configuring Inbound Email](./developers/inbound-email-configuration) *(optional)*
+  - [Configuring Inbound Email](./developers/inbound-email-configuration) _(optional)_
   - [Deployment](./developers/deploy)

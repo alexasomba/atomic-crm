@@ -24,13 +24,19 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "types": ["vitest/globals", "faker"],
-
-    // Shadcn
-    "baseUrl": ".",
+    "types": [
+      "vite-plus/client",
+      "@vitest/browser",
+      "vitest",
+      "vitest/globals",
+      "faker"
+    ],
     "paths": {
-      "@/*": ["./src/*"]
+      "vite-plus/test": ["./node_modules/vitest/dist/index.d.ts"],
+      "vite-plus/test/*": ["./node_modules/vitest/dist/*.d.ts"],
+      "@/*": ["./src/*"],
+      "*": ["./*"]
     }
   },
-  "include": ["src", "demo", "vitest.d.ts"]
+  "include": ["src", "demo", "test", ".storybook", "vitest.d.ts"]
 }

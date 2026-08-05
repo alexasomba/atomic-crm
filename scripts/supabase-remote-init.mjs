@@ -2,7 +2,7 @@ import { input, select } from "@inquirer/prompts";
 import { execa } from "execa";
 import fs from "node:fs";
 
-(async () => {
+void (async () => {
   await loginToSupabase();
   const projectName = await input({
     message: "Enter the name of the project:",

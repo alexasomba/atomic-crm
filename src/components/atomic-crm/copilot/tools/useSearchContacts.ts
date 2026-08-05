@@ -32,16 +32,20 @@ export function useSearchContacts() {
     }),
     handler: async (params) => {
       const searchParams = new URLSearchParams();
-      if (params.firstName) searchParams.set("first_name", params.firstName);
-      if (params.lastName) searchParams.set("last_name", params.lastName);
-      if (params.company) searchParams.set("company", params.company);
-      if (params.lifecycleStage)
+      if (typeof params.firstName === "string")
+        searchParams.set("first_name", params.firstName);
+      if (typeof params.lastName === "string")
+        searchParams.set("last_name", params.lastName);
+      if (typeof params.company === "string")
+        searchParams.set("company", params.company);
+      if (typeof params.lifecycleStage === "string")
         searchParams.set("lifecycle_stage", params.lifecycleStage);
       if (params.leadScoreMin != null)
         searchParams.set("lead_score_min", String(params.leadScoreMin));
       if (params.leadScoreMax != null)
         searchParams.set("lead_score_max", String(params.leadScoreMax));
-      if (params.status) searchParams.set("status", params.status);
+      if (typeof params.status === "string")
+        searchParams.set("status", params.status);
       const res = await fetch(`${API_BASE}/api/contacts?${searchParams}`);
       if (!res.ok) {
         throw new Error(`searchContacts HTTP ${res.status} ${res.statusText}`);

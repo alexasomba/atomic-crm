@@ -23,10 +23,10 @@ export interface ContactsTable {
   last_name: string | null;
   gender: string | null;
   title: string | null;
-  email_jsonb: unknown | null; // JSONB array
-  phone_jsonb: unknown | null; // JSONB array
+  email_jsonb: unknown; // JSONB array
+  phone_jsonb: unknown; // JSONB array
   background: string | null;
-  avatar: unknown | null; // JSONB
+  avatar: unknown; // JSONB
   first_seen: Date | null;
   last_seen: Date | null;
   has_newsletter: boolean | null;

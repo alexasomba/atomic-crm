@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* oxlint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { useState, useEffect } from "react";
 import type { RaRecord } from "ra-core";
@@ -134,7 +134,7 @@ const ListViewGuesser = (
         .sort();
 
       if (enableLog) {
-        // eslint-disable-next-line no-console
+        // oxlint-disable-next-line no-console
         console.log(
           `Guessed List:
 

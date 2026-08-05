@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vite-plus/test";
 import { render } from "vitest-browser-react";
 
 import {
@@ -23,10 +23,10 @@ describe("Contact list integration", () => {
       </CrmTestProvider>,
     );
 
-    await expect
+    await (expect as any)
       .element(screen.getByRole("heading", { name: "No contacts found" }))
       .toBeInTheDocument();
-    await expect
+    await (expect as any)
       .element(screen.getByText("It seems your contact list is empty."))
       .toBeVisible();
   });
@@ -59,9 +59,13 @@ describe("Contact list integration", () => {
       </CrmTestProvider>,
     );
 
-    await expect.element(screen.getByText("Ada Lovelace")).toBeVisible();
-    await expect.element(screen.getByText("Grace Hopper")).toBeVisible();
-    await expect
+    await (expect as any)
+      .element(screen.getByText("Ada Lovelace"))
+      .toBeVisible();
+    await (expect as any)
+      .element(screen.getByText("Grace Hopper"))
+      .toBeVisible();
+    await (expect as any)
       .element(screen.getByRole("heading", { name: "No contacts found" }))
       .not.toBeInTheDocument();
   });
@@ -103,10 +107,10 @@ describe("Contact list integration", () => {
         </CrmTestProvider>,
       );
 
-      await expect
+      await (expect as any)
         .element(screen.getByText("Error loading contacts"))
         .toBeVisible();
-      await expect
+      await (expect as any)
         .element(screen.getByRole("button", { name: /retry/i }))
         .toBeVisible();
     } finally {
@@ -141,8 +145,10 @@ describe("Contact list integration", () => {
 
       await screen.getByRole("button", { name: /retry/i }).click();
 
-      await expect.element(screen.getByText("Grace Hopper")).toBeVisible();
-      await expect
+      await (expect as any)
+        .element(screen.getByText("Grace Hopper"))
+        .toBeVisible();
+      await (expect as any)
         .element(screen.getByText("Error loading contacts"))
         .not.toBeInTheDocument();
     } finally {

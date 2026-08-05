@@ -15,7 +15,7 @@ export function useGetContactsByCompany() {
     }),
     handler: async (params) => {
       const res = await fetch(
-        `${API_BASE}/api/companies/${encodeURIComponent(params.companyName)}/contacts`,
+        `${API_BASE}/api/companies/${encodeURIComponent(String(params.companyName))}/contacts`,
       );
       if (!res.ok) {
         throw new Error(

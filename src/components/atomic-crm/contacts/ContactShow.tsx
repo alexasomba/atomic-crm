@@ -62,7 +62,7 @@ const ContactShowContentMobile = () => {
 
   return (
     <>
-      {/* We need to repeat the note creation sheet here to support the note 
+      {/* We need to repeat the note creation sheet here to support the note
       create button that is rendered when there are no notes. */}
       <NoteCreateSheet
         open={noteCreateOpen}
@@ -303,7 +303,7 @@ const ContactShowContent = () => {
                 }
                 queryOptions={{
                   // We want infinite pagination so we need to disable placeHolder data to avoid flicker duplicating previous page before showing the new one
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // oxlint-disable-next-line @typescript-eslint/ban-ts-comment
                   //@ts-expect-error
                   placeholderData: null,
                 }}

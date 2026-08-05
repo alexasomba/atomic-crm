@@ -38,7 +38,7 @@ import { cn } from "@/lib/utils";
  *     </Show>
  * );
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line @typescript-eslint/no-explicit-any
 export const SingleFieldList = <RecordType = any,>({
   children,
   render,

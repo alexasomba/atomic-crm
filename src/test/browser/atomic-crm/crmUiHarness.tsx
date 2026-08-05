@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+/* oxlint-disable react-refresh/only-export-components */
 import { Notification } from "@/components/admin/notification";
 import { ThemeProvider } from "@/components/admin/theme-provider";
 import { ContactList } from "@/components/atomic-crm/contacts/ContactList";
@@ -105,7 +105,7 @@ const createTestAuthProvider = (): AuthProvider => ({
 
 const baseSale: Sale = {
   administrator: true,
-  avatar: DEFAULT_USER.avatar,
+  avatar: DEFAULT_USER.avatar as any,
   disabled: false,
   email: DEFAULT_USER.email,
   first_name: DEFAULT_USER.first_name,

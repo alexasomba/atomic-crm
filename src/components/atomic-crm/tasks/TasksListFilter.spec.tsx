@@ -1,4 +1,5 @@
 import React from "react";
+import { describe, expect, it } from "vite-plus/test";
 import { render } from "vitest-browser-react";
 import { CoreAdminContext } from "ra-core";
 import fakeDataProvider from "ra-data-fakerest";
@@ -44,7 +45,9 @@ describe("TaskListFilter", () => {
         wrapper: Wrapper,
       },
     );
-    await expect.element(screen.getByText("Today")).toBeInTheDocument();
+    await (expect as any)
+      .element(screen.getByText("Today"))
+      .toBeInTheDocument();
   });
 
   it("does not show Load more when tasks fit in one page", async () => {
@@ -55,7 +58,9 @@ describe("TaskListFilter", () => {
         wrapper: Wrapper,
       },
     );
-    await expect.element(screen.getByText("Load more")).not.toBeInTheDocument();
+    await (expect as any)
+      .element(screen.getByText("Load more"))
+      .not.toBeInTheDocument();
   });
 
   it("shows Load more when tasks exceed page size", async () => {
@@ -66,7 +71,9 @@ describe("TaskListFilter", () => {
         wrapper: Wrapper,
       },
     );
-    await expect.element(screen.getByText("Load more")).toBeInTheDocument();
+    await (expect as any)
+      .element(screen.getByText("Load more"))
+      .toBeInTheDocument();
   });
 
   it("Load more increases visible page size", async () => {
@@ -84,8 +91,10 @@ describe("TaskListFilter", () => {
     await loadMore.click();
 
     // check the number of rendered tasks after clicking Load more
-    await expect(screen.getByText(/Task \d+/)).toHaveLength(8);
+    expect(screen.getByText(/Task \d+/)).toHaveLength(8);
     // After clicking, all 8 tasks fit in one page (5 + 10 = 15), so Load more disappears
-    await expect.element(screen.getByText("Load more")).not.toBeInTheDocument();
+    await (expect as any)
+      .element(screen.getByText("Load more"))
+      .not.toBeInTheDocument();
   });
 });

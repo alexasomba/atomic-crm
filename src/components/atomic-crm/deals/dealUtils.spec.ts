@@ -1,4 +1,4 @@
-import { commands } from "@vitest/browser/context";
+import { commands } from "vite-plus/test/browser/context";
 
 import { formatISODateString } from "./dealUtils";
 

@@ -54,8 +54,10 @@ export const AuditLogPage = () => {
       }
     };
 
-    fetchEvents();
-    const interval = setInterval(fetchEvents, 3000);
+    void fetchEvents();
+    const interval = setInterval(() => {
+      void fetchEvents();
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 

@@ -43,7 +43,7 @@ import type { FieldProps } from "@/lib/field.type";
  * **Tip**: <ReferenceField> sets `translateChoice` to false by default.
  */
 const SelectFieldImpl = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line @typescript-eslint/no-explicit-any
   RecordType extends Record<string, any> = Record<string, any>,
 >(
   props: SelectFieldProps<RecordType>,
@@ -70,7 +70,7 @@ const SelectFieldImpl = <
   const translate = useTranslate();
 
   const choice = choices
-    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ? // oxlint-disable-next-line @typescript-eslint/no-explicit-any
       choices.find((choice: any) => getChoiceValue(choice) === value)
     : null;
 
@@ -100,11 +100,10 @@ SelectFieldImpl.displayName = "SelectFieldImpl";
 export const SelectField = genericMemo(SelectFieldImpl);
 
 export interface SelectFieldProps<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line @typescript-eslint/no-explicit-any
   RecordType extends Record<string, any> = Record<string, any>,
-> extends Omit<
-      ChoicesProps,
-      "disableValue" | "createValue" | "createHintValue"
-    >,
+>
+  extends
+    Omit<ChoicesProps, "disableValue" | "createValue" | "createHintValue">,
     FieldProps<RecordType>,
     HTMLAttributes<HTMLSpanElement> {}
