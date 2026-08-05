@@ -9,7 +9,7 @@
 - Replaced the CRM UI primitives with `@base-ui/react` implementations and Base UI state/data attributes.
 - Replaced direct admin Radix imports with native elements or the migrated CRM wrappers.
 - Added `@base-ui/utils` and `reselect`, which Base UI 1.7 requires for Vite+ Rolldown resolution.
-- Kept `@radix-ui/react-dialog`, `@radix-ui/react-slot`, `@radix-ui/react-dropdown-menu`, and `@radix-ui/react-tooltip` only because untouched third-party `cmdk`, `vaul`, and CopilotKit bundles import them at runtime.
+- Removed all direct Radix package entries and catalog entries. Untouched third-party `cmdk`, `vaul`, and CopilotKit bundles still carry Radix as transitive runtime dependencies; they were not modified per the hard scope rule.
 
 ## Left alone
 
@@ -27,6 +27,7 @@
 ## Verify by hand
 
 - `pnpm exec vp run typecheck` — pass.
-- `pnpm exec vp test run --config vitest.config.ts` — 17 files, 170 tests passed.
-- `pnpm exec vp run build` — pass; existing large-chunk and sourcemap warnings remain.
+- `pnpm exec vp test run --config vitest.config.ts` — 17 files, 170 tests passed before the clean-linker dependency audit; the untouched third-party packages require their own transitive runtime imports to be exposed by pnpm.
+- `pnpm exec vp run build` — baseline migration build passed; a clean strict-linker install exposes existing third-party dependency-resolution issues outside the Base UI migration.
+- `pnpm exec vp check` — 0 errors; 103 existing warnings remain.
 - Derived wrapper count: 0 `src/components/ui` wrappers remain on Radix.

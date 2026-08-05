@@ -122,7 +122,11 @@ export const RadioButtonGroupInput = (inProps: RadioButtonGroupInputProps) => {
   }
 
   return (
-    <FormField id={id} className={className} name={field.name}>
+    <FormField
+      id={id}
+      className={typeof className === "string" ? className : undefined}
+      name={field.name}
+    >
       {label && (
         <FormLabel>
           <FieldTitle

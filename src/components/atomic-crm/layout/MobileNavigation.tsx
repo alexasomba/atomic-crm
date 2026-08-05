@@ -105,17 +105,15 @@ const NavigationButton = ({
   isActive: boolean;
 }) => (
   <Button
-    asChild
+    render={<Link to={href} />}
     variant="ghost"
     className={cn(
       "flex-col gap-1 h-auto py-2 px-1 rounded-md w-16",
       isActive ? null : "text-muted-foreground",
     )}
   >
-    <Link to={href}>
-      <Icon className="size-6" />
-      <span className="text-[0.6rem] font-medium">{label}</span>
-    </Link>
+    <Icon className="size-6" />
+    <span className="text-[0.6rem] font-medium">{label}</span>
   </Button>
 );
 

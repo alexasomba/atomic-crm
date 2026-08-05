@@ -205,21 +205,39 @@ settings:
 
 catalogs:
   default:
+    '@ag-ui/client':
+      specifier: 0.0.53
+      version: 0.0.53
+    '@ag-ui/core':
+      specifier: 0.0.53
+      version: 0.0.53
     '@base-ui/react':
       specifier: ^1.7.0
       version: 1.7.0
     '@base-ui/utils':
       specifier: 0.3.2
       version: 0.3.2
+    '@copilotkit/a2ui-renderer':
+      specifier: 1.56.5
+      version: 1.56.5
     '@copilotkit/aimock':
       specifier: ^1.37.4
       version: 1.37.4
+    '@copilotkit/core':
+      specifier: 1.56.5
+      version: 1.56.5
     '@copilotkit/react-core':
       specifier: 1.56.5
       version: 1.56.5
     '@copilotkit/react-ui':
       specifier: 1.56.5
       version: 1.56.5
+    '@copilotkit/shared':
+      specifier: 1.56.5
+      version: 1.56.5
+    '@floating-ui/utils':
+      specifier: 0.2.12
+      version: 0.2.12
     '@hello-pangea/dnd':
       specifier: ^18.0.1
       version: 18.0.1
@@ -229,28 +247,25 @@ catalogs:
     '@nivo/bar':
       specifier: ^0.99.0
       version: 0.99.0
-    '@radix-ui/react-dialog':
-      specifier: 1.1.23
-      version: 1.1.23
-    '@radix-ui/react-dropdown-menu':
-      specifier: 2.1.24
-      version: 2.1.24
-    '@radix-ui/react-slot':
-      specifier: 1.3.3
-      version: 1.3.3
-    '@radix-ui/react-tooltip':
-      specifier: 1.2.16
-      version: 1.2.16
     '@storybook/react-vite':
       specifier: ^9.1.20
       version: 9.1.20
     '@streamparser/json-whatwg':
       specifier: ^0.0.22
       version: 0.0.22
+    '@supabase/supabase-js':
+      specifier: ^2.112.0
+      version: 2.112.0
     '@tailwindcss/vite':
       specifier: ^4.3.3
       version: 4.3.3
     '@tanstack/query-async-storage-persister':
+      specifier: ^5.101.4
+      version: 5.101.4
+    '@tanstack/query-core':
+      specifier: 5.101.4
+      version: 5.101.4
+    '@tanstack/query-persist-client-core':
       specifier: ^5.101.4
       version: 5.101.4
     '@tanstack/react-query':
@@ -295,9 +310,18 @@ catalogs:
     '@vitejs/plugin-react':
       specifier: ^4.7.0
       version: 4.7.0
+    '@vitest/browser':
+      specifier: 4.1.10
+      version: 4.1.10
     '@vitest/browser-playwright':
       specifier: 4.1.10
       version: 4.1.10
+    aria-hidden:
+      specifier: 1.2.6
+      version: 1.2.6
+    chai:
+      specifier: ^6.2.2
+      version: 6.2.2
     class-variance-authority:
       specifier: ^0.7.1
       version: 0.7.1
@@ -310,6 +334,15 @@ catalogs:
     concurrently:
       specifier: ^9.2.4
       version: 9.2.4
+    cookie:
+      specifier: 1.1.1
+      version: 1.1.1
+    cropperjs:
+      specifier: ^1.6.2
+      version: 1.6.2
+    date-fns:
+      specifier: ^4.4.0
+      version: 4.4.0
     diacritic:
       specifier: ^0.0.2
       version: 0.0.2
@@ -322,9 +355,18 @@ catalogs:
     eslint-plugin-storybook:
       specifier: ^9.1.20
       version: 9.1.20
+    eventemitter3:
+      specifier: 5.0.4
+      version: 5.0.4
+    expect-type:
+      specifier: ^1.4.0
+      version: 1.4.0
     faker:
       specifier: ^5.5.3
       version: 5.5.3
+    fakerest:
+      specifier: 4.2.1
+      version: 4.2.1
     gh-pages:
       specifier: ^6.3.0
       version: 6.3.0
@@ -352,6 +394,9 @@ catalogs:
     lucide-react:
       specifier: ^0.542.0
       version: 0.542.0
+    magic-string:
+      specifier: ^1.1.0
+      version: 1.1.0
     marked:
       specifier: ^17.0.6
       version: 17.0.6
@@ -364,12 +409,21 @@ catalogs:
     next-themes:
       specifier: ^0.4.6
       version: 0.4.6
+    node-polyglot:
+      specifier: 2.6.0
+      version: 2.6.0
     papaparse:
       specifier: ^5.5.4
       version: 5.5.4
+    pathe:
+      specifier: ^2.0.3
+      version: 2.0.3
     playwright:
       specifier: ^1.62.1
       version: 1.62.1
+    prop-types:
+      specifier: 15.8.1
+      version: 15.8.1
     qs:
       specifier: ^6.15.3
       version: 6.15.3
@@ -412,6 +466,9 @@ catalogs:
     react-hook-form:
       specifier: ^7.84.0
       version: 7.84.0
+    react-remove-scroll:
+      specifier: 2.7.2
+      version: 2.7.2
     react-router:
       specifier: ^7.18.2
       version: 7.18.2
@@ -424,6 +481,12 @@ catalogs:
     rollup-plugin-visualizer:
       specifier: ^6.0.11
       version: 6.0.11
+    scheduler:
+      specifier: ^0.27.0
+      version: 0.27.0
+    set-cookie-parser:
+      specifier: 2.7.2
+      version: 2.7.2
     shadcn:
       specifier: ^3.8.5
       version: 3.8.5
@@ -439,12 +502,18 @@ catalogs:
     tailwindcss:
       specifier: ^4.3.3
       version: 4.3.3
+    tinybench:
+      specifier: ^6.1.2
+      version: 6.1.2
     tw-animate-css:
       specifier: ^1.4.0
       version: 1.4.0
     typescript:
       specifier: ~5.8.3
       version: 5.8.3
+    uuid:
+      specifier: ^14.0.1
+      version: 14.0.1
     vaul:
       specifier: ^1.1.2
       version: 1.1.2
@@ -474,43 +543,58 @@ importers:
 
   .:
     dependencies:
+      '@ag-ui/client':
+        specifier: 'catalog:'
+        version: 0.0.53
+      '@ag-ui/core':
+        specifier: 'catalog:'
+        version: 0.0.53
       '@base-ui/react':
         specifier: 'catalog:'
         version: 1.7.0(@types/react@19.2.18)(date-fns@4.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@base-ui/utils':
         specifier: 'catalog:'
         version: 0.3.2(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@copilotkit/a2ui-renderer':
+        specifier: 'catalog:'
+        version: 1.56.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@copilotkit/core':
+        specifier: 'catalog:'
+        version: 1.56.5(@ag-ui/core@0.0.53)(zod@4.4.3)
       '@copilotkit/react-core':
         specifier: 'catalog:'
         version: 1.56.5(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@16.14.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@8.1.1))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(zod@4.4.3)
       '@copilotkit/react-ui':
         specifier: 'catalog:'
         version: 1.56.5(@ag-ui/core@0.0.53)(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@16.14.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@8.1.1))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(zod@4.4.3)
+      '@copilotkit/shared':
+        specifier: 'catalog:'
+        version: 1.56.5(@ag-ui/core@0.0.53)
+      '@floating-ui/utils':
+        specifier: 'catalog:'
+        version: 0.2.12
       '@hello-pangea/dnd':
         specifier: 'catalog:'
         version: 18.0.1(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@nivo/bar':
         specifier: 'catalog:'
         version: 0.99.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@radix-ui/react-dialog':
-        specifier: 'catalog:'
-        version: 1.1.23(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@radix-ui/react-dropdown-menu':
-        specifier: 'catalog:'
-        version: 2.1.24(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@radix-ui/react-slot':
-        specifier: 'catalog:'
-        version: 1.3.3(@types/react@19.2.18)(react@19.2.8)
-      '@radix-ui/react-tooltip':
-        specifier: 'catalog:'
-        version: 1.2.16(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@streamparser/json-whatwg':
         specifier: 'catalog:'
         version: 0.0.22
+      '@supabase/supabase-js':
+        specifier: 'catalog:'
+        version: 2.112.0
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.3.3(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.25.12)(jiti@2.7.0)(terser@5.49.1)(typescript@5.8.3))
       '@tanstack/query-async-storage-persister':
+        specifier: 'catalog:'
+        version: 5.101.4
+      '@tanstack/query-core':
+        specifier: 'catalog:'
+        version: 5.101.4
+      '@tanstack/query-persist-client-core':
         specifier: 'catalog:'
         version: 5.101.4
       '@tanstack/react-query':
@@ -522,6 +606,9 @@ importers:
       '@types/qs':
         specifier: 'catalog:'
         version: 6.15.1
+      aria-hidden:
+        specifier: 'catalog:'
+        version: 1.2.6
       class-variance-authority:
         specifier: 'catalog:'
         version: 0.7.1
@@ -531,6 +618,15 @@ importers:
       cmdk:
         specifier: 'catalog:'
         version: 1.1.1(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      cookie:
+        specifier: 'catalog:'
+        version: 1.1.1
+      cropperjs:
+        specifier: 'catalog:'
+        version: 1.6.2
+      date-fns:
+        specifier: 'catalog:'
+        version: 4.4.0
       diacritic:
         specifier: 'catalog:'
         version: 0.0.2
@@ -540,9 +636,15 @@ importers:
       driver.js:
         specifier: 'catalog:'
         version: 1.8.0
+      eventemitter3:
+        specifier: 'catalog:'
+        version: 5.0.4
       faker:
         specifier: 'catalog:'
         version: 5.5.3
+      fakerest:
+        specifier: 'catalog:'
+        version: 4.2.1
       inflection:
         specifier: 'catalog:'
         version: 3.0.2
@@ -570,9 +672,15 @@ importers:
       next-themes:
         specifier: 'catalog:'
         version: 0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      node-polyglot:
+        specifier: 'catalog:'
+        version: 2.6.0
       papaparse:
         specifier: 'catalog:'
         version: 5.5.4
+      prop-types:
+        specifier: 'catalog:'
+        version: 15.8.1
       qs:
         specifier: 'catalog:'
         version: 6.15.3
@@ -615,6 +723,9 @@ importers:
       react-hook-form:
         specifier: 'catalog:'
         version: 7.84.0(react@19.2.8)
+      react-remove-scroll:
+        specifier: 'catalog:'
+        version: 2.7.2(@types/react@19.2.18)(react@19.2.8)
       react-router:
         specifier: 'catalog:'
         version: 7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -627,6 +738,12 @@ importers:
       rollup-plugin-visualizer:
         specifier: 'catalog:'
         version: 6.0.11(rollup@4.62.4)
+      scheduler:
+        specifier: 'catalog:'
+        version: 0.27.0
+      set-cookie-parser:
+        specifier: 'catalog:'
+        version: 2.7.2
       sonner:
         specifier: 'catalog:'
         version: 2.0.7(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -639,6 +756,9 @@ importers:
       tw-animate-css:
         specifier: 'catalog:'
         version: 1.4.0
+      uuid:
+        specifier: 'catalog:'
+        version: 14.0.1
       vaul:
         specifier: 'catalog:'
         version: 1.1.2(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -688,15 +808,24 @@ importers:
       '@vitejs/plugin-react':
         specifier: 'catalog:'
         version: 4.7.0(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.25.12)(jiti@2.7.0)(terser@5.49.1)(typescript@5.8.3))(supports-color@8.1.1)
+      '@vitest/browser':
+        specifier: 'catalog:'
+        version: 4.1.10(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.25.12)(jiti@2.7.0)(terser@5.49.1)(typescript@5.8.3))(msw@2.15.0(@types/node@22.20.1)(typescript@5.8.3))(vitest@4.1.10)
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 4.1.10(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.25.12)(jiti@2.7.0)(terser@5.49.1)(typescript@5.8.3))(msw@2.15.0(@types/node@22.20.1)(typescript@5.8.3))(playwright@1.62.1)(vitest@4.1.10)
+      chai:
+        specifier: 'catalog:'
+        version: 6.2.2
       concurrently:
         specifier: 'catalog:'
         version: 9.2.4
       eslint-plugin-storybook:
         specifier: 'catalog:'
         version: 9.1.20(eslint@10.8.0(jiti@2.7.0)(supports-color@8.1.1))(storybook@9.1.20(@testing-library/dom@10.4.1)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.25.12)(jiti@2.7.0)(terser@5.49.1)(typescript@5.8.3))(msw@2.15.0(@types/node@22.20.1)(typescript@5.8.3))(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.8.3)
+      expect-type:
+        specifier: 'catalog:'
+        version: 1.4.0
       gh-pages:
         specifier: 'catalog:'
         version: 6.3.0
@@ -709,6 +838,12 @@ importers:
       husky:
         specifier: 'catalog:'
         version: 9.1.7
+      magic-string:
+        specifier: 'catalog:'
+        version: 1.1.0
+      pathe:
+        specifier: 'catalog:'
+        version: 2.0.3
       playwright:
         specifier: 'catalog:'
         version: 1.62.1
@@ -718,6 +853,9 @@ importers:
       storybook:
         specifier: 'catalog:'
         version: 9.1.20(@testing-library/dom@10.4.1)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.25.12)(jiti@2.7.0)(terser@5.49.1)(typescript@5.8.3))(msw@2.15.0(@types/node@22.20.1)(typescript@5.8.3))(supports-color@8.1.1)
+      tinybench:
+        specifier: 'catalog:'
+        version: 6.1.2
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -5774,6 +5912,9 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
+  magic-string@1.1.0:
+    resolution: {integrity: sha512-kS3VHe0nEPST2saQV4Rbkchcd3UBRkVTQHo1D3h/ZTwFDhai/mfKkmtPAtD129EOI7K3HlHIsFOt0WrI2/oU9g==}
+
   make-dir@3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
     engines: {node: '>=8'}
@@ -7251,6 +7392,10 @@ packages:
 
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
+
+  tinybench@6.1.2:
+    resolution: {integrity: sha512-REdMxUreK3VSUeWcLd5+ijUGNKFyHT8s1trKmYEE/tlYE6ggdOkFOlKba/vI/l1fIqh/NTEEr1Cyw4AwttOicA==}
+    engines: {node: '>=20.0.0'}
 
   tinyexec@1.3.0:
     resolution: {integrity: sha512-QKAl9m8gWWGHV8jZcPeym6j+XULi6tOf1mT83WYJ4Lk2ytW/uwAWkrP0uFsdoYMdueVJ0qs26wZ+23xeB4ibNQ==}
@@ -12969,6 +13114,10 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  magic-string@1.1.0:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.5
+
   make-dir@3.1.0:
     dependencies:
       semver: 6.3.1
@@ -15051,6 +15200,8 @@ snapshots:
   tiny-invariant@1.3.3: {}
 
   tinybench@2.9.0: {}
+
+  tinybench@6.1.2: {}
 
   tinyexec@1.3.0: {}
 

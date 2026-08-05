@@ -39,14 +39,15 @@ function DropdownMenuTrigger({
 function DropdownMenuContent({
   className,
   sideOffset = 4,
+  forceMount,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Popup> &
   Pick<
     React.ComponentProps<typeof DropdownMenuPrimitive.Positioner>,
     "align" | "side" | "sideOffset" | "alignOffset"
-  >) {
+  > & { forceMount?: boolean }) {
   return (
-    <DropdownMenuPrimitive.Portal>
+    <DropdownMenuPrimitive.Portal keepMounted={forceMount}>
       <DropdownMenuPrimitive.Positioner
         align={props.align}
         side={props.side}
