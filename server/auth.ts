@@ -11,6 +11,8 @@ type AuthEnvironment = {
   DB: D1Database;
   BETTER_AUTH_SECRET: string;
   APP_ORIGIN: string;
+  ENVIRONMENT?: string;
+  BETTER_AUTH_TRUSTED_ORIGINS?: string;
   EMAIL: SendEmail;
   EMAIL_FROM: string;
 };
@@ -40,7 +42,18 @@ export const createAuth = (env: AuthEnvironment) =>
     ...authOptions,
     baseURL: env.APP_ORIGIN,
     secret: env.BETTER_AUTH_SECRET,
-    trustedOrigins: [env.APP_ORIGIN],
+    advanced: {
+      useSecureCookies:
+        env.ENVIRONMENT === "production" ||
+        env.APP_ORIGIN.startsWith("https://"),
+    },
+    trustedOrigins: [
+      env.APP_ORIGIN,
+      ...(env.BETTER_AUTH_TRUSTED_ORIGINS ?? "")
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    ].filter((origin, index, origins) => origins.indexOf(origin) === index),
     emailVerification: {
       sendOnSignUp: true,
       sendVerificationEmail: async ({ user, url }) => {

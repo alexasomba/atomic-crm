@@ -49,6 +49,7 @@
   "vars": {
     "ENVIRONMENT": "development",
     "APP_ORIGIN": "http://localhost:5173",
+    "BETTER_AUTH_TRUSTED_ORIGINS": "http://localhost:5173",
     "EMAIL_FROM": "noreply@example.com",
     "VITE_INBOUND_EMAIL_ADDRESS": "crm@example.com",
     "COPILOTKIT_RUNTIME_URL": "",
