@@ -205,10 +205,19 @@ settings:
 
 catalogs:
   default:
+    '@a2ui/web_core':
+      specifier: 0.9.0
+      version: 0.9.0
     '@ag-ui/client':
       specifier: 0.0.53
       version: 0.0.53
     '@ag-ui/core':
+      specifier: 0.0.53
+      version: 0.0.53
+    '@ag-ui/encoder':
+      specifier: 0.0.53
+      version: 0.0.53
+    '@ag-ui/proto':
       specifier: 0.0.53
       version: 0.0.53
     '@base-ui/react':
@@ -226,30 +235,96 @@ catalogs:
     '@copilotkit/core':
       specifier: 1.56.5
       version: 1.56.5
+    '@copilotkit/license-verifier':
+      specifier: 0.2.0
+      version: 0.2.0
     '@copilotkit/react-core':
       specifier: 1.56.5
       version: 1.56.5
     '@copilotkit/react-ui':
       specifier: 1.56.5
       version: 1.56.5
+    '@copilotkit/runtime-client-gql':
+      specifier: 1.56.5
+      version: 1.56.5
     '@copilotkit/shared':
+      specifier: 1.56.5
+      version: 1.56.5
+    '@copilotkit/web-inspector':
       specifier: 1.56.5
       version: 1.56.5
     '@floating-ui/utils':
       specifier: 0.2.12
       version: 0.2.12
+    '@headlessui/react':
+      specifier: 2.2.10
+      version: 2.2.10
     '@hello-pangea/dnd':
       specifier: ^18.0.1
       version: 18.0.1
     '@inquirer/prompts':
       specifier: ^8.5.2
       version: 8.5.2
+    '@jetbrains/websandbox':
+      specifier: 1.3.1
+      version: 1.3.1
+    '@lit-labs/react':
+      specifier: 2.1.3
+      version: 2.1.3
+    '@nivo/annotations':
+      specifier: 0.99.0
+      version: 0.99.0
+    '@nivo/axes':
+      specifier: 0.99.0
+      version: 0.99.0
     '@nivo/bar':
       specifier: ^0.99.0
       version: 0.99.0
+    '@nivo/canvas':
+      specifier: 0.99.0
+      version: 0.99.0
+    '@nivo/colors':
+      specifier: 0.99.0
+      version: 0.99.0
+    '@nivo/core':
+      specifier: 0.99.0
+      version: 0.99.0
+    '@nivo/legends':
+      specifier: 0.99.0
+      version: 0.99.0
+    '@nivo/scales':
+      specifier: 0.99.0
+      version: 0.99.0
+    '@nivo/text':
+      specifier: 0.99.0
+      version: 0.99.0
+    '@nivo/theming':
+      specifier: 0.99.0
+      version: 0.99.0
+    '@nivo/tooltip':
+      specifier: 0.99.0
+      version: 0.99.0
+    '@preact/signals-core':
+      specifier: 1.8.0
+      version: 1.8.0
+    '@raphiniert/ra-data-postgrest':
+      specifier: 2.5.1
+      version: 2.5.1
+    '@react-spring/web':
+      specifier: 9.7.5
+      version: 9.7.5
+    '@segment/analytics-node':
+      specifier: 2.3.0
+      version: 2.3.0
+    '@standard-schema/spec':
+      specifier: 1.0.0
+      version: 1.0.0
     '@storybook/react-vite':
       specifier: ^9.1.20
       version: 9.1.20
+    '@streamparser/json':
+      specifier: 0.0.22
+      version: 0.0.22
     '@streamparser/json-whatwg':
       specifier: ^0.0.22
       version: 0.0.22
@@ -259,6 +334,9 @@ catalogs:
     '@tailwindcss/vite':
       specifier: ^4.3.3
       version: 4.3.3
+    '@tanstack/pacer':
+      specifier: 0.20.1
+      version: 0.20.1
     '@tanstack/query-async-storage-persister':
       specifier: ^5.101.4
       version: 5.101.4
@@ -274,6 +352,9 @@ catalogs:
     '@tanstack/react-query-persist-client':
       specifier: ^5.101.4
       version: 5.101.4
+    '@tanstack/react-virtual':
+      specifier: 3.14.9
+      version: 3.14.9
     '@testing-library/react':
       specifier: ^16.3.2
       version: 16.3.2
@@ -319,9 +400,15 @@ catalogs:
     aria-hidden:
       specifier: 1.2.6
       version: 1.2.6
+    attr-accept:
+      specifier: 2.2.4
+      version: 2.2.4
     chai:
       specifier: ^6.2.2
       version: 6.2.2
+    chalk:
+      specifier: 4.1.2
+      version: 4.1.2
     class-variance-authority:
       specifier: ^0.7.1
       version: 0.7.1
@@ -331,6 +418,9 @@ catalogs:
     cmdk:
       specifier: ^1.1.1
       version: 1.1.1
+    compare-versions:
+      specifier: ^6.1.1
+      version: 6.1.1
     concurrently:
       specifier: ^9.2.4
       version: 9.2.4
@@ -340,6 +430,12 @@ catalogs:
     cropperjs:
       specifier: ^1.6.2
       version: 1.6.2
+    d3-scale:
+      specifier: ^4.0.2
+      version: 4.0.2
+    d3-shape:
+      specifier: ^3.2.0
+      version: 3.2.0
     date-fns:
       specifier: ^4.4.0
       version: 4.4.0
@@ -367,6 +463,12 @@ catalogs:
     fakerest:
       specifier: 4.2.1
       version: 4.2.1
+    fast-json-patch:
+      specifier: ^3.1.1
+      version: 3.1.1
+    file-selector:
+      specifier: 2.1.0
+      version: 2.1.0
     gh-pages:
       specifier: ^6.3.0
       version: 6.3.0
@@ -376,6 +478,12 @@ catalogs:
     globals:
       specifier: ^16.5.0
       version: 16.5.0
+    graphql:
+      specifier: 16.14.2
+      version: 16.14.2
+    hasown:
+      specifier: 2.0.2
+      version: 2.0.2
     husky:
       specifier: ^9.1.7
       version: 9.1.7
@@ -388,6 +496,9 @@ catalogs:
     jsonexport:
       specifier: ^3.2.0
       version: 3.2.0
+    katex:
+      specifier: 0.16.47
+      version: 0.16.47
     lodash:
       specifier: ^4.18.1
       version: 4.18.1
@@ -412,12 +523,24 @@ catalogs:
     node-polyglot:
       specifier: 2.6.0
       version: 2.6.0
+    object.entries:
+      specifier: 1.1.9
+      version: 1.1.9
+    openapi-types:
+      specifier: ^12.1.3
+      version: 12.1.3
     papaparse:
       specifier: ^5.5.4
       version: 5.5.4
+    partial-json:
+      specifier: 0.1.7
+      version: 0.1.7
     pathe:
       specifier: ^2.0.3
       version: 2.0.3
+    phoenix:
+      specifier: ^1.8.4
+      version: 1.8.9
     playwright:
       specifier: ^1.62.1
       version: 1.62.1
@@ -466,6 +589,12 @@ catalogs:
     react-hook-form:
       specifier: ^7.84.0
       version: 7.84.0
+    react-is:
+      specifier: 19.2.0
+      version: 19.2.0
+    react-markdown:
+      specifier: 10.1.0
+      version: 10.1.0
     react-remove-scroll:
       specifier: 2.7.2
       version: 2.7.2
@@ -475,12 +604,27 @@ catalogs:
     react-router-dom:
       specifier: ^7.18.2
       version: 7.18.2
+    react-syntax-highlighter:
+      specifier: 15.6.6
+      version: 15.6.6
+    rehype-raw:
+      specifier: 7.0.0
+      version: 7.0.0
+    remark-gfm:
+      specifier: 4.0.1
+      version: 4.0.1
+    remark-math:
+      specifier: 6.0.0
+      version: 6.0.0
     reselect:
       specifier: ^5.2.0
       version: 5.2.0
     rollup-plugin-visualizer:
       specifier: ^6.0.11
       version: 6.0.11
+    rxjs:
+      specifier: 7.8.1
+      version: 7.8.1
     scheduler:
       specifier: ^0.27.0
       version: 0.27.0
@@ -496,6 +640,9 @@ catalogs:
     storybook:
       specifier: ^9.1.20
       version: 9.1.20
+    streamdown:
+      specifier: 1.6.11
+      version: 1.6.11
     tailwind-merge:
       specifier: ^3.6.0
       version: 3.6.0
@@ -511,6 +658,12 @@ catalogs:
     typescript:
       specifier: ~5.8.3
       version: 5.8.3
+    untruncate-json:
+      specifier: ^0.0.1
+      version: 0.0.1
+    use-stick-to-bottom:
+      specifier: 1.1.6
+      version: 1.1.6
     uuid:
       specifier: ^14.0.1
       version: 14.0.1
@@ -535,18 +688,33 @@ catalogs:
     vitest-browser-react:
       specifier: ^2.2.0
       version: 2.2.0
+    warning:
+      specifier: 4.0.3
+      version: 4.0.3
     zod:
       specifier: ^4.4.3
       version: 4.4.3
+    zod-to-json-schema:
+      specifier: ^3.24.6
+      version: 3.25.2
 
 importers:
 
   .:
     dependencies:
+      '@a2ui/web_core':
+        specifier: 'catalog:'
+        version: 0.9.0
       '@ag-ui/client':
         specifier: 'catalog:'
         version: 0.0.53
       '@ag-ui/core':
+        specifier: 'catalog:'
+        version: 0.0.53
+      '@ag-ui/encoder':
+        specifier: 'catalog:'
+        version: 0.0.53
+      '@ag-ui/proto':
         specifier: 'catalog:'
         version: 0.0.53
       '@base-ui/react':
@@ -561,24 +729,90 @@ importers:
       '@copilotkit/core':
         specifier: 'catalog:'
         version: 1.56.5(@ag-ui/core@0.0.53)(zod@4.4.3)
+      '@copilotkit/license-verifier':
+        specifier: 'catalog:'
+        version: 0.2.0
       '@copilotkit/react-core':
         specifier: 'catalog:'
         version: 1.56.5(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@16.14.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@8.1.1))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(zod@4.4.3)
       '@copilotkit/react-ui':
         specifier: 'catalog:'
         version: 1.56.5(@ag-ui/core@0.0.53)(@types/mdast@4.0.4)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(graphql@16.14.2)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@8.1.1))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(zod@4.4.3)
+      '@copilotkit/runtime-client-gql':
+        specifier: 'catalog:'
+        version: 1.56.5(@ag-ui/core@0.0.53)(graphql@16.14.2)(react@19.2.8)
       '@copilotkit/shared':
         specifier: 'catalog:'
         version: 1.56.5(@ag-ui/core@0.0.53)
+      '@copilotkit/web-inspector':
+        specifier: 'catalog:'
+        version: 1.56.5(@ag-ui/core@0.0.53)(zod@4.4.3)
       '@floating-ui/utils':
         specifier: 'catalog:'
         version: 0.2.12
+      '@headlessui/react':
+        specifier: 'catalog:'
+        version: 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@hello-pangea/dnd':
         specifier: 'catalog:'
         version: 18.0.1(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@jetbrains/websandbox':
+        specifier: 'catalog:'
+        version: 1.3.1
+      '@lit-labs/react':
+        specifier: 'catalog:'
+        version: 2.1.3(@types/react@19.2.18)
+      '@nivo/annotations':
+        specifier: 'catalog:'
+        version: 0.99.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@nivo/axes':
+        specifier: 'catalog:'
+        version: 0.99.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@nivo/bar':
         specifier: 'catalog:'
         version: 0.99.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@nivo/canvas':
+        specifier: 'catalog:'
+        version: 0.99.0
+      '@nivo/colors':
+        specifier: 'catalog:'
+        version: 0.99.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@nivo/core':
+        specifier: 'catalog:'
+        version: 0.99.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@nivo/legends':
+        specifier: 'catalog:'
+        version: 0.99.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@nivo/scales':
+        specifier: 'catalog:'
+        version: 0.99.0
+      '@nivo/text':
+        specifier: 'catalog:'
+        version: 0.99.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@nivo/theming':
+        specifier: 'catalog:'
+        version: 0.99.0(react@19.2.8)
+      '@nivo/tooltip':
+        specifier: 'catalog:'
+        version: 0.99.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@preact/signals-core':
+        specifier: 'catalog:'
+        version: 1.8.0
+      '@raphiniert/ra-data-postgrest':
+        specifier: 'catalog:'
+        version: 2.5.1(ra-core@5.15.0(@tanstack/react-query@5.101.4(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react-hook-form@7.84.0(react@19.2.8))(react-router-dom@7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-router@7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8))
+      '@react-spring/web':
+        specifier: 'catalog:'
+        version: 9.7.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@segment/analytics-node':
+        specifier: 'catalog:'
+        version: 2.3.0
+      '@standard-schema/spec':
+        specifier: 'catalog:'
+        version: 1.0.0
+      '@streamparser/json':
+        specifier: 'catalog:'
+        version: 0.0.22
       '@streamparser/json-whatwg':
         specifier: 'catalog:'
         version: 0.0.22
@@ -588,6 +822,9 @@ importers:
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.3.3(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.25.12)(jiti@2.7.0)(terser@5.49.1)(typescript@5.8.3))
+      '@tanstack/pacer':
+        specifier: 'catalog:'
+        version: 0.20.1
       '@tanstack/query-async-storage-persister':
         specifier: 'catalog:'
         version: 5.101.4
@@ -603,12 +840,21 @@ importers:
       '@tanstack/react-query-persist-client':
         specifier: 'catalog:'
         version: 5.101.4(@tanstack/react-query@5.101.4(react@19.2.8))(react@19.2.8)
+      '@tanstack/react-virtual':
+        specifier: 'catalog:'
+        version: 3.14.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@types/qs':
         specifier: 'catalog:'
         version: 6.15.1
       aria-hidden:
         specifier: 'catalog:'
         version: 1.2.6
+      attr-accept:
+        specifier: 'catalog:'
+        version: 2.2.4
+      chalk:
+        specifier: 'catalog:'
+        version: 4.1.2
       class-variance-authority:
         specifier: 'catalog:'
         version: 0.7.1
@@ -618,12 +864,21 @@ importers:
       cmdk:
         specifier: 'catalog:'
         version: 1.1.1(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      compare-versions:
+        specifier: 'catalog:'
+        version: 6.1.1
       cookie:
         specifier: 'catalog:'
         version: 1.1.1
       cropperjs:
         specifier: 'catalog:'
         version: 1.6.2
+      d3-scale:
+        specifier: 'catalog:'
+        version: 4.0.2
+      d3-shape:
+        specifier: 'catalog:'
+        version: 3.2.0
       date-fns:
         specifier: 'catalog:'
         version: 4.4.0
@@ -645,6 +900,12 @@ importers:
       fakerest:
         specifier: 'catalog:'
         version: 4.2.1
+      fast-json-patch:
+        specifier: 'catalog:'
+        version: 3.1.1
+      file-selector:
+        specifier: 'catalog:'
+        version: 2.1.0
       inflection:
         specifier: 'catalog:'
         version: 3.0.2
@@ -654,6 +915,9 @@ importers:
       jsonexport:
         specifier: 'catalog:'
         version: 3.2.0
+      katex:
+        specifier: 'catalog:'
+        version: 0.16.47
       lodash:
         specifier: 'catalog:'
         version: 4.18.1
@@ -675,9 +939,21 @@ importers:
       node-polyglot:
         specifier: 'catalog:'
         version: 2.6.0
+      object.entries:
+        specifier: 'catalog:'
+        version: 1.1.9
+      openapi-types:
+        specifier: 'catalog:'
+        version: 12.1.3
       papaparse:
         specifier: 'catalog:'
         version: 5.5.4
+      partial-json:
+        specifier: 'catalog:'
+        version: 0.1.7
+      phoenix:
+        specifier: 'catalog:'
+        version: 1.8.9
       prop-types:
         specifier: 'catalog:'
         version: 15.8.1
@@ -723,6 +999,12 @@ importers:
       react-hook-form:
         specifier: 'catalog:'
         version: 7.84.0(react@19.2.8)
+      react-is:
+        specifier: 'catalog:'
+        version: 19.2.0
+      react-markdown:
+        specifier: 'catalog:'
+        version: 10.1.0(@types/react@19.2.18)(react@19.2.8)(supports-color@8.1.1)
       react-remove-scroll:
         specifier: 'catalog:'
         version: 2.7.2(@types/react@19.2.18)(react@19.2.8)
@@ -732,12 +1014,27 @@ importers:
       react-router-dom:
         specifier: 'catalog:'
         version: 7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react-syntax-highlighter:
+        specifier: 'catalog:'
+        version: 15.6.6(react@19.2.8)
+      rehype-raw:
+        specifier: 'catalog:'
+        version: 7.0.0
+      remark-gfm:
+        specifier: 'catalog:'
+        version: 4.0.1(supports-color@8.1.1)
+      remark-math:
+        specifier: 'catalog:'
+        version: 6.0.0(supports-color@8.1.1)
       reselect:
         specifier: 'catalog:'
         version: 5.2.0
       rollup-plugin-visualizer:
         specifier: 'catalog:'
         version: 6.0.11(rollup@4.62.4)
+      rxjs:
+        specifier: 'catalog:'
+        version: 7.8.1
       scheduler:
         specifier: 'catalog:'
         version: 0.27.0
@@ -747,6 +1044,9 @@ importers:
       sonner:
         specifier: 'catalog:'
         version: 2.0.7(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      streamdown:
+        specifier: 'catalog:'
+        version: 1.6.11(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@8.1.1))(react@19.2.8)(supports-color@8.1.1)
       tailwind-merge:
         specifier: 'catalog:'
         version: 3.6.0
@@ -756,15 +1056,27 @@ importers:
       tw-animate-css:
         specifier: 'catalog:'
         version: 1.4.0
+      untruncate-json:
+        specifier: 'catalog:'
+        version: 0.0.1
+      use-stick-to-bottom:
+        specifier: 'catalog:'
+        version: 1.1.6(react@19.2.8)
       uuid:
         specifier: 'catalog:'
         version: 14.0.1
       vaul:
         specifier: 'catalog:'
         version: 1.1.2(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      warning:
+        specifier: 'catalog:'
+        version: 4.0.3
       zod:
         specifier: 'catalog:'
         version: 4.4.3
+      zod-to-json-schema:
+        specifier: 'catalog:'
+        version: 3.25.2(zod@4.4.3)
     devDependencies:
       '@copilotkit/aimock':
         specifier: 'catalog:'
@@ -835,6 +1147,12 @@ importers:
       globals:
         specifier: 'catalog:'
         version: 16.5.0
+      graphql:
+        specifier: 'catalog:'
+        version: 16.14.2
+      hasown:
+        specifier: 'catalog:'
+        version: 2.0.2
       husky:
         specifier: 'catalog:'
         version: 9.1.7
@@ -2404,6 +2722,9 @@ packages:
   '@preact/signals-core@1.14.4':
     resolution: {integrity: sha512-HNB6HYeYKhQbJ1aKl+YRjrS4+QWHLKX6qKoUsfS/m0vqzsVaEBiZiaKbG/e+NKk2ch5ALQr/ihWaMHxiCuuWHA==}
 
+  '@preact/signals-core@1.8.0':
+    resolution: {integrity: sha512-OBvUsRZqNmjzCZXWLxkZfhcgT+Fk8DDcT/8vD6a1xhDemodyy87UJRJfASMuSD8FaAIeGgGm85ydXhm7lr4fyA==}
+
   '@protobuf-ts/protoc@2.11.1':
     resolution: {integrity: sha512-mUZJaV0daGO6HUX90o/atzQ6A7bbN2RSuHtdwo8SSF2Qoe3zHwa4IHyCN1evftTeHfLmdz+45qo47sL+5P8nyg==}
     hasBin: true
@@ -2735,27 +3056,54 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
+  '@react-spring/animated@9.7.5':
+    resolution: {integrity: sha512-Tqrwz7pIlsSDITzxoLS3n/v/YCUHQdOIKtOJf4yL6kYVSDTSmVK1LI1Q3M/uu2Sx4X3pIWF3xLUhlsA6SPNTNg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
   '@react-spring/core@10.1.2':
     resolution: {integrity: sha512-lPGOAg0V+PV3ucopOajD+YCxoe8twALqAeG4c/+sqVjBsyUNNdx8qfz/DcNSPKA8PV3+AyQELlCxlDfap9cmBQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
+  '@react-spring/core@9.7.5':
+    resolution: {integrity: sha512-rmEqcxRcu7dWh7MnCcMXLvrf6/SDlSokLaLTxiPlAYi11nN3B5oiCUAblO72o+9z/87j2uzxa2Inm8UbLjXA+w==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
   '@react-spring/rafz@10.1.2':
     resolution: {integrity: sha512-KC6vSFZyPnRJ2rXqipV9QqR4SaYbYXjvKfdYKWipNK2mWuV79gr20WmpVUOsTiEHGRY3WSOdWCHN+P9Pdaqb7Q==}
+
+  '@react-spring/rafz@9.7.5':
+    resolution: {integrity: sha512-5ZenDQMC48wjUzPAm1EtwQ5Ot3bLIAwwqP2w2owG5KoNdNHpEJV263nGhCeKKmuA3vG2zLLOdu3or6kuDjA6Aw==}
 
   '@react-spring/shared@10.1.2':
     resolution: {integrity: sha512-47/8bNQ/o0uEmxEnPBuERlC29VSqiTn5P9ln9tUMSVkYKYxBtouYE686F5kAGj+eHRPoNCw7drxWE9nv2d1LMw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
+  '@react-spring/shared@9.7.5':
+    resolution: {integrity: sha512-wdtoJrhUeeyD/PP/zo+np2s1Z820Ohr/BbuVYv+3dVLW7WctoiN7std8rISoYoHpUXtbkpesSKuPIw/6U1w1Pw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
   '@react-spring/types@10.1.2':
     resolution: {integrity: sha512-G4CWowmVPz+rDG1y9QRVq/prZNxiNwQaHC0kgT/MgY6jAGgdRgTV4VThpvJDwWvUitk3xZB4soP4d36fjeQ09g==}
+
+  '@react-spring/types@9.7.5':
+    resolution: {integrity: sha512-HVj7LrZ4ReHWBimBvu2SKND3cDVUPWKLqRTmWe/fNY6o1owGOX0cAHbdPDTMelgBlVbrTKrre6lFkhqGZErK/g==}
 
   '@react-spring/web@10.1.2':
     resolution: {integrity: sha512-KxDB3zaDqy9qFsu7fdxjyraAxweHH4k5TW5WGT/OuMK6hKaxSDfhrQfRBzfFaSVvMBf+NghbJFanllV4ia6i7A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@react-spring/web@9.7.5':
+    resolution: {integrity: sha512-lmvqGwpe+CSttsWNZVr+Dg62adtKhauGwLyGE/RRyZ8AAMLgb9x3NDMA5RMElXo+IMyTkPp7nxTB8ZQlmhb6JQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   '@react-types/shared@3.36.1':
     resolution: {integrity: sha512-AzsuD9OfxTOZMMvTRhlN3oHBwOmFN7tDh27LzqmHt4+uOgPhJT7ZM7/kVs/8/o0WxayMUIk3hBmCFRHv1FUoag==}
@@ -2992,6 +3340,9 @@ packages:
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
+
+  '@standard-schema/spec@1.0.0':
+    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -4034,6 +4385,10 @@ packages:
     resolution: {integrity: sha512-Xcz9l0z7y9yQ9rdDaxlmaI4uJHf/T8g9hOEzJcsEqX2SjCj4J20uK7+ldkDHMbpJDK76wF7xEIgxc/vSlsfw5w==}
     engines: {node: '>=10.12.0'}
 
+  attr-accept@2.2.4:
+    resolution: {integrity: sha512-2pA6xFIbdTUDCAwjN8nQwI+842VwzbDUXO2IYlpPXQIORgKnavorcr4Ce3rwh+zsNg9zK7QPsdvDj3Lum4WX4w==}
+    engines: {node: '>=4'}
+
   attr-accept@2.2.5:
     resolution: {integrity: sha512-0bDNnY/u6pPwHDMoF0FieU354oBi0a8rD9FcsLwzcGWbc8KS8KPIi7y+s13OlVY+gMWc/9xEMUgNE6Qm8ZllYQ==}
     engines: {node: '>=4'}
@@ -4944,6 +5299,10 @@ packages:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
 
+  file-selector@2.1.0:
+    resolution: {integrity: sha512-ZuXAqGePcSPz4JuerOY06Dzzq0hrmQ6VGoXVzGyFI1npeOfBgqGIKKpznfYWRkSLJlXutkqVC5WvGZtkFVhu9Q==}
+    engines: {node: '>= 12'}
+
   file-selector@2.1.2:
     resolution: {integrity: sha512-QgXo+mXTe8ljeqUFaX3QVHc5osSItJ/Km+xpocx0aSqWGMSCf6qYs/VnzZgS864Pjn5iceMRFigeAV7AfTlaig==}
     engines: {node: '>= 12'}
@@ -5174,6 +5533,10 @@ packages:
 
   has-tostringtag@1.0.2:
     resolution: {integrity: sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==}
+    engines: {node: '>= 0.4'}
+
+  hasown@2.0.2:
+    resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
   hasown@2.0.4:
@@ -6775,6 +7138,9 @@ packages:
 
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
+
+  react-is@19.2.0:
+    resolution: {integrity: sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==}
 
   react-is@19.2.8:
     resolution: {integrity: sha512-s5un28nYxKJw5gvUHyW5PCC28CvBqLu9r3cWgzHT4Vo/5fqqkFcdRYsGcKf50WMPpjjFZS5d76fn3YCo2njKwQ==}
@@ -9673,6 +10039,8 @@ snapshots:
 
   '@preact/signals-core@1.14.4': {}
 
+  '@preact/signals-core@1.8.0': {}
+
   '@protobuf-ts/protoc@2.11.1': {}
 
   '@radix-ui/primitive@1.1.7': {}
@@ -9996,6 +10364,12 @@ snapshots:
       '@react-spring/types': 10.1.2
       react: 19.2.8
 
+  '@react-spring/animated@9.7.5(react@19.2.8)':
+    dependencies:
+      '@react-spring/shared': 9.7.5(react@19.2.8)
+      '@react-spring/types': 9.7.5
+      react: 19.2.8
+
   '@react-spring/core@10.1.2(react@19.2.8)':
     dependencies:
       '@react-spring/animated': 10.1.2(react@19.2.8)
@@ -10003,7 +10377,16 @@ snapshots:
       '@react-spring/types': 10.1.2
       react: 19.2.8
 
+  '@react-spring/core@9.7.5(react@19.2.8)':
+    dependencies:
+      '@react-spring/animated': 9.7.5(react@19.2.8)
+      '@react-spring/shared': 9.7.5(react@19.2.8)
+      '@react-spring/types': 9.7.5
+      react: 19.2.8
+
   '@react-spring/rafz@10.1.2': {}
+
+  '@react-spring/rafz@9.7.5': {}
 
   '@react-spring/shared@10.1.2(react@19.2.8)':
     dependencies:
@@ -10011,7 +10394,15 @@ snapshots:
       '@react-spring/types': 10.1.2
       react: 19.2.8
 
+  '@react-spring/shared@9.7.5(react@19.2.8)':
+    dependencies:
+      '@react-spring/rafz': 9.7.5
+      '@react-spring/types': 9.7.5
+      react: 19.2.8
+
   '@react-spring/types@10.1.2': {}
+
+  '@react-spring/types@9.7.5': {}
 
   '@react-spring/web@10.1.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
@@ -10020,6 +10411,15 @@ snapshots:
       '@react-spring/shared': 10.1.2(react@19.2.8)
       '@react-spring/types': 10.1.2
       csstype: 3.2.3
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+
+  '@react-spring/web@9.7.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      '@react-spring/animated': 9.7.5(react@19.2.8)
+      '@react-spring/core': 9.7.5(react@19.2.8)
+      '@react-spring/shared': 9.7.5(react@19.2.8)
+      '@react-spring/types': 9.7.5
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
@@ -10209,6 +10609,8 @@ snapshots:
   '@shikijs/vscode-textmate@10.0.2': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
+
+  '@standard-schema/spec@1.0.0': {}
 
   '@standard-schema/spec@1.1.0': {}
 
@@ -11161,6 +11563,8 @@ snapshots:
   at-least-node@1.0.0: {}
 
   atomically@1.7.0: {}
+
+  attr-accept@2.2.4: {}
 
   attr-accept@2.2.5: {}
 
@@ -12182,6 +12586,10 @@ snapshots:
     dependencies:
       flat-cache: 4.0.1
 
+  file-selector@2.1.0:
+    dependencies:
+      tslib: 2.8.1
+
   file-selector@2.1.2:
     dependencies:
       tslib: 2.8.1
@@ -12428,6 +12836,10 @@ snapshots:
   has-tostringtag@1.0.2:
     dependencies:
       has-symbols: 1.1.0
+
+  hasown@2.0.2:
+    dependencies:
+      function-bind: 1.1.2
 
   hasown@2.0.4:
     dependencies:
@@ -14355,6 +14767,8 @@ snapshots:
   react-is@17.0.2: {}
 
   react-is@18.3.1: {}
+
+  react-is@19.2.0: {}
 
   react-is@19.2.8: {}
 
