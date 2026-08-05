@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 import PostalMime from "postal-mime";
 import { createAuth } from "./auth.js";
+import { crmApi } from "./api/crm.js";
 import { createDb } from "./db/client.js";
 import { inboundEmailEvents } from "./db/schema.js";
 import { eq } from "drizzle-orm";
@@ -37,6 +38,8 @@ app.get("/api/health", (context) =>
 app.all("/api/auth/*", (context) =>
   createAuth(context.env).handler(context.req.raw),
 );
+
+app.route("/api/crm", crmApi);
 
 app.post("/api/uploads/presign", async (context) => {
   const body = z
