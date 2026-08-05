@@ -250,6 +250,17 @@ const emailHandler = async (
   const messageId = getHeader(message, "message-id") || eventId;
   const r2Key = `inbound/${new Date().toISOString().slice(0, 10)}/${eventId}.eml`;
 
+  const db = createDb(env.DB);
+  const existing = await db
+    .select({ id: inboundEmailEvents.id })
+    .from(inboundEmailEvents)
+    .where(eq(inboundEmailEvents.messageId, messageId))
+    .limit(1);
+
+  // Check idempotency before writing to R2 so a duplicate Message-ID cannot
+  // create an orphaned raw message.
+  if (existing.length > 0) return;
+
   await env.BUCKET.put(r2Key, raw, {
     httpMetadata: { contentType: "message/rfc822" },
     customMetadata: {
@@ -268,27 +279,25 @@ const emailHandler = async (
     receivedAt: new Date().toISOString(),
   };
 
-  const db = createDb(env.DB);
-  const existing = await db
-    .select({ id: inboundEmailEvents.id })
-    .from(inboundEmailEvents)
-    .where(eq(inboundEmailEvents.messageId, messageId))
-    .limit(1);
-
-  if (existing.length > 0) return;
-
-  await db
-    .insert(inboundEmailEvents)
-    .values({
-      id: eventId,
-      messageId,
-      r2Key,
-      sender: message.from,
-      recipient: message.to,
-      status: "queued",
-      createdAt: job.receivedAt,
-    })
-    .run();
+  try {
+    await db
+      .insert(inboundEmailEvents)
+      .values({
+        id: eventId,
+        messageId,
+        r2Key,
+        sender: message.from,
+        recipient: message.to,
+        status: "queued",
+        createdAt: job.receivedAt,
+      })
+      .run();
+  } catch (error) {
+    // D1 and R2 do not share a transaction. Remove the raw object when the
+    // event record cannot be created; otherwise retries would leak storage.
+    await env.BUCKET.delete(r2Key);
+    throw error;
+  }
 
   ctx.waitUntil(env.INBOUND_EMAIL_QUEUE.send(job));
 };
@@ -296,6 +305,7 @@ const emailHandler = async (
 const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
   for (const message of batch.messages) {
     const job = message.body as InboundEmailJob;
+    const uploadedAttachmentKeys: string[] = [];
     try {
       const object = await env.BUCKET.get(job.r2Key);
       if (!object)
@@ -355,6 +365,7 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
         await env.BUCKET.put(row.objectKey, content, {
           httpMetadata: { contentType: row.contentType },
         });
+        uploadedAttachmentKeys.push(row.objectKey);
       }
 
       const noteContent = (parsed.text || parsed.html || "").slice(0, 100_000);
@@ -393,6 +404,12 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
       });
       message.ack();
     } catch (error) {
+      // Attachment objects are written before the D1 batch because D1 cannot
+      // transactionally include R2. Remove only objects created by this
+      // attempt, then let the queue retry the durable raw message.
+      await Promise.allSettled(
+        uploadedAttachmentKeys.map((key) => env.BUCKET.delete(key)),
+      );
       console.error("Inbound email processing failed", {
         eventId: job.eventId,
         error: error instanceof Error ? error.message : String(error),
