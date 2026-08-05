@@ -32,6 +32,70 @@ const salesInput = z.object({
   disabled: z.boolean().optional(),
 });
 
+const companyInput = z.object({
+  name: z.string().min(1).max(300),
+  sector: z.string().max(200).nullable().optional(),
+  size: z.number().int().nullable().optional(),
+  linkedin_url: z.string().max(500).nullable().optional(),
+  website: z.string().max(500).nullable().optional(),
+  phone_number: z.string().max(100).nullable().optional(),
+  address: z.string().max(500).nullable().optional(),
+  zipcode: z.string().max(50).nullable().optional(),
+  city: z.string().max(200).nullable().optional(),
+  state_abbr: z.string().max(20).nullable().optional(),
+  sales_id: z.number().int().positive().nullable().optional(),
+  context_links: z.unknown().nullable().optional(),
+  country: z.string().max(100).nullable().optional(),
+  description: z.string().max(100_000).nullable().optional(),
+  revenue: z.string().max(100).nullable().optional(),
+  tax_identifier: z.string().max(200).nullable().optional(),
+  logo: z.unknown().nullable().optional(),
+});
+
+const taskInput = z.object({
+  contact_id: z.number().int().positive().nullable().optional(),
+  company_id: z.number().int().positive().nullable().optional(),
+  sales_id: z.number().int().positive().nullable().optional(),
+  title: z.string().max(500).optional(),
+  description: z.string().max(100_000).nullable().optional(),
+  type: z.string().max(100).nullable().optional(),
+  text: z.string().max(100_000).nullable().optional(),
+  status: z.string().max(100).optional(),
+  due_date: z.string().nullable().optional(),
+  done_date: z.string().nullable().optional(),
+});
+
+const dealInput = z.object({
+  contact_id: z.number().int().positive().nullable().optional(),
+  contact_ids: z.array(z.number().int().positive()).optional(),
+  company_id: z.number().int().positive().nullable().optional(),
+  sales_id: z.number().int().positive().nullable().optional(),
+  name: z.string().min(1).max(500).optional(),
+  category: z.string().max(200).nullable().optional(),
+  description: z.string().max(100_000).nullable().optional(),
+  amount: z.number().int().nullable().optional(),
+  stage: z.string().max(100).optional(),
+  status: z.string().max(100).optional(),
+  archived_at: z.string().nullable().optional(),
+  position: z.number().int().optional(),
+  index: z.number().int().optional(),
+  expected_closing_date: z.string().nullable().optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
+
+const noteInput = z.object({
+  contact_id: z.number().int().positive().nullable().optional(),
+  deal_id: z.number().int().positive().nullable().optional(),
+  company_id: z.number().int().positive().nullable().optional(),
+  sales_id: z.number().int().positive().nullable().optional(),
+  title: z.string().max(500).nullable().optional(),
+  content: z.string().max(100_000).optional(),
+  text: z.string().max(100_000).optional(),
+  source: z.string().max(100).optional(),
+  status: z.string().max(100).nullable().optional(),
+  attachments: z.array(z.unknown()).nullable().optional(),
+});
+
 type CrmEnv = {
   Bindings: Env;
   Variables: { sale: typeof sales.$inferSelect };
@@ -40,6 +104,72 @@ type CrmEnv = {
 const api = new Hono<CrmEnv>();
 
 const readTables = { activities, deals, notes, tasks } as const;
+
+const writableResources = {
+  tasks: { table: tasks, input: taskInput },
+  deals: { table: deals, input: dealInput },
+  notes: { table: notes, input: noteInput },
+  contact_notes: { table: notes, input: noteInput },
+  deal_notes: { table: notes, input: noteInput },
+} as const;
+
+const normalizeWritable = (
+  resource: keyof typeof writableResources,
+  input: Record<string, unknown>,
+  now: string,
+) => {
+  if (resource === "tasks") {
+    return {
+      contactId: input.contact_id ?? null,
+      companyId: input.company_id ?? null,
+      salesId: input.sales_id ?? null,
+      title: input.title ?? input.text ?? input.type ?? "Task",
+      description: input.description ?? input.text ?? null,
+      type: input.type ?? null,
+      text: input.text ?? null,
+      status: input.status ?? "pending",
+      dueDate: input.due_date ?? null,
+      doneDate: input.done_date ?? null,
+      createdAt: now,
+      updatedAt: now,
+    };
+  }
+  if (resource === "deals") {
+    const contactIds = input.contact_ids ?? [];
+    return {
+      contactId: input.contact_id ?? (contactIds as number[])[0] ?? null,
+      companyId: input.company_id ?? null,
+      contactIds,
+      salesId: input.sales_id ?? null,
+      name: input.name ?? "Deal",
+      category: input.category ?? null,
+      description: input.description ?? null,
+      amount: input.amount ?? null,
+      stage: input.stage ?? "default",
+      status: input.status ?? "open",
+      archivedAt: input.archived_at ?? null,
+      position: input.position ?? input.index ?? 0,
+      expectedClosingDate: input.expected_closing_date ?? null,
+      metadata: input.metadata ?? {},
+      createdAt: now,
+      updatedAt: now,
+    };
+  }
+  return {
+    contactId: input.contact_id ?? null,
+    dealId: input.deal_id ?? null,
+    companyId: input.company_id ?? null,
+    salesId: input.sales_id ?? null,
+    title:
+      input.title ?? (resource === "deal_notes" ? "Deal note" : "Contact note"),
+    content: input.content ?? input.text ?? "",
+    source: input.source ?? "manual",
+    status: input.status ?? null,
+    attachments: input.attachments ?? null,
+    createdAt: now,
+    updatedAt: now,
+  };
+};
 
 api.use("/*", async (context, next) => {
   const session = await createAuth(context.env).api.getSession({
@@ -64,9 +194,120 @@ const requireAdministrator = (context: Context<CrmEnv>) => {
 };
 
 api.get("/companies", async (context) => {
+  const page = Math.max(Number(context.req.query("page") ?? 1), 1);
+  const perPage = Math.min(
+    Math.max(Number(context.req.query("perPage") ?? 25), 1),
+    100,
+  );
+  const query = context.req.query("q")?.trim();
+  const where = query ? like(companies.name, `%${query}%`) : undefined;
   const db = createDb(context.env.DB);
-  const rows = await db.select().from(companies).orderBy(companies.name).all();
-  return context.json({ data: rows, total: rows.length });
+  const [data, [{ total }]] = await Promise.all([
+    db
+      .select()
+      .from(companies)
+      .where(where)
+      .orderBy(companies.name)
+      .limit(perPage)
+      .offset((page - 1) * perPage)
+      .all(),
+    db.select({ total: count() }).from(companies).where(where).all(),
+  ]);
+  return context.json({ data, total });
+});
+
+api.post("/companies", async (context) => {
+  const body = companyInput.safeParse(await context.req.json());
+  if (!body.success) return context.json({ error: body.error.flatten() }, 400);
+  const now = new Date().toISOString();
+  const [company] = await createDb(context.env.DB)
+    .insert(companies)
+    .values({
+      name: body.data.name,
+      sector: body.data.sector ?? null,
+      size: body.data.size ?? null,
+      linkedinUrl: body.data.linkedin_url ?? null,
+      website: body.data.website ?? null,
+      phoneNumber: body.data.phone_number ?? null,
+      address: body.data.address ?? null,
+      zipcode: body.data.zipcode ?? null,
+      city: body.data.city ?? null,
+      stateAbbr: body.data.state_abbr ?? null,
+      salesId: body.data.sales_id ?? null,
+      contextLinks: body.data.context_links ?? null,
+      country: body.data.country ?? null,
+      description: body.data.description ?? null,
+      revenue: body.data.revenue ?? null,
+      taxIdentifier: body.data.tax_identifier ?? null,
+      logo: body.data.logo ?? null,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .returning()
+    .all();
+  return context.json({ data: company }, 201);
+});
+
+api.patch("/companies/:id", async (context) => {
+  const id = Number(context.req.param("id"));
+  const body = companyInput.partial().safeParse(await context.req.json());
+  if (!Number.isSafeInteger(id) || !body.success)
+    return context.json({ error: "Invalid company update" }, 400);
+  const input = body.data;
+  const [company] = await createDb(context.env.DB)
+    .update(companies)
+    .set({
+      ...(input.name === undefined ? {} : { name: input.name }),
+      ...(input.sector === undefined ? {} : { sector: input.sector }),
+      ...(input.size === undefined ? {} : { size: input.size }),
+      ...(input.linkedin_url === undefined
+        ? {}
+        : { linkedinUrl: input.linkedin_url }),
+      ...(input.website === undefined ? {} : { website: input.website }),
+      ...(input.phone_number === undefined
+        ? {}
+        : { phoneNumber: input.phone_number }),
+      ...(input.address === undefined ? {} : { address: input.address }),
+      ...(input.zipcode === undefined ? {} : { zipcode: input.zipcode }),
+      ...(input.city === undefined ? {} : { city: input.city }),
+      ...(input.state_abbr === undefined
+        ? {}
+        : { stateAbbr: input.state_abbr }),
+      ...(input.sales_id === undefined ? {} : { salesId: input.sales_id }),
+      ...(input.context_links === undefined
+        ? {}
+        : { contextLinks: input.context_links }),
+      ...(input.country === undefined ? {} : { country: input.country }),
+      ...(input.description === undefined
+        ? {}
+        : { description: input.description }),
+      ...(input.revenue === undefined ? {} : { revenue: input.revenue }),
+      ...(input.tax_identifier === undefined
+        ? {}
+        : { taxIdentifier: input.tax_identifier }),
+      ...(input.logo === undefined ? {} : { logo: input.logo }),
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(companies.id, id))
+    .returning()
+    .all();
+  return company
+    ? context.json({ data: company })
+    : context.json({ error: "Company not found" }, 404);
+});
+
+api.delete("/companies/:id", async (context) => {
+  const id = Number(context.req.param("id"));
+  if (!Number.isSafeInteger(id))
+    return context.json({ error: "Invalid company id" }, 400);
+  const [company] = await createDb(context.env.DB)
+    .delete(companies)
+    .where(eq(companies.id, id))
+    .returning()
+    .all();
+  return company
+    ? context.json({ data: company })
+    : context.json({ error: "Company not found" }, 404);
 });
 
 api.get("/sales", async (context) => {
@@ -379,6 +620,73 @@ api.delete("/contacts/:id", async (context) => {
   return contact
     ? context.json({ data: contact })
     : context.json({ error: "Contact not found" }, 404);
+});
+
+api.post("/:resource", async (context) => {
+  const resource = context.req.param(
+    "resource",
+  ) as keyof typeof writableResources;
+  const definition = writableResources[resource];
+  if (!definition) return context.json({ error: "Resource not found" }, 404);
+  const parsed = definition.input.safeParse(await context.req.json());
+  if (!parsed.success)
+    return context.json({ error: parsed.error.flatten() }, 400);
+  const now = new Date().toISOString();
+  const values = normalizeWritable(resource, parsed.data, now);
+  const [row] = await createDb(context.env.DB)
+    .insert(definition.table as typeof tasks)
+    .values(values as typeof tasks.$inferInsert)
+    .returning()
+    .all();
+  return context.json({ data: row }, 201);
+});
+
+api.patch("/:resource/:id", async (context) => {
+  const resource = context.req.param(
+    "resource",
+  ) as keyof typeof writableResources;
+  const definition = writableResources[resource];
+  const id = Number(context.req.param("id"));
+  if (!definition) return context.json({ error: "Resource not found" }, 404);
+  if (!Number.isSafeInteger(id))
+    return context.json({ error: "Invalid id" }, 400);
+  const parsed = definition.input.partial().safeParse(await context.req.json());
+  if (!parsed.success)
+    return context.json({ error: parsed.error.flatten() }, 400);
+  const values = normalizeWritable(
+    resource,
+    parsed.data,
+    new Date().toISOString(),
+  );
+  delete (values as Record<string, unknown>).createdAt;
+  const [row] = await createDb(context.env.DB)
+    .update(definition.table as typeof tasks)
+    .set(values as never)
+    .where(eq((definition.table as typeof tasks).id, id))
+    .returning()
+    .all();
+  return row
+    ? context.json({ data: row })
+    : context.json({ error: "Record not found" }, 404);
+});
+
+api.delete("/:resource/:id", async (context) => {
+  const resource = context.req.param(
+    "resource",
+  ) as keyof typeof writableResources;
+  const definition = writableResources[resource];
+  const id = Number(context.req.param("id"));
+  if (!definition) return context.json({ error: "Resource not found" }, 404);
+  if (!Number.isSafeInteger(id))
+    return context.json({ error: "Invalid id" }, 400);
+  const [row] = await createDb(context.env.DB)
+    .delete(definition.table as typeof tasks)
+    .where(eq((definition.table as typeof tasks).id, id))
+    .returning()
+    .all();
+  return row
+    ? context.json({ data: row })
+    : context.json({ error: "Record not found" }, 404);
 });
 
 api.post("/contacts/merge", async (context) => {

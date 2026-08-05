@@ -18,6 +18,9 @@ const apiOrigin = (import.meta.env.VITE_CLOUDFLARE_API_URL ?? "").replace(
 const resourceUrl = (resource: string, id?: Identifier) =>
   `${apiOrigin}/api/crm/${resource}${id === undefined ? "" : `/${id}`}`;
 
+const toSnakeCase = (key: string) =>
+  key.replace(/[A-Z]/g, (character) => `_${character.toLowerCase()}`);
+
 const request = async <T>(input: RequestInfo | URL, init?: RequestInit) => {
   const headers = new Headers(init?.headers);
   headers.set("Content-Type", "application/json");
@@ -40,15 +43,18 @@ const request = async <T>(input: RequestInfo | URL, init?: RequestInit) => {
 };
 
 const fromApiRecord = (resource: string, value: Record<string, unknown>) => {
-  if (resource !== "contacts") return value;
+  const record = Object.fromEntries(
+    Object.entries(value).map(([key, entry]) => [toSnakeCase(key), entry]),
+  );
+  if (resource !== "contacts") return record;
   return {
-    ...value,
-    first_name: value.firstName,
-    last_name: value.lastName,
-    title: value.jobTitle,
-    company_id: value.companyId,
-    created_at: value.createdAt,
-    updated_at: value.updatedAt,
+    ...record,
+    first_name: record.first_name,
+    last_name: record.last_name,
+    title: record.job_title,
+    company_id: record.company_id,
+    created_at: record.created_at,
+    updated_at: record.updated_at,
   };
 };
 
