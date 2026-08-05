@@ -64,31 +64,85 @@ async function exportSupabase() {
 
 const sourceValue = (row, ...names) =>
   names.map((name) => row[name]).find((value) => value !== undefined);
-const jsonValue = (value) =>
-  value === undefined || value === null ? "[]" : value;
+const jsonValue = (value, fallback = []) =>
+  value === undefined || value === null ? fallback : value;
+const isoNow = () => new Date().toISOString();
+const sourceDate = (row, ...names) => sourceValue(row, ...names) ?? isoNow();
 
 const rowMappings = {
   companies: {
-    table: "companies",
-    columns: ["id", "name", "sector", "created_at", "updated_at"],
+    targetTable: "companies",
+    columns: [
+      "id",
+      "name",
+      "sector",
+      "size",
+      "linkedin_url",
+      "website",
+      "phone_number",
+      "address",
+      "zipcode",
+      "city",
+      "state_abbr",
+      "sales_id",
+      "context_links",
+      "country",
+      "description",
+      "revenue",
+      "tax_identifier",
+      "logo",
+      "created_at",
+      "updated_at",
+    ],
     values: (row) => [
       sourceValue(row, "id"),
       sourceValue(row, "name"),
       sourceValue(row, "sector"),
-      sourceValue(row, "created_at") ?? new Date().toISOString(),
-      sourceValue(row, "updated_at") ?? new Date().toISOString(),
+      sourceValue(row, "size"),
+      sourceValue(row, "linkedin_url"),
+      sourceValue(row, "website"),
+      sourceValue(row, "phone_number"),
+      sourceValue(row, "address"),
+      sourceValue(row, "zipcode"),
+      sourceValue(row, "city"),
+      sourceValue(row, "state_abbr", "stateAbbr"),
+      sourceValue(row, "sales_id"),
+      jsonValue(sourceValue(row, "context_links"), null),
+      sourceValue(row, "country"),
+      sourceValue(row, "description"),
+      sourceValue(row, "revenue"),
+      sourceValue(row, "tax_identifier"),
+      jsonValue(sourceValue(row, "logo"), null),
+      sourceDate(row, "created_at"),
+      sourceDate(row, "updated_at", "created_at"),
     ],
   },
   contacts: {
-    table: "contacts",
+    targetTable: "contacts",
     columns: [
       "id",
       "first_name",
       "last_name",
       "email",
+      "email_json",
       "phone",
+      "phone_json",
+      "phone_1_number",
+      "phone_1_type",
+      "phone_2_number",
+      "phone_2_type",
       "job_title",
+      "gender",
+      "background",
+      "acquisition",
+      "avatar",
+      "first_seen",
+      "last_seen",
+      "has_newsletter",
+      "status",
       "company_id",
+      "sales_id",
+      "linkedin_url",
       "tags",
       "created_at",
       "updated_at",
@@ -97,17 +151,35 @@ const rowMappings = {
       sourceValue(row, "id"),
       sourceValue(row, "first_name") ?? "Unknown",
       sourceValue(row, "last_name") ?? "Contact",
-      sourceValue(row, "email"),
-      sourceValue(row, "phone") ?? sourceValue(row, "phone_number"),
+      sourceValue(row, "email") ??
+        (Array.isArray(row.email_jsonb) ? row.email_jsonb[0]?.email : null),
+      jsonValue(sourceValue(row, "email_jsonb"), null),
+      sourceValue(row, "phone") ??
+        (Array.isArray(row.phone_jsonb) ? row.phone_jsonb[0]?.number : null),
+      jsonValue(sourceValue(row, "phone_jsonb"), null),
+      sourceValue(row, "phone_1_number"),
+      sourceValue(row, "phone_1_type"),
+      sourceValue(row, "phone_2_number"),
+      sourceValue(row, "phone_2_type"),
       sourceValue(row, "title", "job_title"),
+      sourceValue(row, "gender"),
+      sourceValue(row, "background"),
+      sourceValue(row, "acquisition"),
+      jsonValue(sourceValue(row, "avatar"), null),
+      sourceDate(row, "first_seen", "created_at"),
+      sourceDate(row, "last_seen", "updated_at"),
+      sourceValue(row, "has_newsletter"),
+      sourceValue(row, "status"),
       sourceValue(row, "company_id"),
+      sourceValue(row, "sales_id"),
+      sourceValue(row, "linkedin_url"),
       jsonValue(sourceValue(row, "tags")),
-      sourceValue(row, "first_seen", "created_at") ?? new Date().toISOString(),
-      sourceValue(row, "last_seen", "updated_at") ?? new Date().toISOString(),
+      sourceDate(row, "created_at", "first_seen"),
+      sourceDate(row, "updated_at", "last_seen"),
     ],
   },
   sales: {
-    table: "sales",
+    targetTable: "sales",
     columns: [
       "id",
       "user_id",
@@ -118,6 +190,7 @@ const rowMappings = {
       "disabled",
       "created_at",
       "updated_at",
+      "avatar",
     ],
     values: (row) => [
       sourceValue(row, "id"),
@@ -127,8 +200,162 @@ const rowMappings = {
       sourceValue(row, "email"),
       row.administrator ? "admin" : "user",
       sourceValue(row, "disabled") ?? false,
-      sourceValue(row, "created_at") ?? new Date().toISOString(),
-      sourceValue(row, "updated_at") ?? new Date().toISOString(),
+      sourceDate(row, "created_at"),
+      sourceDate(row, "updated_at", "created_at"),
+      jsonValue(sourceValue(row, "avatar"), null),
+    ],
+  },
+  tasks: {
+    targetTable: "tasks",
+    columns: [
+      "id",
+      "contact_id",
+      "company_id",
+      "sales_id",
+      "title",
+      "description",
+      "type",
+      "text",
+      "status",
+      "due_date",
+      "done_date",
+      "created_at",
+      "updated_at",
+    ],
+    values: (row) => [
+      sourceValue(row, "id"),
+      sourceValue(row, "contact_id"),
+      sourceValue(row, "company_id"),
+      sourceValue(row, "sales_id"),
+      sourceValue(row, "text", "type") ?? "Task",
+      sourceValue(row, "text"),
+      sourceValue(row, "type"),
+      sourceValue(row, "text"),
+      sourceValue(row, "done_date") ? "done" : "pending",
+      sourceValue(row, "due_date"),
+      sourceValue(row, "done_date"),
+      sourceDate(row, "created_at", "due_date"),
+      sourceDate(row, "updated_at", "created_at", "due_date"),
+    ],
+  },
+  deals: {
+    targetTable: "deals",
+    columns: [
+      "id",
+      "contact_id",
+      "company_id",
+      "contact_ids",
+      "sales_id",
+      "name",
+      "category",
+      "description",
+      "amount",
+      "stage",
+      "status",
+      "archived_at",
+      "position",
+      "expected_closing_date",
+      "metadata",
+      "created_at",
+      "updated_at",
+    ],
+    values: (row) => {
+      const contactIds = Array.isArray(row.contact_ids) ? row.contact_ids : [];
+      return [
+        sourceValue(row, "id"),
+        contactIds[0] ?? null,
+        sourceValue(row, "company_id"),
+        jsonValue(contactIds),
+        sourceValue(row, "sales_id"),
+        sourceValue(row, "name") ?? "Deal",
+        sourceValue(row, "category"),
+        sourceValue(row, "description"),
+        sourceValue(row, "amount"),
+        sourceValue(row, "stage") ?? "default",
+        sourceValue(row, "archived_at") ? "archived" : "open",
+        sourceValue(row, "archived_at"),
+        sourceValue(row, "index") ?? 0,
+        sourceValue(row, "expected_closing_date"),
+        jsonValue(sourceValue(row, "metadata"), {}),
+        sourceDate(row, "created_at"),
+        sourceDate(row, "updated_at", "created_at"),
+      ];
+    },
+  },
+  contact_notes: {
+    targetTable: "notes",
+    columns: [
+      "id",
+      "contact_id",
+      "deal_id",
+      "sales_id",
+      "title",
+      "content",
+      "source",
+      "status",
+      "attachments",
+      "created_at",
+      "updated_at",
+    ],
+    values: (row) => [
+      sourceValue(row, "id"),
+      sourceValue(row, "contact_id"),
+      null,
+      sourceValue(row, "sales_id"),
+      "Contact note",
+      sourceValue(row, "text") ?? "",
+      "manual",
+      sourceValue(row, "status"),
+      jsonValue(sourceValue(row, "attachments"), null),
+      sourceDate(row, "date"),
+      sourceDate(row, "date"),
+    ],
+  },
+  deal_notes: {
+    targetTable: "notes",
+    columns: [
+      "id",
+      "contact_id",
+      "deal_id",
+      "sales_id",
+      "title",
+      "content",
+      "source",
+      "status",
+      "attachments",
+      "created_at",
+      "updated_at",
+    ],
+    values: (row) => [
+      Number(sourceValue(row, "id")) + 1_000_000_000,
+      null,
+      sourceValue(row, "deal_id"),
+      sourceValue(row, "sales_id"),
+      sourceValue(row, "type") ?? "Deal note",
+      sourceValue(row, "text") ?? "",
+      "manual",
+      null,
+      jsonValue(sourceValue(row, "attachments"), null),
+      sourceDate(row, "date"),
+      sourceDate(row, "date"),
+    ],
+  },
+  tags: {
+    targetTable: "tags",
+    columns: ["id", "name", "color"],
+    values: (row) => [
+      sourceValue(row, "id"),
+      sourceValue(row, "name") ?? "Tag",
+      sourceValue(row, "color") ?? "#64748b",
+    ],
+  },
+  configuration: {
+    targetTable: "configuration",
+    columns: ["key", "value", "updated_at"],
+    values: (row) => [
+      "crm",
+      sourceValue(row, "config") ?? {},
+      sourceDate(row, "updated_at"),
     ],
   },
 };
@@ -142,7 +369,7 @@ async function generateImport() {
     for (const row of input.tables?.[sourceTable] ?? []) {
       const values = mapping.values(row).map(escapeSql).join(", ");
       statements.push(
-        `INSERT OR REPLACE INTO ${mapping.table} (${mapping.columns.join(", ")}) VALUES (${values});`,
+        `INSERT OR REPLACE INTO ${mapping.targetTable} (${mapping.columns.join(", ")}) VALUES (${values});`,
       );
     }
   }
@@ -183,8 +410,15 @@ else if (command === "reconcile") {
   );
   let differences = 0;
   const target = process.env.MIGRATION_TARGET ?? "local";
+  const expectedByTarget = new Map();
   for (const [sourceTable, mapping] of Object.entries(rowMappings)) {
-    const expected = input.tables?.[sourceTable]?.length ?? 0;
+    expectedByTarget.set(
+      mapping.targetTable,
+      (expectedByTarget.get(mapping.targetTable) ?? 0) +
+        (input.tables?.[sourceTable]?.length ?? 0),
+    );
+  }
+  for (const [targetTable, expected] of expectedByTarget) {
     const { stdout } = await execFileAsync(
       "wrangler",
       [
@@ -194,7 +428,7 @@ else if (command === "reconcile") {
         `--${target}`,
         "--json",
         "--command",
-        `SELECT COUNT(*) AS count FROM ${mapping.table}`,
+        `SELECT COUNT(*) AS count FROM ${targetTable}`,
         "--config",
         "wrangler.jsonc",
       ],
@@ -204,9 +438,7 @@ else if (command === "reconcile") {
     const actual = Number(result[0]?.results?.[0]?.count ?? 0);
     const marker = actual === expected ? "OK" : "DIFF";
     if (marker === "DIFF") differences += 1;
-    console.log(
-      `${marker} ${mapping.table}: exported=${expected} d1=${actual}`,
-    );
+    console.log(`${marker} ${targetTable}: exported=${expected} d1=${actual}`);
   }
   if (differences > 0) process.exitCode = 1;
   else console.log("Reconciliation passed for mapped table counts.");
