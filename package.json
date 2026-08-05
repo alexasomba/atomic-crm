@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "test:node": "vp test run --config vitest.node.config.ts",
+    "test:worker": "vp test run --config vitest.node.config.ts test/cloudflare-worker.test.ts",
     "test:integration": "vp test --config vitest.integration.config.ts",
     "dev:demo": "vp dev --config vite.demo.config.ts",
     "dev:all": "concurrently --kill-others -n app,copilot,mcp -c cyan,green,yellow \"vp dev --config vite.demo.config.ts\" \"cd server && npm run dev\" \"cd server && npm run dev:mcp\"",

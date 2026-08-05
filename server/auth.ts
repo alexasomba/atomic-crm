@@ -84,6 +84,7 @@ const cliDatabase = drizzle({} as D1Database);
 
 export const auth = betterAuth({
   ...authOptions,
+  baseURL: "http://localhost:5173",
   database: drizzleAdapter(cliDatabase, {
     provider: "sqlite",
     schema: dbSchema,

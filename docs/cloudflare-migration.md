@@ -57,6 +57,9 @@ an isolated compatibility spike; CopilotKit remains on the existing Node
 runtime until streaming, MCP, and human-approval behavior are verified on the
 Worker runtime.
 
+Run `pnpm run test:worker` for the Worker HTTP boundary tests. These use Hono's
+in-process request adapter and do not require a Cloudflare account.
+
 No production database ID or email domain is committed. Replace the placeholder
 `database_id`, bucket, queue, and sender values in an environment-specific
 Wrangler configuration before deploying.
