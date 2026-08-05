@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -198,15 +199,16 @@ const SettingsButton = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel className="font-normal h-12 px-4">
-          <div className="flex flex-col justify-center h-full">
-            <p className="text-base font-medium leading-none">
-              {identity?.fullName}
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <ThemeMenu />
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="font-normal h-12 px-4">
+            <div className="flex flex-col justify-center h-full">
+              <p className="text-base font-medium leading-none">
+                {identity?.fullName}
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <ThemeMenu />
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => logout()}

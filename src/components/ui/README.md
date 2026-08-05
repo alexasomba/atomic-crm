@@ -13,7 +13,7 @@ The components in this directory come from [shadcn/ui](https://ui.shadcn.com/). 
 - Tooltips
 - And more...
 
-These components are built on top of [Radix UI](https://www.radix-ui.com/) and styled using [Tailwind CSS](https://tailwindcss.com/).
+These components are built on top of [Base UI](https://base-ui.com/) and styled using [Tailwind CSS](https://tailwindcss.com/).
 
 ## Documentation
 
@@ -28,7 +28,7 @@ In Atomic CRM, these components are sometimes slightly modified to fit the look 
 Shadcn/ui components are actively maintained and updated. To add or update a UI component in Atomic CRM, type the following command:
 
 ```
-npx shadcn@latest add [component-name]
+pnpm exec shadcn add [component-name]
 ```
 
 The admin components have a dependency on some ui components, so if you update the admin components, this will also update the ui components. Check [the admin components readme](../admin/Readme.md) for the command to update them.

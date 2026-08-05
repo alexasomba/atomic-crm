@@ -1,4 +1,4 @@
-import { Children, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Translate,
   useAuthProvider,
@@ -10,6 +10,7 @@ import { LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -63,16 +64,17 @@ export function UserMenu({ children }: UserMenuProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {identity?.fullName}
-              </p>
-            </div>
-          </DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col gap-1">
+                <p className="text-sm font-medium leading-none">
+                  {identity?.fullName}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            {children}
+          </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          {children}
-          {Children.count(children) > 0 && <DropdownMenuSeparator />}
           <DropdownMenuItem onClick={() => logout()} className="cursor-pointer">
             <LogOut />
             <Translate i18nKey="ra.auth.logout">Log out</Translate>
