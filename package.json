@@ -232,6 +232,7 @@
     "micromark-util-combine-extensions": "catalog:",
     "micromark-util-encode": "catalog:",
     "micromark-util-sanitize-uri": "catalog:",
+    "micromark-util-symbol": "catalog:",
     "mime": "catalog:",
     "ms": "catalog:",
     "next-themes": "catalog:",
