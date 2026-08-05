@@ -1,7 +1,5 @@
 import { useCallback, useRef, useState, type ReactNode } from "react";
-import {
-  CopilotOverlayContext,
-} from "./useCopilotOverlay";
+import { CopilotOverlayContext } from "./useCopilotOverlay";
 
 export function CopilotOverlayProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);

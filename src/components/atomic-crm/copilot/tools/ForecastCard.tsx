@@ -21,7 +21,11 @@ export interface ForecastCardProps {
   status: string;
 }
 
-export function ForecastCard({ args, respond, status: _status }: ForecastCardProps) {
+export function ForecastCard({
+  args,
+  respond,
+  status: _status,
+}: ForecastCardProps) {
   const { data: identity } = useGetIdentity({ staleTime: 0 });
   const isAdmin = !!(identity as { administrator?: boolean })?.administrator;
 
