@@ -104,10 +104,10 @@ jobs:
                   node-version: 22
 
             - name: "\U0001F4E5 Download deps"
-              run: npm ci
+              run: corepack enable && pnpm install --frozen-lockfile
 
             - name: "\U0001F528 Build"
-              run: npm run build:demo
+              run: pnpm exec vp run build:demo
 
             - name: "\U0001F4E4 Upload demo artifacts"
               uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -189,10 +189,10 @@ jobs:
                   node-version: 22
 
             - name: "\U0001F4E5 Download deps"
-              run: npm ci
+              run: corepack enable && pnpm install --frozen-lockfile
 
             - name: "\U0001F528 Build"
-              run: npm run build
+              run: pnpm exec vp build
 
             - name: "\U0001F4E4 Upload supabase artifacts"
               uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

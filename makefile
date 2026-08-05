@@ -4,7 +4,7 @@ help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 install: package.json ## install dependencies
-	npm install;
+	vp install
 	@(cd server && npm install)
 
 start-supabase: ## start supabase locally
@@ -20,7 +20,7 @@ supabase-reset-database: ## reset (and clear!) the database
 	npx supabase db reset
 
 start-app: ## start the app locally
-	npm run dev
+	vp dev
 
 install-server: ## install server dependencies
 	@(cd server && npm install)
@@ -34,10 +34,10 @@ start-mcp: ## start the MCP contract analyzer server
 start: start-supabase start-app ## start the stack locally
 
 start-demo: ## start the app locally in demo mode
-	npm run dev:demo
+	vp run dev:demo
 
 start-all: ## start everything (app + CopilotKit server + MCP server)
-	npm run dev:all
+	vp run dev:all
 
 stop-supabase: ## stop local supabase
 	npx supabase stop
@@ -45,10 +45,10 @@ stop-supabase: ## stop local supabase
 stop: stop-supabase ## stop the stack locally
 
 build: ## build the app
-	npm run build
+	vp build
 
 build-demo: ## build the app in demo mode
-	npm run build:demo
+	vp run build:demo
 
 prod-start: build supabase-deploy
 	open http://127.0.0.1:3000 && npx serve -l tcp://127.0.0.1:3000 dist
@@ -65,20 +65,19 @@ supabase-deploy:
 	npx supabase functions deploy
 
 test:
-	npm test
+	vp test
 
 test-ci:
-	CI=1 npm test
+	CI=1 vp test
 
 lint:
-	npm run lint
-	npm run prettier
+	vp check
 
 publish:
 	npm publish
 
 typecheck:
-	npm run typecheck
+	vp check --no-fmt --no-lint
 
 doc-install:
 	@(cd doc && npm install)
@@ -98,11 +97,11 @@ doc-deploy:
 	@(cd doc && npx gh-pages -b gh-pages -d dist -e doc -m "Deploy docs" --remove doc)
 
 registry-build: ## build the shadcn registry
-	npm run registry:build
+	vp run registry:build
 
 registry-deploy: registry-build ## Deploy the shadcn registry (Automatically done by CI/CD pipeline)
 	@(cd public/r && npx gh-pages -b gh-pages -d ./ -s atomic-crm.json -e r -m "Deploy registry" --remove r)
 
 registry-gen: ## Generate the shadcn registry (ran automatically by a pre-commit hook)
-	pnpm run registry:gen
+	vp run registry:gen
 	vp fmt registry.json --write

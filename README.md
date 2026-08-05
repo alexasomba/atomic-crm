@@ -77,7 +77,7 @@ Two env vars wire the frontend to the runtime:
 Run the **full local stack** (frontend + copilot runtime + MCP) — needs an LLM provider configured in `server/.env`:
 
 ```sh
-npm run dev:all
+  vp run dev:all
 ```
 
 Or run **only the frontend against the deployed CopilotKit backend** (no local server needed):
@@ -85,10 +85,15 @@ Or run **only the frontend against the deployed CopilotKit backend** (no local s
 ```sh
 VITE_COPILOTKIT_API_URL=http://localhost:5173 \
 COPILOTKIT_PROXY_TARGET=https://atomic-crm-copilot.onrender.com \
-  npm run dev:demo
+  vp run dev:demo
 ```
 
 The vite dev server proxies `/api/*` to `COPILOTKIT_PROXY_TARGET` so tool calls and chat both flow through the same origin (no CORS).
+
+When using the default local proxy target, start the CopilotKit runtime with
+`make start-server`; otherwise the browser will report connection-refused
+proxy errors for `/api/copilotkit`. Set `COPILOTKIT_PROXY_TARGET` when using a
+remote runtime.
 
 ## Documentation
 
@@ -96,13 +101,19 @@ The user and developer documentation for this project is available [in the `doc/
 
 ## Testing Changes
 
-This project contains unit tests. Run them with the following command:
+This project contains Vitest unit and browser tests. Run them with the following command:
 
 ```sh
 make test
 ```
 
-You can add your own unit tests powered by Jest anywhere in the `src` directory. The test files should be named `*.test.tsx` or `*.test.ts`.
+You can add your own tests anywhere in the `src` directory. The test files should be named `*.test.tsx` or `*.test.ts`.
+
+## Vite+ build diagnostics
+
+The root project uses Vite+ 0.2.8 for installation, checking, testing, development, and production builds. Production sourcemaps remain enabled. Current builds report large application chunks because the CRM resource definitions are eagerly registered by the admin shell; the measured main application chunk is approximately 2.7 MB minified (812 kB gzip). This warning is retained so future route-level splitting is driven by a measured payload improvement rather than hidden with a higher warning limit.
+
+Tailwind CSS and Vite CSS post-processing may report `SOURCEMAP_BROKEN` warnings because those upstream transforms do not emit sourcemaps. These warnings are documented here and are not suppressed by disabling production sourcemaps.
 
 ## Registry
 

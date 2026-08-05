@@ -5,6 +5,17 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: [
+      "@testing-library/dom",
+      "ansi-regex",
+      "ansi-styles",
+      "aria-query",
+      "dom-accessibility-api",
+      "pretty-format",
+      "react-is",
+    ],
+  },
   test: {
     globals: true,
     globalSetup: ["./test/globalSetup.ts"],

@@ -1,5 +1,5 @@
 import path from "node:path";
-import { defineConfig } from "vite";
+import { defineConfig } from "vite-plus";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -33,9 +33,6 @@ export default defineConfig({
     ),
   },
   base: "./",
-  esbuild: {
-    keepNames: true,
-  },
   build: {
     sourcemap: true,
   },
@@ -56,6 +53,10 @@ export default defineConfig({
     preserveSymlinks: true,
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@segment/analytics-node": path.resolve(
+        __dirname,
+        "./src/lib/segment-analytics-node-browser.ts",
+      ),
     },
   },
 });

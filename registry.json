@@ -1060,6 +1060,10 @@
         {
           "path": "src/lib/toSlug.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/segment-analytics-node-browser.ts",
+          "type": "registry:lib"
         }
       ]
     }

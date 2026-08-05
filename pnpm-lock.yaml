@@ -355,15 +355,6 @@ catalogs:
     '@react-spring/web':
       specifier: 10.1.2
       version: 10.1.2
-    '@segment/analytics-core':
-      specifier: ^1.8.3
-      version: 1.8.3
-    '@segment/analytics-generic-utils':
-      specifier: ^1.2.0
-      version: 1.2.0
-    '@segment/analytics-node':
-      specifier: 3.1.0
-      version: 3.1.0
     '@standard-schema/spec':
       specifier: 1.1.0
       version: 1.1.0
@@ -409,6 +400,9 @@ catalogs:
     '@tanstack/virtual-core':
       specifier: ^3.17.7
       version: 3.17.7
+    '@testing-library/dom':
+      specifier: ^10.4.1
+      version: 10.4.1
     '@testing-library/react':
       specifier: ^16.3.2
       version: 16.3.2
@@ -454,9 +448,18 @@ catalogs:
     '@vitest/browser-playwright':
       specifier: 4.1.10
       version: 4.1.10
+    ansi-regex:
+      specifier: ^5.0.1
+      version: 5.0.1
+    ansi-styles:
+      specifier: ^5.2.0
+      version: 5.2.0
     aria-hidden:
       specifier: 1.2.6
       version: 1.2.6
+    aria-query:
+      specifier: 5.3.0
+      version: 5.3.0
     attr-accept:
       specifier: 4.0.0
       version: 4.0.0
@@ -568,6 +571,9 @@ catalogs:
     diacritic:
       specifier: ^0.0.2
       version: 0.0.2
+    dom-accessibility-api:
+      specifier: ^0.5.16
+      version: 0.5.16
     dompurify:
       specifier: ^3.4.13
       version: 3.4.13
@@ -739,6 +745,9 @@ catalogs:
     lucide-react:
       specifier: ^1.28.0
       version: 1.28.0
+    lz-string:
+      specifier: ^1.5.0
+      version: 1.5.0
     magic-string:
       specifier: ^1.1.0
       version: 1.1.0
@@ -907,9 +916,15 @@ catalogs:
     phoenix:
       specifier: ^1.8.9
       version: 1.8.9
+    picocolors:
+      specifier: 1.1.1
+      version: 1.1.1
     playwright:
       specifier: ^1.62.1
       version: 1.62.1
+    pretty-format:
+      specifier: ^27.5.1
+      version: 27.5.1
     prop-types:
       specifier: 15.8.1
       version: 15.8.1
@@ -1341,15 +1356,6 @@ importers:
       '@react-spring/web':
         specifier: 'catalog:'
         version: 10.1.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@segment/analytics-core':
-        specifier: 'catalog:'
-        version: 1.8.3
-      '@segment/analytics-generic-utils':
-        specifier: 'catalog:'
-        version: 1.2.0
-      '@segment/analytics-node':
-        specifier: 'catalog:'
-        version: 3.1.0
       '@standard-schema/spec':
         specifier: 'catalog:'
         version: 1.1.0
@@ -2092,6 +2098,9 @@ importers:
       '@storybook/react-vite':
         specifier: 'catalog:'
         version: 10.5.6(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.1)(typescript@6.0.3))(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rollup@4.62.4)(storybook@10.5.6(@types/react@19.2.18)(react@19.2.8)(vite-plus@0.2.8(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.1)(typescript@6.0.3))(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(terser@5.49.1)(typescript@6.0.3)))(supports-color@10.2.2)(typescript@6.0.3)
+      '@testing-library/dom':
+        specifier: 'catalog:'
+        version: 10.4.1
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -2131,12 +2140,24 @@ importers:
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 4.1.10(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.1)(typescript@6.0.3))(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(playwright@1.62.1)(vitest@4.1.10)
+      ansi-regex:
+        specifier: 'catalog:'
+        version: 5.0.1
+      ansi-styles:
+        specifier: 'catalog:'
+        version: 5.2.0
+      aria-query:
+        specifier: 'catalog:'
+        version: 5.3.0
       chai:
         specifier: 'catalog:'
         version: 6.2.2
       concurrently:
         specifier: 'catalog:'
         version: 10.0.4
+      dom-accessibility-api:
+        specifier: 'catalog:'
+        version: 0.5.16
       eslint-plugin-storybook:
         specifier: 'catalog:'
         version: 9.1.20(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(storybook@10.5.6(@types/react@19.2.18)(react@19.2.8)(vite-plus@0.2.8(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.1)(typescript@6.0.3))(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(terser@5.49.1)(typescript@6.0.3)))(supports-color@10.2.2)(typescript@6.0.3)
@@ -2164,15 +2185,24 @@ importers:
       husky:
         specifier: 'catalog:'
         version: 9.1.7
+      lz-string:
+        specifier: 'catalog:'
+        version: 1.5.0
       magic-string:
         specifier: 'catalog:'
         version: 1.1.0
       pathe:
         specifier: 'catalog:'
         version: 2.0.3
+      picocolors:
+        specifier: 'catalog:'
+        version: 1.1.1
       playwright:
         specifier: 'catalog:'
         version: 1.62.1
+      pretty-format:
+        specifier: 'catalog:'
+        version: 27.5.1
       shadcn:
         specifier: 'catalog:'
         version: 4.16.1(supports-color@10.2.2)(typescript@6.0.3)
@@ -4556,18 +4586,11 @@ packages:
   '@segment/analytics-core@1.8.2':
     resolution: {integrity: sha512-5FDy6l8chpzUfJcNlIcyqYQq4+JTUynlVoCeCUuVz+l+6W0PXg+ljKp34R4yLVCcY5VVZohuW+HH0VLWdwYVAg==}
 
-  '@segment/analytics-core@1.8.3':
-    resolution: {integrity: sha512-63X8e2DWb2ZnJ9S3H8iSOFnbeDXMkTGhA8kZG4eFAO07QBwBVyWo5BCpv6vmuOMEkv2le6t2FMg1p6ZeJQA/4A==}
-
   '@segment/analytics-generic-utils@1.2.0':
     resolution: {integrity: sha512-DfnW6mW3YQOLlDQQdR89k4EqfHb0g/3XvBXkovH1FstUN93eL1kfW9CsDcVQyH3bAC5ZsFyjA/o/1Q2j0QeoWw==}
 
   '@segment/analytics-node@2.3.0':
     resolution: {integrity: sha512-fOXLL8uY0uAWw/sTLmezze80hj8YGgXXlAfvSS6TUmivk4D/SP0C0sxnbpFdkUzWg2zT64qWIZj26afEtSnxUA==}
-    engines: {node: '>=20'}
-
-  '@segment/analytics-node@3.1.0':
-    resolution: {integrity: sha512-F3pJmzUxmWZFV2wxJfuGvjLViCrQBFpxLLp4++fkoDsohWwS89T7n0M5nW1zxeYc2X2rA/v7q5ou3JZIw9bl3g==}
     engines: {node: '>=20'}
 
   '@shikijs/core@3.23.0':
@@ -6497,8 +6520,8 @@ packages:
     resolution: {integrity: sha512-KfYbmpRm0VbLjEvVa9yGwCi9GI34xvi7A/HXYWQO65CSD2u3MczUJSuwXKFIxlGsgBQizV9q5J9NHj4VG0n+pA==}
     engines: {node: '>=12.0.0'}
 
-  express-rate-limit@8.6.1:
-    resolution: {integrity: sha512-0D493aP61w0TJ2A0wy27riRsO7FMQ7FK+KUHOKCSfPvYo0R55aiC6emCVgFUeShH0fq0ICPVzNcgoS+BsbXQCA==}
+  express-rate-limit@8.6.2:
+    resolution: {integrity: sha512-YH4ru+eOJxQABscKFfRCy9R7x9QFGdezclVMwwgFFndzS2Xnm0uo6B0ABZsLhcpeptGv2qvuJVWlQr9gQZoC3A==}
     engines: {node: '>= 16'}
     peerDependencies:
       express: '>= 4.11'
@@ -10963,7 +10986,7 @@ snapshots:
       eventsource: 3.0.7
       eventsource-parser: 3.1.0
       express: 5.2.1(supports-color@10.2.2)
-      express-rate-limit: 8.6.1(express@5.2.1(supports-color@10.2.2))(supports-color@10.2.2)
+      express-rate-limit: 8.6.2(express@5.2.1(supports-color@10.2.2))(supports-color@10.2.2)
       hono: 4.13.0
       jose: 6.2.8
       json-schema-typed: 8.0.2
@@ -11938,13 +11961,6 @@ snapshots:
       dset: 3.1.4
       tslib: 2.8.1
 
-  '@segment/analytics-core@1.8.3':
-    dependencies:
-      '@lukeed/uuid': 2.0.1
-      '@segment/analytics-generic-utils': 1.2.0
-      dset: 3.1.4
-      tslib: 2.8.1
-
   '@segment/analytics-generic-utils@1.2.0':
     dependencies:
       tslib: 2.8.1
@@ -11960,15 +11976,6 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - encoding
-
-  '@segment/analytics-node@3.1.0':
-    dependencies:
-      '@lukeed/uuid': 2.0.1
-      '@segment/analytics-core': 1.8.3
-      '@segment/analytics-generic-utils': 1.2.0
-      buffer: 6.0.3
-      jose: 5.10.0
-      tslib: 2.8.1
 
   '@shikijs/core@3.23.0':
     dependencies:
@@ -13892,7 +13899,7 @@ snapshots:
 
   expect-type@1.4.0: {}
 
-  express-rate-limit@8.6.1(express@5.2.1(supports-color@10.2.2))(supports-color@10.2.2):
+  express-rate-limit@8.6.2(express@5.2.1(supports-color@10.2.2))(supports-color@10.2.2):
     dependencies:
       debug: 4.4.3(supports-color@10.2.2)
       express: 5.2.1(supports-color@10.2.2)

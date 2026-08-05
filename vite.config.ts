@@ -8,6 +8,24 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  run: {
+    cache: {
+      scripts: true,
+      tasks: true,
+    },
+    tasks: {
+      check: "vp check",
+      test: "vp test",
+      build: {
+        command: "vp build",
+        dependsOn: ["check"],
+      },
+      ci: {
+        command: "true",
+        dependsOn: ["test", "build"],
+      },
+    },
+  },
   lint: {
     plugins: ["oxc", "typescript", "unicorn", "react"],
     categories: {
@@ -1444,9 +1462,6 @@ export default defineConfig({
         }
       : undefined,
   base: "./",
-  esbuild: {
-    keepNames: true,
-  },
   build: {
     sourcemap: true,
   },
@@ -1463,6 +1478,10 @@ export default defineConfig({
     preserveSymlinks: true,
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@segment/analytics-node": path.resolve(
+        __dirname,
+        "./src/lib/segment-analytics-node-browser.ts",
+      ),
     },
   },
 });
