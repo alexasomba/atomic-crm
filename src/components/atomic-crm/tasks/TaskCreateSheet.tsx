@@ -57,12 +57,12 @@ export const TaskCreateSheet = ({
     <CreateSheet
       resource="tasks"
       title={
-        <h1 className="text-xl font-semibold truncate pr-10">
+        <span className="text-xl font-semibold truncate pr-10">
           {!selectContact ? "Create Task for " : "Create Task"}
           {!selectContact && (
             <RecordRepresentation record={contact} resource="contacts" />
           )}
-        </h1>
+        </span>
       }
       redirect={false}
       record={{

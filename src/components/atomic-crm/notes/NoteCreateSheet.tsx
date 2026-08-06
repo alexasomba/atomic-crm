@@ -60,12 +60,12 @@ export const NoteCreateSheet = ({
     <CreateSheet
       resource="contact_notes"
       title={
-        <h1 className="text-xl font-semibold truncate pr-10">
+        <span className="text-xl font-semibold truncate pr-10">
           {!selectContact ? "Create Note for " : "Create Note"}
           {!selectContact && (
             <RecordRepresentation record={contact} resource="contacts" />
           )}
-        </h1>
+        </span>
       }
       redirect={false}
       defaultValues={{ sales_id: identity?.id }}

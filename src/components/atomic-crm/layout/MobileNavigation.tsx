@@ -107,6 +107,7 @@ const NavigationButton = ({
 }) => (
   <Button
     render={<Link to={href} />}
+    nativeButton={false}
     variant="ghost"
     className={cn(
       "flex-col gap-1 h-auto py-2 px-1 rounded-md w-16",
@@ -120,27 +121,40 @@ const NavigationButton = ({
 
 const CreateButton = () => {
   const contact_id = useMatch("/contacts/:id/*")?.params.id;
-  const [contactCreateOpen, setContactCreateOpen] = useState(false);
-  const [noteCreateOpen, setNoteCreateOpen] = useState(false);
-  const [taskCreateOpen, setTaskCreateOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeCreate, setActiveCreate] = useState<
+    "contact" | "note" | "task" | null
+  >(null);
+
+  const closeCreate = () => setActiveCreate(null);
+  const openCreate = (create: "contact" | "note" | "task") => {
+    setMenuOpen(false);
+    window.setTimeout(() => setActiveCreate(create), 0);
+  };
 
   return (
     <>
-      <ContactCreateSheet
-        open={contactCreateOpen}
-        onOpenChange={setContactCreateOpen}
-      />
-      <NoteCreateSheet
-        open={noteCreateOpen}
-        onOpenChange={setNoteCreateOpen}
-        contact_id={contact_id}
-      />
-      <TaskCreateSheet
-        open={taskCreateOpen}
-        onOpenChange={setTaskCreateOpen}
-        contact_id={contact_id}
-      />
-      <DropdownMenu>
+      {activeCreate === "contact" && (
+        <ContactCreateSheet
+          open
+          onOpenChange={(open) => !open && closeCreate()}
+        />
+      )}
+      {activeCreate === "note" && (
+        <NoteCreateSheet
+          open
+          onOpenChange={(open) => !open && closeCreate()}
+          contact_id={contact_id}
+        />
+      )}
+      {activeCreate === "task" && (
+        <TaskCreateSheet
+          open
+          onOpenChange={(open) => !open && closeCreate()}
+          contact_id={contact_id}
+        />
+      )}
+      <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger
           render={
             <Button
@@ -156,24 +170,24 @@ const CreateButton = () => {
         <DropdownMenuContent>
           <DropdownMenuItem
             className="h-12 px-4 text-base"
-            onSelect={() => {
-              setContactCreateOpen(true);
+            onClick={() => {
+              openCreate("contact");
             }}
           >
             Contact
           </DropdownMenuItem>
           <DropdownMenuItem
             className="h-12 px-4 text-base"
-            onSelect={() => {
-              setNoteCreateOpen(true);
+            onClick={() => {
+              openCreate("note");
             }}
           >
             Note
           </DropdownMenuItem>
           <DropdownMenuItem
             className="h-12 px-4 text-base"
-            onSelect={() => {
-              setTaskCreateOpen(true);
+            onClick={() => {
+              openCreate("task");
             }}
           >
             Task
