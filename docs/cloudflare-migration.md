@@ -16,6 +16,17 @@ alone.
    `pnpm run db:generate`.
 5. Apply local D1 migrations with `pnpm run d1:migrate:local`.
 
+For staging validation without production data, run
+`STAGING_TEST_EMAIL=you@example.com pnpm run data:seed:staging -- --dry-run` to
+review the generated fixture SQL, then run `pnpm run data:seed:staging` to apply
+it to the guarded `atomic-crm-staging-db` database. Add
+`STAGING_TEST_EMAIL` when you want a matching contact for inbound-email tests.
+Use `pnpm run data:seed:staging:reset` only when intentionally rebuilding the
+staging dataset. Create a Better Auth test account with
+`STAGING_TEST_EMAIL=you@example.com STAGING_TEST_PASSWORD='...' pnpm run
+auth:bootstrap:staging`; the script never stores credentials and email
+verification remains required.
+
 For a Supabase export, provide `VITE_SUPABASE_URL` and
 `SUPABASE_SERVICE_ROLE_KEY`, then run `pnpm run data:export`. The export now
 includes CRM tables, non-secret Auth user metadata, and an attachment byte
