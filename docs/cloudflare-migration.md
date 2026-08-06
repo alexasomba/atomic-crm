@@ -86,3 +86,14 @@ in-process request adapter and do not require a Cloudflare account.
 No production database ID or email domain is committed. Replace the placeholder
 `database_id`, bucket, queue, and sender values in an environment-specific
 Wrangler configuration before deploying.
+
+## Staging environment
+
+The repository has a deployed staging Worker at
+`https://atomic-crm-staging.gittech.workers.dev` using the resources declared in
+`wrangler.staging.jsonc`. Its D1 migrations are applied and the health,
+authentication boundary, and explicit CopilotKit runtime configuration response
+have been smoke-tested. Set a publicly reachable `COPILOTKIT_RUNTIME_URL` before
+testing CopilotKit remotely; `localhost` is intentionally not used by the
+deployed staging Worker. Replace the placeholder email sender and inbound
+address after the real Cloudflare Email Service domain is supplied and verified.

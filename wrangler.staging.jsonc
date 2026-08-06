@@ -1,0 +1,57 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "atomic-crm-staging",
+  "main": "./server/worker.ts",
+  "compatibility_date": "2026-08-05",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "atomic-crm-staging-db",
+      "database_id": "0781c29c-1a5e-4ce7-911d-56b6546e13ca",
+      "migrations_dir": "./drizzle",
+      "migrations_pattern": "./drizzle/*/migration.sql",
+    },
+  ],
+  "r2_buckets": [
+    { "binding": "BUCKET", "bucket_name": "atomic-crm-staging-assets" },
+  ],
+  "ai": { "binding": "AI" },
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": ["noreply@example.com"],
+    },
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "INBOUND_EMAIL_QUEUE",
+        "queue": "atomic-crm-staging-inbound-email",
+      },
+    ],
+    "consumers": [
+      {
+        "queue": "atomic-crm-staging-inbound-email",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+      },
+    ],
+  },
+  "vars": {
+    "ENVIRONMENT": "staging",
+    "APP_ORIGIN": "http://localhost:5173",
+    "BETTER_AUTH_TRUSTED_ORIGINS": "http://localhost:5173",
+    "EMAIL_FROM": "noreply@example.com",
+    "VITE_INBOUND_EMAIL_ADDRESS": "crm@example.com",
+    "COPILOTKIT_RUNTIME_URL": "",
+  },
+  "secrets": { "required": ["BETTER_AUTH_SECRET"] },
+}
