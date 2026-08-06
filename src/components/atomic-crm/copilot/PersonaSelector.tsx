@@ -20,14 +20,16 @@ export function PersonaSelector() {
 
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
-          <MessageSquare
-            className={cn("h-[1.2rem] w-[1.2rem]", persona && "text-primary")}
-          />
-          <span className="sr-only">Select narrator persona</span>
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
+            <MessageSquare
+              className={cn("h-[1.2rem] w-[1.2rem]", persona && "text-primary")}
+            />
+            <span className="sr-only">Select narrator persona</span>
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end">
         {([...VALID_PERSONAS] as Persona[]).map((p) => (
           <DropdownMenuItem key={p} onClick={() => setPersona(p)}>

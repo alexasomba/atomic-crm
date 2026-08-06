@@ -136,7 +136,7 @@ export const Dashboard = () => {
             <TabsContent
               value="copilot"
               className="mt-0 min-h-0 flex flex-col"
-              forceMount
+              keepMounted
             >
               <CopilotWorkspace
                 className="flex-1 min-h-0"

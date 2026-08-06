@@ -329,18 +329,20 @@ export const FilterButton = (props: FilterButtonProps) => {
   return (
     <div className={cn("inline-block", className)} {...rest}>
       <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            type="button"
-            className="add-filter"
-            variant={variant}
-            size={size}
-            aria-haspopup="true"
-          >
-            <Filter className="h-4 w-4" />
-            {translate("ra.action.add_filter")}
-          </Button>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              type="button"
+              className="add-filter"
+              variant={variant}
+              size={size}
+              aria-haspopup="true"
+            >
+              <Filter className="h-4 w-4" />
+              {translate("ra.action.add_filter")}
+            </Button>
+          }
+        />
         <DropdownMenuContent align="start" className="w-56">
           {allTogglableFilters
             .filter((filterElement) => isValidElement(filterElement))

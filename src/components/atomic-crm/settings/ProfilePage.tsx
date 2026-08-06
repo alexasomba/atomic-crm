@@ -236,20 +236,22 @@ const CopyPaste = () => {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            type="button"
-            onClick={handleCopy}
-            variant="ghost"
-            className="normal-case justify-between w-full"
-          >
-            <span className="overflow-hidden text-ellipsis">
-              {import.meta.env.VITE_INBOUND_EMAIL_ADDRESS ??
-                import.meta.env.VITE_INBOUND_EMAIL}
-            </span>
-            <Copy className="h-4 w-4 ml-2" />
-          </Button>
-        </TooltipTrigger>
+        <TooltipTrigger
+          render={
+            <Button
+              type="button"
+              onClick={handleCopy}
+              variant="ghost"
+              className="normal-case justify-between w-full"
+            >
+              <span className="overflow-hidden text-ellipsis">
+                {import.meta.env.VITE_INBOUND_EMAIL_ADDRESS ??
+                  import.meta.env.VITE_INBOUND_EMAIL}
+              </span>
+              <Copy className="h-4 w-4 ml-2" />
+            </Button>
+          }
+        />
         <TooltipContent>
           <p>{copied ? "Copied!" : "Copy"}</p>
         </TooltipContent>

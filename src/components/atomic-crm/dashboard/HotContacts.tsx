@@ -41,16 +41,18 @@ export const HotContacts = () => {
         </h2>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="ml-auto text-muted-foreground"
-                render={<Link to="/contacts/create" />}
-              >
-                <Plus className="w-4 h-4 text-primary" />
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="ml-auto text-muted-foreground"
+                  render={<Link to="/contacts/create" />}
+                >
+                  <Plus className="w-4 h-4 text-primary" />
+                </Button>
+              }
+            />
             <TooltipContent>Create contact</TooltipContent>
           </Tooltip>
         </TooltipProvider>

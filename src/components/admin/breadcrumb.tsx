@@ -63,7 +63,6 @@ export const Breadcrumb = ({ children, ref }: BreadcrumbProps) => {
   return createPortal(
     <>
       <Separator
-        decorative
         orientation="vertical"
         className="data-[orientation=vertical]:h-4 mr-4"
       />
@@ -95,10 +94,8 @@ export const Breadcrumb = ({ children, ref }: BreadcrumbProps) => {
                         .map((item) => item)}
                     </ol>
                     <DrawerFooter className="pt-4">
-                      <DrawerClose asChild>
-                        <Button variant="outline">
-                          <Translate i18nKey="ra.action.close">Close</Translate>
-                        </Button>
+                      <DrawerClose render={<Button variant="outline" />}>
+                        <Translate i18nKey="ra.action.close">Close</Translate>
                       </DrawerClose>
                     </DrawerFooter>
                   </DrawerContent>

@@ -53,23 +53,27 @@ export const IconButtonWithTooltip = ({
   return (
     <TooltipProvider>
       <Tooltip open={open} onOpenChange={setOpen}>
-        <TooltipTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={
-              typeof translatedLabel === "string" ? translatedLabel : undefined
-            }
-            onClick={handleClick}
-            disabled={disabled}
-            onMouseEnter={handleOpen}
-            onMouseLeave={handleClose}
-            {...props}
-          >
-            {children}
-          </Button>
-        </TooltipTrigger>
+        <TooltipTrigger
+          render={
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={
+                typeof translatedLabel === "string"
+                  ? translatedLabel
+                  : undefined
+              }
+              onClick={handleClick}
+              disabled={disabled}
+              onMouseEnter={handleOpen}
+              onMouseLeave={handleClose}
+              {...props}
+            >
+              {children}
+            </Button>
+          }
+        />
         <TooltipContent>
           <p>{translatedLabel}</p>
         </TooltipContent>

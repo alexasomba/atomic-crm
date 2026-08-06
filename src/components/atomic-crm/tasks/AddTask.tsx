@@ -68,16 +68,18 @@ export const AddTask = ({
       {display === "icon" ? (
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="p-2 cursor-pointer"
-                onClick={handleOpen}
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="p-2 cursor-pointer"
+                  onClick={handleOpen}
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              }
+            />
             <TooltipContent>Create task</TooltipContent>
           </Tooltip>
         </TooltipProvider>

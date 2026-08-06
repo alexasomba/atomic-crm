@@ -23,20 +23,16 @@ it("navigates through questions and submits selected answers", async () => {
       }}
     >
       <QuestionnaireProgress />
-      <QuestionnaireItem name="goal" index={0}>
+      <QuestionnaireItem name="goal">
         <QuestionnaireTitle>Goal</QuestionnaireTitle>
         <QuestionnaireChoices>
-          <QuestionnaireChoice name="goal" value="follow-up">
-            Follow up
-          </QuestionnaireChoice>
+          <QuestionnaireChoice value="follow-up">Follow up</QuestionnaireChoice>
         </QuestionnaireChoices>
       </QuestionnaireItem>
-      <QuestionnaireItem name="context" index={1}>
+      <QuestionnaireItem name="context">
         <QuestionnaireTitle>Context</QuestionnaireTitle>
         <QuestionnaireChoices>
-          <QuestionnaireChoice name="context" value="deals">
-            Deals
-          </QuestionnaireChoice>
+          <QuestionnaireChoice value="deals">Deals</QuestionnaireChoice>
         </QuestionnaireChoices>
       </QuestionnaireItem>
       <QuestionnaireActions>

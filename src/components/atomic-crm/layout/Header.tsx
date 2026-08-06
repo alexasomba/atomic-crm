@@ -132,10 +132,11 @@ const UsersMenu = () => {
     throw new Error("<UsersMenu> must be used inside <UserMenu?");
   }
   return (
-    <DropdownMenuItem asChild onClick={userMenuContext.onClose}>
-      <Link to="/sales" className="flex items-center gap-2">
-        <Users /> Users
-      </Link>
+    <DropdownMenuItem
+      render={<Link to="/sales" className="flex items-center gap-2" />}
+      onClick={userMenuContext.onClose}
+    >
+      <Users /> Users
     </DropdownMenuItem>
   );
 };
@@ -146,11 +147,12 @@ const ProfileMenu = () => {
     throw new Error("<ProfileMenu> must be used inside <UserMenu?");
   }
   return (
-    <DropdownMenuItem asChild onClick={userMenuContext.onClose}>
-      <Link to="/profile" className="flex items-center gap-2">
-        <User />
-        Profile
-      </Link>
+    <DropdownMenuItem
+      render={<Link to="/profile" className="flex items-center gap-2" />}
+      onClick={userMenuContext.onClose}
+    >
+      <User />
+      Profile
     </DropdownMenuItem>
   );
 };
@@ -161,10 +163,11 @@ const SettingsMenu = () => {
     throw new Error("<SettingsMenu> must be used inside <UserMenu>");
   }
   return (
-    <DropdownMenuItem asChild onClick={userMenuContext.onClose}>
-      <Link to="/settings" className="flex items-center gap-2">
-        <Settings /> Settings
-      </Link>
+    <DropdownMenuItem
+      render={<Link to="/settings" className="flex items-center gap-2" />}
+      onClick={userMenuContext.onClose}
+    >
+      <Settings /> Settings
     </DropdownMenuItem>
   );
 };
@@ -175,10 +178,11 @@ const ImportFromJsonMenuItem = () => {
     throw new Error("<ImportFromJsonMenuItem> must be used inside <UserMenu>");
   }
   return (
-    <DropdownMenuItem asChild onClick={userMenuContext.onClose}>
-      <Link to={ImportPage.path} className="flex items-center gap-2">
-        <Import /> Import data
-      </Link>
+    <DropdownMenuItem
+      render={<Link to={ImportPage.path} className="flex items-center gap-2" />}
+      onClick={userMenuContext.onClose}
+    >
+      <Import /> Import data
     </DropdownMenuItem>
   );
 };

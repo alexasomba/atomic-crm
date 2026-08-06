@@ -156,18 +156,18 @@ function CopilotBrief({ onSubmit }: { onSubmit: (prompt: string) => void }) {
       name: "intent",
       prompt: "What should Copilot help with?",
       choices: [
-        "Find and prioritize leads",
-        "Prepare a customer follow-up",
-        "Review pipeline risks",
+        { value: "Find and prioritize leads" },
+        { value: "Prepare a customer follow-up" },
+        { value: "Review pipeline risks" },
       ],
     },
     {
       name: "context",
       prompt: "What context matters most?",
       choices: [
-        "Contacts and companies",
-        "Deals and tasks",
-        "Notes and activity",
+        { value: "Contacts and companies" },
+        { value: "Deals and tasks" },
+        { value: "Notes and activity" },
       ],
     },
   ];
@@ -206,26 +206,19 @@ function CopilotBrief({ onSubmit }: { onSubmit: (prompt: string) => void }) {
             Cancel
           </Button>
         </div>
-        {items.map((item, index) => (
-          <QuestionnaireItem key={item.name} name={item.name} index={index}>
+        {items.map((item) => (
+          <QuestionnaireItem key={item.name} name={item.name}>
             <QuestionnaireTitle>{item.prompt}</QuestionnaireTitle>
             <QuestionnaireDescription>
               Choose one answer to continue.
             </QuestionnaireDescription>
             <QuestionnaireChoices>
               {item.choices.map((choice) => (
-                <QuestionnaireChoice
-                  key={choice}
-                  name={item.name}
-                  value={choice}
-                >
-                  {choice}
+                <QuestionnaireChoice key={choice.value} value={choice.value}>
+                  {choice.value}
                 </QuestionnaireChoice>
               ))}
-              <QuestionnaireInput
-                name={`${item.name}-note`}
-                placeholder="Add another detail (optional)"
-              />
+              <QuestionnaireInput placeholder="Add another detail (optional)" />
             </QuestionnaireChoices>
           </QuestionnaireItem>
         ))}

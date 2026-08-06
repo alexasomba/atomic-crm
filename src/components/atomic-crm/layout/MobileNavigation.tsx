@@ -141,16 +141,18 @@ const CreateButton = () => {
         contact_id={contact_id}
       />
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="default"
-            size="icon"
-            className="h-16 w-16 rounded-full -mt-3"
-            aria-label="Create"
-          >
-            <Plus className="size-10" />
-          </Button>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="default"
+              size="icon"
+              className="h-16 w-16 rounded-full -mt-3"
+              aria-label="Create"
+            >
+              <Plus className="size-10" />
+            </Button>
+          }
+        />
         <DropdownMenuContent>
           <DropdownMenuItem
             className="h-12 px-4 text-base"
@@ -189,15 +191,17 @@ const SettingsButton = () => {
   if (!authProvider) return null;
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex-col gap-1 h-auto py-2 px-1 rounded-md w-16 text-muted-foreground"
-        >
-          <Settings className="size-6" />
-          <span className="text-[0.6rem] font-medium">Settings</span>
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="ghost"
+            className="flex-col gap-1 h-auto py-2 px-1 rounded-md w-16 text-muted-foreground"
+          >
+            <Settings className="size-6" />
+            <span className="text-[0.6rem] font-medium">Settings</span>
+          </Button>
+        }
+      />
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuLabel className="font-normal h-12 px-4">

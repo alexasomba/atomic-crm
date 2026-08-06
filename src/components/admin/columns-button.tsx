@@ -81,19 +81,21 @@ export const ColumnsButton = (props: ColumnsButtonProps) => {
   return (
     <span className={cn("inline-flex", className)}>
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+        <PopoverTrigger render={<span />}>
           {isMobile ? (
             <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label={title}
-                  {...rest}
-                >
-                  <Columns className="size-4" />
-                </Button>
-              </TooltipTrigger>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={title}
+                    {...rest}
+                  >
+                    <Columns className="size-4" />
+                  </Button>
+                }
+              />
               <TooltipContent>{title}</TooltipContent>
             </Tooltip>
           ) : (

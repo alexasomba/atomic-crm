@@ -39,6 +39,7 @@ export default defineConfig({
       "supabase/functions",
       "doc",
       "server",
+      "packages/license-verifier",
       "packages/create-react-admin/templates",
     ],
     overrides: [
