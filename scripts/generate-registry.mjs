@@ -8,6 +8,7 @@ const registryPath = "registry.json";
 const basePath = "src";
 const atomicCrmComponentsPath = path.join(basePath, "components", "atomic-crm");
 const supabaseComponentsPath = path.join(basePath, "components", "supabase");
+const uiComponentsPath = path.join(basePath, "components", "ui");
 const hooksPath = path.join(basePath, "hooks");
 const libPath = path.join(basePath, "lib");
 
@@ -36,6 +37,14 @@ const supabaseComponents = globSync(
   path.join(supabaseComponentsPath, "**", "*.ts*"),
   { ignore: [testFilePattern] },
 );
+const uiComponents = [
+  "attachment.tsx",
+  "bubble.tsx",
+  "marker.tsx",
+  "message-scroller.tsx",
+  "message.tsx",
+  "questionnaire.tsx",
+].map((file) => path.join(uiComponentsPath, file));
 const hooks = globSync(path.join(hooksPath, "**", "*.ts*")).filter((hook) => {
   return !excludedHooks.includes(path.basename(hook));
 });
@@ -58,6 +67,10 @@ const files = [
       type: "registry:component",
     };
   }),
+  ...uiComponents.map((path) => ({
+    path,
+    type: "registry:component",
+  })),
   ...hooks.map((path) => {
     return {
       path,

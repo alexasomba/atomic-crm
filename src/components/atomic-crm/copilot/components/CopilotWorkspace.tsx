@@ -1,17 +1,42 @@
 import {
   CopilotChat,
   CopilotChatToolCallsView,
+  useAgent,
+  useCopilotKit,
 } from "@copilotkit/react-core/v2";
-import { Loader2 } from "lucide-react";
-import { useState, useCallback } from "react";
+import { Loader2, Sparkles } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Bubble, BubbleContent } from "@/components/ui/bubble";
+import { Marker, MarkerContent, MarkerIcon } from "@/components/ui/marker";
+import { Message, MessageContent } from "@/components/ui/message";
+import {
+  MessageScroller,
+  MessageScrollerButton,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerProvider,
+  MessageScrollerViewport,
+} from "@/components/ui/message-scroller";
+import {
+  Questionnaire,
+  QuestionnaireActions,
+  QuestionnaireChoice,
+  QuestionnaireChoices,
+  QuestionnaireDescription,
+  QuestionnaireInput,
+  QuestionnaireItem,
+  QuestionnaireNext,
+  QuestionnairePrevious,
+  QuestionnaireProgress,
+  QuestionnaireSkip,
+  QuestionnaireSubmit,
+  QuestionnaireTitle,
+} from "@/components/ui/questionnaire";
+import { Button } from "@/components/ui/button";
 import { CopilotHeader } from "./CopilotHeader";
 import { ThreadHistory } from "./ThreadHistory";
 
-// ─── Null slot: disables a v2 CopilotChat sub-component ─────────────────────
-
-const NullSlot = () => null;
-
-// ─── v2 AssistantMessage ─────────────────────────────────────────────────────
+const AGENT_ID = "default";
 
 function WorkspaceAssistantMessage({
   message,
@@ -28,7 +53,7 @@ function WorkspaceAssistantMessage({
   isRunning: boolean;
   [key: string]: unknown;
 }) {
-  const hasToolCalls = message.toolCalls && message.toolCalls.length > 0;
+  const hasToolCalls = Boolean(message.toolCalls?.length);
   const textContent = message.content?.trim();
   const isLatest =
     (messages as Array<{ id: string }>)?.at(-1)?.id === message.id;
@@ -36,40 +61,53 @@ function WorkspaceAssistantMessage({
 
   if (isThinking) {
     return (
-      <div className="flex items-center gap-2 py-3 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        <span>Thinking...</span>
-      </div>
+      <Message>
+        <MessageContent>
+          <Marker role="status">
+            <MarkerIcon>
+              <Loader2 className="animate-spin" />
+            </MarkerIcon>
+            <MarkerContent>Thinking…</MarkerContent>
+          </Marker>
+        </MessageContent>
+      </Message>
     );
   }
-
   if (!textContent && !hasToolCalls) return null;
 
   return (
-    <div className="space-y-2 py-1">
-      {hasToolCalls && (
-        <CopilotChatToolCallsView
-          message={message as any}
-          messages={messages as any}
-        />
-      )}
-
-      {textContent && (
-        <div className="flex items-start gap-2">
-          🪁
-          <p className="text-sm leading-relaxed text-foreground whitespace-pre-line">
-            {textContent}
-            {isRunning && isLatest && (
-              <span className="inline-block w-1.5 h-4 bg-foreground/50 animate-pulse ml-0.5 align-text-bottom" />
-            )}
-          </p>
-        </div>
-      )}
-    </div>
+    <Message>
+      <MessageContent>
+        {hasToolCalls && (
+          <CopilotChatToolCallsView
+            message={message as any}
+            messages={messages as any}
+          />
+        )}
+        {textContent && (
+          <Bubble variant="ghost">
+            <BubbleContent>
+              <span className="flex items-start gap-2">
+                <span aria-hidden="true">🪁</span>
+                <span className="whitespace-pre-line">
+                  {textContent}
+                  {isRunning && isLatest && (
+                    <Marker role="status" className="mt-1">
+                      <MarkerIcon>
+                        <Loader2 className="animate-spin" />
+                      </MarkerIcon>
+                      <MarkerContent>Streaming response…</MarkerContent>
+                    </Marker>
+                  )}
+                </span>
+              </span>
+            </BubbleContent>
+          </Bubble>
+        )}
+      </MessageContent>
+    </Message>
   );
 }
-
-// ─── v2 UserMessage: right-aligned bubble ────────────────────────────────────
 
 function WorkspaceUserMessage({
   message,
@@ -78,19 +116,129 @@ function WorkspaceUserMessage({
   [key: string]: unknown;
 }) {
   if (!message?.content?.trim()) return null;
-
   return (
-    <div className="py-1 flex justify-end">
-      <div className="bg-muted rounded-lg px-3 py-2 max-w-[85%]">
-        <p className="text-sm">{message.content}</p>
-      </div>
-    </div>
+    <Message align="end">
+      <MessageContent>
+        <Bubble align="end" variant="secondary">
+          <BubbleContent>{message.content}</BubbleContent>
+        </Bubble>
+      </MessageContent>
+    </Message>
   );
 }
 
-// ─── CopilotWorkspace ────────────────────────────────────────────────────────
+function WorkspaceScrollView({
+  children,
+}: {
+  children?: React.ReactNode;
+  [key: string]: unknown;
+}) {
+  return (
+    <MessageScrollerProvider autoScroll>
+      <MessageScroller>
+        <MessageScrollerViewport aria-label="Copilot conversation">
+          <MessageScrollerContent>
+            <MessageScrollerItem messageId="copilot-transcript" scrollAnchor>
+              {children}
+            </MessageScrollerItem>
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+        <MessageScrollerButton />
+      </MessageScroller>
+    </MessageScrollerProvider>
+  );
+}
 
-const AGENT_ID = "default";
+function CopilotBrief({ onSubmit }: { onSubmit: (prompt: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const items = [
+    {
+      name: "intent",
+      prompt: "What should Copilot help with?",
+      choices: [
+        "Find and prioritize leads",
+        "Prepare a customer follow-up",
+        "Review pipeline risks",
+      ],
+    },
+    {
+      name: "context",
+      prompt: "What context matters most?",
+      choices: [
+        "Contacts and companies",
+        "Deals and tasks",
+        "Notes and activity",
+      ],
+    },
+  ];
+  if (!open)
+    return (
+      <div className="shrink-0 px-3 py-2">
+        <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+          <Sparkles data-icon="inline-start" />
+          Guided brief
+        </Button>
+      </div>
+    );
+  return (
+    <div className="shrink-0 border-b px-3 py-3">
+      <Questionnaire
+        items={items}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const form = new FormData(event.currentTarget);
+          const intent = String(form.get("intent") ?? "");
+          const context = String(form.get("context") ?? "");
+          onSubmit(
+            `Help me with this CRM brief. Goal: ${intent}. Relevant context: ${context}. Show the next best actions.`,
+          );
+          setOpen(false);
+        }}
+      >
+        <div className="flex items-center justify-between">
+          <QuestionnaireProgress />
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setOpen(false)}
+          >
+            Cancel
+          </Button>
+        </div>
+        {items.map((item, index) => (
+          <QuestionnaireItem key={item.name} name={item.name} index={index}>
+            <QuestionnaireTitle>{item.prompt}</QuestionnaireTitle>
+            <QuestionnaireDescription>
+              Choose one answer to continue.
+            </QuestionnaireDescription>
+            <QuestionnaireChoices>
+              {item.choices.map((choice) => (
+                <QuestionnaireChoice
+                  key={choice}
+                  name={item.name}
+                  value={choice}
+                >
+                  {choice}
+                </QuestionnaireChoice>
+              ))}
+              <QuestionnaireInput
+                name={`${item.name}-note`}
+                placeholder="Add another detail (optional)"
+              />
+            </QuestionnaireChoices>
+          </QuestionnaireItem>
+        ))}
+        <QuestionnaireActions>
+          <QuestionnairePrevious />
+          <QuestionnaireSkip />
+          <QuestionnaireNext />
+          <QuestionnaireSubmit />
+        </QuestionnaireActions>
+      </Questionnaire>
+    </div>
+  );
+}
 
 interface CopilotWorkspaceProps {
   className?: string;
@@ -109,25 +257,41 @@ export function CopilotWorkspace({
 }: CopilotWorkspaceProps) {
   const [view, setView] = useState<"chat" | "history">("chat");
   const [chatKey, setChatKey] = useState(0);
-
-  const handleToggleView = useCallback(() => {
-    setView((prev) => {
-      if (prev === "chat") return "history";
-      setChatKey((k) => k + 1);
-      return "chat";
-    });
-  }, []);
-
+  const { agent } = useAgent({
+    agentId: AGENT_ID,
+    runtimeAgentId: AGENT_ID,
+    threadId: threadId ?? "default",
+  });
+  const { copilotkit } = useCopilotKit();
+  const submitBrief = useCallback(
+    async (prompt: string) => {
+      agent.addMessage({
+        id: crypto.randomUUID(),
+        role: "user",
+        content: prompt,
+      });
+      await copilotkit.runAgent({ agent });
+    },
+    [agent, copilotkit],
+  );
+  const handleToggleView = useCallback(
+    () =>
+      setView((previous) => {
+        if (previous === "chat") return "history";
+        setChatKey((key) => key + 1);
+        return "chat";
+      }),
+    [],
+  );
   const handleNewConversation = useCallback(() => {
     onNewConversation?.();
-    setChatKey((k) => k + 1);
+    setChatKey((key) => key + 1);
     setView("chat");
   }, [onNewConversation]);
-
   const handleSelectThread = useCallback(
     (id: string) => {
       onSelectThread?.(id);
-      setChatKey((k) => k + 1);
+      setChatKey((key) => key + 1);
       setView("chat");
     },
     [onSelectThread],
@@ -142,9 +306,8 @@ export function CopilotWorkspace({
         onToggleView={handleToggleView}
         onNewConversation={handleNewConversation}
       />
-
       {view === "history" ? (
-        <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="min-h-0 flex-1 overflow-y-auto">
           <ThreadHistory
             agentId={AGENT_ID}
             activeThreadId={threadId}
@@ -154,6 +317,7 @@ export function CopilotWorkspace({
       ) : (
         <>
           {children}
+          <CopilotBrief onSubmit={submitBrief} />
           <div className="copilot-chat-area">
             <CopilotChat
               key={chatKey}
@@ -164,10 +328,7 @@ export function CopilotWorkspace({
                 assistantMessage: WorkspaceAssistantMessage as any,
                 userMessage: WorkspaceUserMessage as any,
               }}
-              scrollView={{
-                feather: NullSlot,
-                scrollToBottomButton: NullSlot,
-              }}
+              scrollView={WorkspaceScrollView as any}
             />
           </div>
         </>

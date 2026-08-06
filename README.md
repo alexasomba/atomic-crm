@@ -1,6 +1,6 @@
 # Atomic CRM
 
-A full-featured CRM built with React, shadcn-admin-kit, and Supabase.
+A full-featured CRM built with React, Vite+, shadcn-admin-kit/Base UI, Supabase, and a staged Cloudflare backend.
 
 <https://github.com/user-attachments/assets/0d7554b5-49ef-41c6-bcc9-a76214fc5c99>
 
@@ -19,7 +19,7 @@ Atomic CRM is free and open-source. You can test it online at <https://marmelab.
 - 🔗 **Integrate via API**: Connect seamlessly with other systems using our API.
 - 🛠️ **Customize Everything**: Add custom fields, change the theme, and replace any component to fit your needs.
 
-## Installation
+## Installation and local development
 
 To run this project locally, you will need the following tools installed on your computer:
 
@@ -33,7 +33,7 @@ Fork the [`marmelab/atomic-crm`](https://github.com/marmelab/atomic-crm) reposit
 git clone https://github.com/[username]/atomic-crm.git
 ```
 
-Install dependencies:
+Install dependencies with Vite+:
 
 ```sh
 cd atomic-crm
@@ -42,7 +42,7 @@ make install
 
 This will install the dependencies for the frontend and the backend, including a local Supabase instance.
 
-Once your app is configured, start the app locally with the following command:
+Start the Supabase-backed app locally:
 
 ```sh
 make start
@@ -51,6 +51,8 @@ make start
 This will start the Vite dev server for the frontend, the local Supabase instance for the API, and a Postgres database (thanks to Docker).
 
 You can then access the app via [http://localhost:5173/](http://localhost:5173/). You will be prompted to create the first user.
+
+For the demo provider, use `make start-demo`. To run the frontend, CopilotKit runtime, and MCP server together, use `vp run dev:all`. The staged Cloudflare/D1/Better Auth path is available with `vp run dev:cloudflare` and `VITE_CRM_PROVIDER=cloudflare`.
 
 If you need debug the backend, you can access the following services:
 
@@ -66,6 +68,8 @@ The in-app CopilotKit assistant is split across three services (see `render.yaml
 - `atomic-crm-app` — the static frontend (this repo)
 - `atomic-crm-copilot` — the CopilotKit runtime (Hono server in `server/`)
 - `atomic-crm-mcp` — the MCP contract analyzer (also in `server/mcp/`)
+
+The chat UI uses shadcn Base UI primitives for message rows, bubbles, streaming markers, anchored transcript scrolling, attachments, and guided Copilot briefs.
 
 Two env vars wire the frontend to the runtime:
 
@@ -116,15 +120,15 @@ that runtime during the staged migration.
 
 The user and developer documentation for this project is available [in the `doc/` directory](./doc/). You can also read it online at [https://marmelab.com/atomic-crm/doc/](https://marmelab.com/atomic-crm/doc/).
 
-## Testing Changes
+## Testing and builds
 
 This project contains Vitest unit and browser tests. Run them with the following command:
 
 ```sh
-make test
+vp test
 ```
 
-You can add your own tests anywhere in the `src` directory. The test files should be named `*.test.tsx` or `*.test.ts`.
+Use `vp check` for formatting, linting, and typechecking, `make typecheck` to skip formatting/linting, and `vp build` for a production build. You can add tests anywhere in `src`; use `*.test.tsx` or `*.test.ts`.
 
 ## Vite+ build diagnostics
 

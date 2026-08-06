@@ -91,6 +91,7 @@
     "@react-spring/shared": "catalog:",
     "@react-spring/types": "catalog:",
     "@react-spring/web": "catalog:",
+    "@shadcn/react": "^0.2.1",
     "@standard-schema/spec": "catalog:",
     "@streamparser/json": "catalog:",
     "@streamparser/json-whatwg": "catalog:",

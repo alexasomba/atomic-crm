@@ -1,49 +1,27 @@
-# Starlight Starter Kit: Basics
+# Atomic CRM Documentation
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+This directory contains the Astro/Starlight documentation site for Atomic CRM. The published documentation covers end-user workflows, providers, authentication, deployment, customization, the API, inbound email, and the MCP server.
 
-```
-npm create astro@latest -- --template starlight
-```
+## Structure
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
+```text
+doc/
+├── src/content/docs/       # User and developer MDX documentation
+├── src/content/images/     # Documentation images
+├── public/                 # Static assets and logos
 ├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+└── package.json
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+## Local commands
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+Run these commands from the repository root:
 
-Static assets, like favicons, can be placed in the `public/` directory.
+```bash
+make doc-install            # Install documentation dependencies
+make doc                    # Start Astro at localhost:4321
+make doc-build              # Build the documentation site
+make doc-preview            # Preview the production build
+```
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+The documentation is deployed separately from the CRM frontend. When adding a feature, update the relevant page under `doc/src/content/docs/` and keep links and screenshots consistent with the current application behavior.

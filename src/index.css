@@ -185,10 +185,8 @@ input[type="time"] {
 }
 
 /* ── Copilot Workspace ──
-   Minimal overrides for v2 CopilotChat to blend into surrounding UI.
-   The v2 layout (StickToBottom scroll, absolute input) is preserved;
-   feather gradient & scroll-to-bottom button are disabled via slot props
-   in CopilotWorkspace.tsx. */
+   CopilotKit owns transport and input while the shadcn message primitives
+   own transcript layout, surfaces, status markers, and scrolling. */
 
 /* The wrapper is a flex column; the header sits on top and the chat area
    below fills remaining space. The chat area is the positioning context
@@ -216,6 +214,15 @@ input[type="time"] {
   border-radius: 0 !important;
 }
 
+.copilot-chat-area [data-slot="message-scroller"] {
+  min-height: 0;
+}
+
+.copilot-chat-area [data-slot="message-scroller-content"] {
+  padding: 0.75rem;
+  padding-bottom: 7rem;
+}
+
 /* Chat input styling */
 .copilot-chat-area textarea {
   border: 1px solid var(--border) !important;
@@ -224,9 +231,4 @@ input[type="time"] {
   font-size: 0.875rem !important;
   padding: 0.5rem 0.75rem !important;
   resize: none !important;
-}
-
-/* Consistent spacing for streamed primitive blocks */
-.copilot-chat-area .space-y-3 > * + * {
-  margin-top: 0.75rem;
 }

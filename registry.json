@@ -1070,6 +1070,30 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/ui/attachment.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/bubble.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/marker.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/message-scroller.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/message.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/questionnaire.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/hooks/user-menu-context.tsx",
           "type": "registry:hook"
         },

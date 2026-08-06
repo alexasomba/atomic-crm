@@ -1,4 +1,14 @@
-import { Paperclip } from "lucide-react";
+import { FileText } from "lucide-react";
+
+import {
+  Attachment,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentGroup,
+  AttachmentMedia,
+  AttachmentTitle,
+  AttachmentTrigger,
+} from "@/components/ui/attachment";
 
 import type { AttachmentNote, ContactNote, DealNote } from "../types";
 
@@ -15,53 +25,44 @@ export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
     return null;
   }
 
-  const imageAttachments = note.attachments.filter(
-    (attachment: AttachmentNote) => isImageMimeType(attachment.type),
-  );
-  const otherAttachments = note.attachments.filter(
-    (attachment: AttachmentNote) => !isImageMimeType(attachment.type),
-  );
-
   return (
-    <div className="mt-2 flex flex-col gap-2">
-      {imageAttachments.length > 0 && (
-        <div className="grid grid-cols-4 gap-8">
-          {imageAttachments.map((attachment: AttachmentNote, index: number) => (
-            <div key={index}>
-              <a
-                href={attachment.src}
-                title={attachment.title}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <img
-                  src={attachment.src}
-                  alt={attachment.title}
-                  className="w-[200px] h-[100px] object-cover cursor-pointer object-left border border-border"
+    <AttachmentGroup className="mt-2 flex-wrap">
+      {note.attachments.map((attachment: AttachmentNote, index: number) => {
+        const isImage = isImageMimeType(attachment.type);
+        return (
+          <Attachment
+            key={`${attachment.src}-${index}`}
+            size="sm"
+            orientation={isImage ? "vertical" : "horizontal"}
+          >
+            <AttachmentMedia variant={isImage ? "image" : "icon"}>
+              {isImage ? (
+                <img src={attachment.src} alt={attachment.title} />
+              ) : (
+                <FileText aria-hidden="true" />
+              )}
+            </AttachmentMedia>
+            <AttachmentContent>
+              <AttachmentTitle>{attachment.title}</AttachmentTitle>
+              <AttachmentDescription>
+                {isImage ? "Image" : attachment.type || "File"}
+              </AttachmentDescription>
+            </AttachmentContent>
+            <AttachmentTrigger
+              aria-label={`Open ${attachment.title}`}
+              render={
+                <a
+                  href={attachment.src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(event) => event.stopPropagation()}
                 />
-              </a>
-            </div>
-          ))}
-        </div>
-      )}
-      {otherAttachments.length > 0 &&
-        otherAttachments.map((attachment: AttachmentNote, index: number) => (
-          <div key={index} className="flex items-center gap-2">
-            <Paperclip className="w-4 h-4" />
-            <a
-              href={attachment.src}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:no-underline"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {attachment.title}
-            </a>
-          </div>
-        ))}
-    </div>
+              }
+            />
+          </Attachment>
+        );
+      })}
+    </AttachmentGroup>
   );
 };
 
