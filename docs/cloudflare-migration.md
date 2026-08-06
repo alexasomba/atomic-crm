@@ -95,5 +95,8 @@ The repository has a deployed staging Worker at
 authentication boundary, and explicit CopilotKit runtime configuration response
 have been smoke-tested. Set a publicly reachable `COPILOTKIT_RUNTIME_URL` before
 testing CopilotKit remotely; `localhost` is intentionally not used by the
-deployed staging Worker. Replace the placeholder email sender and inbound
-address after the real Cloudflare Email Service domain is supplied and verified.
+deployed staging Worker. Email Sending is enabled for
+`atomic-crm.asomba.com`, with `noreply@atomic-crm.asomba.com` configured as the
+sender and `crm@atomic-crm.asomba.com` routed to the staging Worker. Inbound
+delivery still needs the three Cloudflare Email Routing MX records added for
+the subdomain; the current token has zone-read but not DNS-write permission.
