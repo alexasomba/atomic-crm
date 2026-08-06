@@ -103,7 +103,15 @@ type CrmEnv = {
 
 const api = new Hono<CrmEnv>();
 
-const readTables = { activities, deals, notes, tasks } as const;
+const readTables = {
+  activities,
+  deals,
+  notes,
+  tasks,
+  // React Admin uses these resource names for the shared notes table.
+  contact_notes: notes,
+  deal_notes: notes,
+} as const;
 
 const writableResources = {
   tasks: { table: tasks, input: taskInput },
