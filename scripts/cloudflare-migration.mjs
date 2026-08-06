@@ -10,6 +10,8 @@ const sqlPath = `${outputDirectory}/d1-import.sql`;
 const storageDirectory = `${outputDirectory}/storage/attachments`;
 const storageManifestPath = `${outputDirectory}/storage-manifest.json`;
 const pageSize = 1_000;
+const migrationDatabase = process.env.MIGRATION_DATABASE ?? "atomic-crm-db";
+const migrationConfig = process.env.MIGRATION_CONFIG ?? "wrangler.jsonc";
 
 const tables = [
   "companies",
@@ -474,12 +476,12 @@ async function generateImport() {
     [
       "d1",
       "execute",
-      "atomic-crm-db",
+      migrationDatabase,
       `--${target}`,
       "--file",
       sqlPath,
       "--config",
-      "wrangler.jsonc",
+      migrationConfig,
     ],
     { stdio: "inherit" },
   );
@@ -508,13 +510,13 @@ else if (command === "reconcile") {
       [
         "d1",
         "execute",
-        "atomic-crm-db",
+        migrationDatabase,
         `--${target}`,
         "--json",
         "--command",
         `SELECT COUNT(*) AS count FROM ${targetTable}`,
         "--config",
-        "wrangler.jsonc",
+        migrationConfig,
       ],
       { maxBuffer: 2 * 1024 * 1024 },
     );

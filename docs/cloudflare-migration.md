@@ -27,6 +27,20 @@ staging dataset. Create a Better Auth test account with
 auth:bootstrap:staging`; the script never stores credentials and email
 verification remains required.
 
+Run the authenticated and unauthenticated staging boundary checks with
+`pnpm run smoke:staging`. Add `STAGING_TEST_EMAIL` and
+`STAGING_TEST_PASSWORD` to include the `/api/me` session check after the user
+has completed Better Auth email verification. The smoke command defaults to
+expecting HTTP 501 from `/api/copilotkit` while no runtime is configured; set
+`STAGING_EXPECT_COPILOT_STATUS=200` only after a reachable CopilotKit runtime
+has been deployed and configured.
+
+`vp run dev:all` now uses strict, explicit ports. Defaults are Vite 5173,
+CopilotKit 4000, and MCP 3108; override them with `VITE_DEV_PORT`,
+`COPILOTKIT_PORT`, and `MCP_PORT` when another local process is using a port.
+The command then keeps the frontend CORS origin aligned with the selected Vite
+port.
+
 For a Supabase export, provide `VITE_SUPABASE_URL` and
 `SUPABASE_SERVICE_ROLE_KEY`, then run `pnpm run data:export`. The export now
 includes CRM tables, non-secret Auth user metadata, and an attachment byte
@@ -45,6 +59,9 @@ after import. Remote application requires the explicit
 archive is deliberately separate from the SQL import because D1 and R2 do not
 share a transaction; upload it to R2 with an idempotent, checksum-verified
 import job and reconcile the resulting D1 metadata before production cutover.
+For an exported Supabase snapshot, run `MIGRATION_EXPORT=... pnpm run
+data:reconcile:staging` to compare it with the deployed staging database; the
+script uses `wrangler.staging.jsonc` and cannot target the default database.
 
 The repository pins the Drizzle v1 release candidate and the matching Better
 Auth release candidate. The beta Better Auth CLI is used because it emits
@@ -94,6 +111,12 @@ error.
 Run `pnpm run test:worker` for the Worker HTTP boundary tests. These use Hono's
 in-process request adapter and do not require a Cloudflare account.
 
+The Worker tests also cover the inbound email size and recipient rejection
+guards. A real routed-mail smoke test still requires a verified sender mailbox:
+seed the matching contact with `STAGING_TEST_EMAIL`, send a message to
+`crm@atomic-crm.asomba.com`, then verify the resulting note, activity,
+`inbound_email_events` status, and any R2 attachment metadata in staging.
+
 No production database ID or email domain is committed. Replace the placeholder
 `database_id`, bucket, queue, and sender values in an environment-specific
 Wrangler configuration before deploying.
@@ -106,7 +129,9 @@ The repository has a deployed staging Worker at
 authentication boundary, and explicit CopilotKit runtime configuration response
 have been smoke-tested. Set a publicly reachable `COPILOTKIT_RUNTIME_URL` before
 testing CopilotKit remotely; `localhost` is intentionally not used by the
-deployed staging Worker. Email Sending is enabled for
+deployed staging Worker. The historical Render URL currently returns 404, so
+it must not be configured until that service is deployed and responds to the
+CopilotKit endpoint. Email Sending is enabled for
 `atomic-crm.asomba.com`, with `noreply@atomic-crm.asomba.com` configured as the
 sender and `crm@atomic-crm.asomba.com` routed to the staging Worker. Inbound
 delivery is ready; the three Cloudflare Email Routing MX records now resolve

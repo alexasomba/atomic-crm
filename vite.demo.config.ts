@@ -37,6 +37,8 @@ export default defineConfig({
     sourcemap: true,
   },
   server: {
+    port: Number(process.env.VITE_DEV_PORT ?? 5173),
+    strictPort: true,
     proxy: {
       // Forward ALL /api/* paths so tools that hit /api/leads, /api/contacts,
       // /api/audit, etc. work too (not just /api/copilotkit). Set

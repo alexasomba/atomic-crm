@@ -1,4 +1,4 @@
-import { app } from "../server/worker";
+import { app, worker } from "../server/worker";
 import { vi } from "vite-plus/test";
 
 describe("Cloudflare Worker HTTP boundary", () => {
@@ -65,5 +65,45 @@ describe("Cloudflare Worker HTTP boundary", () => {
       }),
     );
     fetchMock.mockRestore();
+  });
+
+  it("rejects oversized inbound email before reading or storing it", async () => {
+    let rejected = "";
+    await worker.email(
+      {
+        rawSize: 26 * 1024 * 1024,
+        to: "crm@atomic-crm.asomba.com",
+        from: "demo-admin@atomic-crm.asomba.com",
+        headers: new Headers(),
+        raw: new ReadableStream(),
+        setReject: (reason: string) => {
+          rejected = reason;
+        },
+      } as never,
+      {} as never,
+      {} as never,
+    );
+
+    expect(rejected).toContain("25 MB");
+  });
+
+  it("rejects inbound email addressed outside the configured CRM address", async () => {
+    let rejected = "";
+    await worker.email(
+      {
+        rawSize: 128,
+        to: "other@atomic-crm.asomba.com",
+        from: "demo-admin@atomic-crm.asomba.com",
+        headers: new Headers(),
+        raw: new ReadableStream(),
+        setReject: (reason: string) => {
+          rejected = reason;
+        },
+      } as never,
+      { VITE_INBOUND_EMAIL_ADDRESS: "crm@atomic-crm.asomba.com" } as never,
+      {} as never,
+    );
+
+    expect(rejected).toBe("Unknown recipient");
   });
 });
