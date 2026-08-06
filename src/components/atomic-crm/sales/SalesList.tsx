@@ -15,7 +15,7 @@ const SalesListActions = () => (
   </TopToolbar>
 );
 
-const filters = [<SearchInput source="q" alwaysOn />];
+const filters = [<SearchInput key="q" source="q" alwaysOn />];
 
 const OptionsField = (_props: { label?: string | boolean }) => {
   const record = useRecordContext();

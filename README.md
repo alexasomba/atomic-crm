@@ -120,6 +120,14 @@ different Workers AI model; no account ID or AI API token is required. Use
 Build the staging frontend with `vp run build:staging`; this selects the
 Cloudflare data/auth providers and same-origin Worker API before deployment.
 
+### Router migration
+
+The application keeps React Router as the local rollback path while TanStack
+Router is exercised in staging. Set `VITE_ROUTER=tanstack` for a local smoke
+test; `vp run build:staging` enables it automatically. URLs, query strings,
+resource routes, and ra-core data fetching remain unchanged. Unset the flag to
+return to the React Router adapter if a staging regression needs investigation.
+
 ## Documentation
 
 The user and developer documentation for this project is available [in the `doc/` directory](./doc/). You can also read it online at [https://marmelab.com/atomic-crm/doc/](https://marmelab.com/atomic-crm/doc/).

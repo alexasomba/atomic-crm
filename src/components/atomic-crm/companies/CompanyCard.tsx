@@ -1,5 +1,5 @@
 import { DollarSign } from "lucide-react";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { useCreatePath, useListContext, useRecordContext } from "ra-core";
 import { ReferenceManyField } from "@/components/admin/reference-many-field";
 import { Card } from "@/components/ui/card";

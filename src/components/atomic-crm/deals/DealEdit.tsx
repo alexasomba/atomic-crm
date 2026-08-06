@@ -5,7 +5,7 @@ import {
   useRecordContext,
   useRedirect,
 } from "ra-core";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { ReferenceField } from "@/components/admin/reference-field";
 import { Button } from "@/components/ui/button";

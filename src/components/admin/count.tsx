@@ -7,7 +7,8 @@ import {
 } from "ra-core";
 import { CircleX, LoaderCircle } from "lucide-react";
 
-import { Link } from "react-router";
+import { Link } from "@/router";
+import type { MouseEvent } from "react";
 
 /**
  * Fetches and displays the item count for a resource.
@@ -74,7 +75,7 @@ export const Count = (props: CountProps) => {
         pathname: createPath({ resource, type: "list" }),
         search: filter ? `filter=${JSON.stringify(filter)}` : undefined,
       }}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e: MouseEvent) => e.stopPropagation()}
       {...rest}
     >
       {body}

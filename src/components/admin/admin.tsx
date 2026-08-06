@@ -116,6 +116,7 @@ export const Admin = (props: CoreAdminProps) => {
     loading,
     loginPage = LoginPage,
     queryClient,
+    routerProvider,
     ready = Ready,
     requireAuth,
     store = defaultStore,
@@ -128,6 +129,7 @@ export const Admin = (props: CoreAdminProps) => {
       dataProvider={dataProvider}
       i18nProvider={i18nProvider}
       queryClient={queryClient}
+      routerProvider={routerProvider}
       store={store}
     >
       <AdminUI

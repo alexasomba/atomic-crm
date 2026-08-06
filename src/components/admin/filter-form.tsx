@@ -16,7 +16,7 @@ import {
   useSavedQueries,
   useTranslate,
 } from "ra-core";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@/router";
 import {
   Bookmark,
   BookmarkMinus,

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Form, required, useLogin, useNotify } from "ra-core";
 import type { SubmitHandler, FieldValues } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "@/router";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/admin/text-input";
 import { Notification } from "@/components/admin/notification";
@@ -50,7 +50,7 @@ export const LoginPage = (props: { redirectTo?: string }) => {
 
     searchParams.delete("passwordRecoveryEmailSent");
     const nextSearch = searchParams.toString();
-    void navigate(
+    navigate(
       {
         pathname: location.pathname,
         search: nextSearch ? `?${nextSearch}` : "",

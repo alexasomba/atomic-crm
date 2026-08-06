@@ -9,7 +9,7 @@ import {
   type RaRecord,
 } from "ra-core";
 import type { CSSProperties, ReactElement, ReactNode } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "@/router";
 
 export const SimpleListItem = <RecordType extends RaRecord = any>(
   props: SimpleListItemProps<RecordType>,

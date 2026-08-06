@@ -6,7 +6,7 @@ import {
   useRef,
   type ReactNode,
 } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate, useLocation } from "@/router";
 import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { randomUUID } from "@copilotkit/shared";
 import { useDataProvider } from "ra-core";
@@ -213,11 +213,11 @@ function DemoActiveProvider({
       // Restarted loop — navigate to dashboard
       navigate("/");
     } else if (currentState === "S1_OPEN_CONTACT" && contactRoute) {
-      void navigate(contactRoute);
+      navigate(contactRoute);
     } else if (currentState === "S6_AUDIT_LOG") {
-      void navigate("/audit");
+      navigate("/audit");
     } else if (currentState === "DONE" && !isAutoplay) {
-      void navigate("/");
+      navigate("/");
     }
 
     // Auto-trigger agent if enabled and state has a prompt
@@ -247,7 +247,7 @@ function DemoActiveProvider({
   useEffect(() => {
     if (contactId && !hasInitNavigated.current && location.pathname !== "/") {
       hasInitNavigated.current = true;
-      void navigate("/");
+      navigate("/");
     }
   }, [contactId]); // oxlint-disable-line react-hooks/exhaustive-deps
 

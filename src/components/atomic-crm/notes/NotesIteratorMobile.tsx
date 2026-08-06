@@ -1,6 +1,6 @@
 import type { Identifier } from "ra-core";
 import { InfinitePaginationContext, useTimeout, WithRecord } from "ra-core";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { ReferenceField } from "@/components/admin/reference-field";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";

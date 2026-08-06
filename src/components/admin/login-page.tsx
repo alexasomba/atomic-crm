@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form, required, useLogin, useNotify } from "ra-core";
 import type { SubmitHandler, FieldValues } from "react-hook-form";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/admin/text-input";
 import { Notification } from "@/components/admin/notification";

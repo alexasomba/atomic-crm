@@ -8,7 +8,7 @@ import {
   useTimeout,
 } from "ra-core";
 import { type MouseEvent, useCallback, useRef } from "react";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { ReferenceField } from "@/components/admin/reference-field";
 import { TextField } from "@/components/admin/text-field";
 import { Checkbox } from "@/components/ui/checkbox";

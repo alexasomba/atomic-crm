@@ -1,5 +1,5 @@
 import { useListContext } from "ra-core";
-import { Link as RouterLink } from "react-router";
+import { Link as RouterLink } from "@/router";
 
 import { Avatar } from "../contacts/Avatar";
 

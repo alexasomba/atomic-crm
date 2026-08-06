@@ -1,5 +1,5 @@
 import type { RaRecord } from "ra-core";
-import { Link } from "react-router";
+import { Link } from "@/router";
 
 import { ReferenceField } from "@/components/admin/reference-field";
 import { RelativeDate } from "../misc/RelativeDate";

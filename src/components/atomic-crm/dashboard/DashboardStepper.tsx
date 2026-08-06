@@ -1,6 +1,6 @@
 import { CheckCircle, Circle, Plus } from "lucide-react";
 import type { Identifier } from "ra-core";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { useState } from "react";
 import { CreateButton } from "@/components/admin/create-button";
 import { Progress } from "@/components/ui/progress";

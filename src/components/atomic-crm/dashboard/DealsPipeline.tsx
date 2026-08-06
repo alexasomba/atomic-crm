@@ -1,6 +1,6 @@
 import { DollarSign } from "lucide-react";
 import { useGetIdentity, useGetList } from "ra-core";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { ReferenceField } from "@/components/admin/reference-field";
 import { Card } from "@/components/ui/card";
 

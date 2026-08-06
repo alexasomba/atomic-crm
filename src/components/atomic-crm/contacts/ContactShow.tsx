@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Pencil } from "lucide-react";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { randomUUID } from "@copilotkit/shared";
 import { Bot, FileSearch, TrendingUp, Info } from "lucide-react";

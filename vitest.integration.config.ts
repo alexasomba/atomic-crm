@@ -13,6 +13,12 @@ export default defineConfig({
       "lodash",
       "papaparse",
       "ra-supabase-language-english",
+      "@tanstack/react-router",
+      "@tanstack/router-core",
+      "@tanstack/history",
+      "@tanstack/react-store",
+      "seroval",
+      "seroval-plugins",
     ],
   },
   test: {

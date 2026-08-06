@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useDataProvider, useLogin, useNotify } from "ra-core";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { Navigate, useNavigate } from "react-router";
+import { Navigate, useNavigate } from "@/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,12 +52,12 @@ export const SignupPage = () => {
         .catch((err) => {
           if (err.code === "email_not_confirmed") {
             // An email confirmation is required to continue.
-            void navigate(ConfirmationRequired.path);
+            navigate(ConfirmationRequired.path);
           } else {
             notify("Failed to log in.", {
               type: "error",
             });
-            void navigate("/login");
+            navigate("/login");
           }
         });
     },

@@ -14,6 +14,12 @@ export default defineConfig({
       "dom-accessibility-api",
       "pretty-format",
       "react-is",
+      "@tanstack/react-router",
+      "@tanstack/router-core",
+      "@tanstack/history",
+      "@tanstack/react-store",
+      "seroval",
+      "seroval-plugins",
     ],
   },
   test: {

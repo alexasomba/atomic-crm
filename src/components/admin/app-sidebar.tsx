@@ -7,7 +7,7 @@ import {
   useResourceDefinitions,
   useTranslate,
 } from "ra-core";
-import { Link, useMatch } from "react-router";
+import { Link, useMatch } from "@/router";
 import {
   Sidebar,
   SidebarContent,

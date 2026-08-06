@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { MouseEvent } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { Form, useRefresh } from "ra-core";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {

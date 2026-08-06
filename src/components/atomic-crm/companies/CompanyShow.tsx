@@ -20,7 +20,7 @@ import {
   useLocation,
   useMatch,
   useNavigate,
-} from "react-router-dom";
+} from "@/router";
 import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { randomUUID } from "@copilotkit/shared";
 

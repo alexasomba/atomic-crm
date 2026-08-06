@@ -23,7 +23,7 @@ import {
   Users,
 } from "lucide-react";
 import { Translate, useAuthProvider, useGetIdentity, useLogout } from "ra-core";
-import { Link, matchPath, useLocation, useMatch } from "react-router";
+import { Link, matchPath, useLocation, useMatch } from "@/router";
 import { ContactCreateSheet } from "../contacts/ContactCreateSheet";
 import { useState } from "react";
 import { NoteCreateSheet } from "../notes/NoteCreateSheet";

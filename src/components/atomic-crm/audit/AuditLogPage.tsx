@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "react-router";
+import { Link } from "@/router";
 
 const API_BASE =
   import.meta.env.VITE_COPILOTKIT_API_URL || "http://localhost:4000";

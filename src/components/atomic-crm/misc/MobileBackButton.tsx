@@ -1,5 +1,5 @@
 import { useResourceContext, useCreatePath } from "ra-core";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@/router";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

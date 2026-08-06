@@ -4,9 +4,10 @@ import {
   localStorageStore,
   Resource,
   type AuthProvider,
+  type RouterRouteProps,
+  useRouterProvider,
 } from "ra-core";
 import { useEffect, useMemo } from "react";
-import { Route } from "react-router";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
@@ -61,10 +62,18 @@ import { ContactShow } from "../contacts/ContactShow.tsx";
 import { CompanyShow } from "../companies/CompanyShow.tsx";
 import { NoteShowPage } from "../notes/NoteShowPage.tsx";
 import { AuditLogPage } from "../audit/AuditLogPage";
+import { tanStackRouterProvider } from "@/router/tanstackRouterProvider";
 
 const defaultStore = localStorageStore(undefined, "CRM");
 const useCloudflareProvider =
   import.meta.env.VITE_CRM_PROVIDER?.toLowerCase() === "cloudflare";
+const useTanStackRouter =
+  import.meta.env.VITE_ROUTER?.toLowerCase() === "tanstack";
+
+const ConfiguredRoute = (props: RouterRouteProps) => {
+  const { Route } = useRouterProvider();
+  return <Route {...props} />;
+};
 
 export type CRMProps = {
   dataProvider?: CrmDataProvider;
@@ -223,6 +232,7 @@ export const CRM = ({
       authProvider={wrappedAuthProvider}
       i18nProvider={i18nProvider}
       store={store}
+      routerProvider={useTanStackRouter ? tanStackRouterProvider : undefined}
       loginPage={StartPage}
       requireAuth
       disableTelemetry
@@ -235,24 +245,30 @@ const DesktopAdmin = (props: CoreAdminProps) => {
   return (
     <Admin layout={Layout} dashboard={Dashboard} {...props}>
       <CustomRoutes noLayout>
-        <Route path={SignupPage.path} element={<SignupPage />} />
-        <Route
+        <ConfiguredRoute path={SignupPage.path} element={<SignupPage />} />
+        <ConfiguredRoute
           path={ConfirmationRequired.path}
           element={<ConfirmationRequired />}
         />
-        <Route path={SetPasswordPage.path} element={<SetPasswordPage />} />
-        <Route
+        <ConfiguredRoute
+          path={SetPasswordPage.path}
+          element={<SetPasswordPage />}
+        />
+        <ConfiguredRoute
           path={ForgotPasswordPage.path}
           element={<ForgotPasswordPage />}
         />
-        <Route path={OAuthConsentPage.path} element={<OAuthConsentPage />} />
+        <ConfiguredRoute
+          path={OAuthConsentPage.path}
+          element={<OAuthConsentPage />}
+        />
       </CustomRoutes>
 
       <CustomRoutes>
-        <Route path={ProfilePage.path} element={<ProfilePage />} />
-        <Route path={SettingsPage.path} element={<SettingsPage />} />
-        <Route path={ImportPage.path} element={<ImportPage />} />
-        <Route path={AuditLogPage.path} element={<AuditLogPage />} />
+        <ConfiguredRoute path={ProfilePage.path} element={<ProfilePage />} />
+        <ConfiguredRoute path={SettingsPage.path} element={<SettingsPage />} />
+        <ConfiguredRoute path={ImportPage.path} element={<ImportPage />} />
+        <ConfiguredRoute path={AuditLogPage.path} element={<AuditLogPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -294,17 +310,23 @@ const MobileAdmin = (props: CoreAdminProps) => {
         {...props}
       >
         <CustomRoutes noLayout>
-          <Route path={SignupPage.path} element={<SignupPage />} />
-          <Route
+          <ConfiguredRoute path={SignupPage.path} element={<SignupPage />} />
+          <ConfiguredRoute
             path={ConfirmationRequired.path}
             element={<ConfirmationRequired />}
           />
-          <Route path={SetPasswordPage.path} element={<SetPasswordPage />} />
-          <Route
+          <ConfiguredRoute
+            path={SetPasswordPage.path}
+            element={<SetPasswordPage />}
+          />
+          <ConfiguredRoute
             path={ForgotPasswordPage.path}
             element={<ForgotPasswordPage />}
           />
-          <Route path={OAuthConsentPage.path} element={<OAuthConsentPage />} />
+          <ConfiguredRoute
+            path={OAuthConsentPage.path}
+            element={<OAuthConsentPage />}
+          />
         </CustomRoutes>
         <Resource
           name="contacts"
@@ -312,7 +334,10 @@ const MobileAdmin = (props: CoreAdminProps) => {
           show={ContactShow}
           recordRepresentation={contacts.recordRepresentation}
         >
-          <Route path=":id/notes/:noteId" element={<NoteShowPage />} />
+          <ConfiguredRoute
+            path=":id/notes/:noteId"
+            element={<NoteShowPage />}
+          />
         </Resource>
         <Resource name="companies" show={CompanyShow} />
         <Resource name="tasks" list={MobileTasksList} />

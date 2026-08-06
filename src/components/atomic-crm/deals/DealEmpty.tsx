@@ -1,5 +1,5 @@
 import { useGetList } from "ra-core";
-import { matchPath, useLocation, Link } from "react-router";
+import { matchPath, useLocation, Link } from "@/router";
 import type { ReactNode } from "react";
 import { CreateButton } from "@/components/admin/create-button";
 import { Progress } from "@/components/ui/progress";

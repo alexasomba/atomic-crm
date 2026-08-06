@@ -1,7 +1,7 @@
 import { Pencil } from "lucide-react";
 import { RecordRepresentation, useGetOne, WithRecord } from "ra-core";
 import { useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useParams } from "@/router";
 import { ReferenceField } from "@/components/admin/reference-field";
 import { Button } from "@/components/ui/button";
 

@@ -1,6 +1,6 @@
 import { Plus, Users } from "lucide-react";
 import { useGetIdentity, useGetList } from "ra-core";
-import { Link } from "react-router";
+import { Link } from "@/router";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
