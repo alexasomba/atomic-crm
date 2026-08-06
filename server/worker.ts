@@ -656,8 +656,26 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
   }
 };
 
+const workerFetch = async (
+  request: Request,
+  env: Env,
+  context: ExecutionContext,
+) => {
+  const response = await app.fetch(request, env, context);
+  const url = new URL(request.url);
+  const isSpaRoute =
+    (request.method === "GET" || request.method === "HEAD") &&
+    !url.pathname.startsWith("/api/") &&
+    !url.pathname.includes(".");
+
+  if (response.status !== 404 || !isSpaRoute) return response;
+
+  const assetUrl = new URL("/", url);
+  return env.ASSETS.fetch(new Request(assetUrl, request));
+};
+
 export const worker = {
-  fetch: app.fetch,
+  fetch: workerFetch,
   email: emailHandler,
   queue: queueHandler,
 } satisfies ExportedHandler<Env>;

@@ -28,6 +28,28 @@ describe("Cloudflare Worker HTTP boundary", () => {
     await expect(response.json()).resolves.toEqual({ error: "Not found" });
   });
 
+  it("serves the SPA shell for direct client routes", async () => {
+    const assets = {
+      fetch: vi.fn().mockResolvedValue(
+        new Response('<html><div id="root"></div></html>', {
+          headers: { "Content-Type": "text/html" },
+        }),
+      ),
+    };
+
+    const response = await worker.fetch(
+      new Request("https://crm.example/contacts?status=hot"),
+      { ASSETS: assets } as never,
+      {} as never,
+    );
+
+    expect(response.status).toBe(200);
+    expect(await response.text()).toContain('id="root"');
+    expect(assets.fetch).toHaveBeenCalledWith(
+      expect.objectContaining({ url: "https://crm.example/" }),
+    );
+  });
+
   it("reports an explicit native CopilotKit configuration gap", async () => {
     const response = await app.request("http://localhost/api/copilotkit", {}, {
       COPILOTKIT_RUNTIME_MODE: "native",

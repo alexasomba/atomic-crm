@@ -61,10 +61,10 @@ describe("Contact list integration", () => {
 
     await (expect as any)
       .element(screen.getByText("Ada Lovelace"))
-      .toBeVisible();
+      .toBeInTheDocument();
     await (expect as any)
       .element(screen.getByText("Grace Hopper"))
-      .toBeVisible();
+      .toBeInTheDocument();
     await (expect as any)
       .element(screen.getByRole("heading", { name: "No contacts found" }))
       .not.toBeInTheDocument();

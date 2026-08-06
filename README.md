@@ -120,13 +120,19 @@ different Workers AI model; no account ID or AI API token is required. Use
 Build the staging frontend with `vp run build:staging`; this selects the
 Cloudflare data/auth providers and same-origin Worker API before deployment.
 
-### Router migration
+### Router
 
-The application keeps React Router as the local rollback path while TanStack
-Router is exercised in staging. Set `VITE_ROUTER=tanstack` for a local smoke
-test; `vp run build:staging` enables it automatically. URLs, query strings,
-resource routes, and ra-core data fetching remain unchanged. Unset the flag to
-return to the React Router adapter if a staging regression needs investigation.
+TanStack Router is the canonical application and test router. Set
+`VITE_ROUTER=tanstack` for an explicit local smoke test; `vp run build:staging`
+enables it automatically. URLs, query strings, resource routes, and ra-core
+data fetching remain unchanged.
+
+`react-router` and `react-router-dom` remain direct compatibility dependencies
+because the current `ra-core` release statically imports its React Router
+adapter even when a custom router provider is configured. The CRM has no
+application or test imports of React Router. Those compatibility packages can
+be removed after upgrading to an `ra-core` release that no longer requires that
+adapter.
 
 ## Documentation
 

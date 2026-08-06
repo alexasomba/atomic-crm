@@ -6,6 +6,8 @@
     "test:node": "vp test run --config vitest.node.config.ts",
     "test:worker": "vp test run --config vitest.node.config.ts test/cloudflare-worker.test.ts",
     "test:integration": "vp test --config vitest.integration.config.ts",
+    "test:tanstack": "VITE_ROUTER=tanstack vp test --run",
+    "test:integration:tanstack": "VITE_ROUTER=tanstack vp test --config vitest.integration.config.ts --run",
     "dev:demo": "vp dev --config vite.demo.config.ts",
     "dev:all": "concurrently --kill-others -n app,copilot,mcp -c cyan,green,yellow \"VITE_DEV_PORT=${VITE_DEV_PORT:-5173} vp dev --config vite.demo.config.ts\" \"cd server && PORT=${COPILOTKIT_PORT:-4000} ALLOWED_ORIGINS=http://localhost:${VITE_DEV_PORT:-5173} npm run dev\" \"cd server && PORT= MCP_PORT=${MCP_PORT:-3108} npm run dev:mcp\"",
     "smoke:staging": "node ./scripts/cloudflare-staging-smoke.mjs",

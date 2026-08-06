@@ -13,6 +13,7 @@ import { CONFIGURATION_STORE_KEY } from "@/components/atomic-crm/root/Configurat
 import { defaultConfiguration } from "@/components/atomic-crm/root/defaultConfiguration";
 import { i18nProvider } from "@/components/atomic-crm/root/i18nProvider";
 import { TaskCreateSheet } from "@/components/atomic-crm/tasks/TaskCreateSheet";
+import { tanStackRouterProvider } from "@/router/tanstackRouterProvider";
 import type {
   Company,
   Contact,
@@ -30,7 +31,6 @@ import {
   type AuthProvider,
 } from "ra-core";
 import { useMemo, useState, type ReactNode } from "react";
-import { MemoryRouter } from "react-router";
 
 const listSort = { field: "last_seen", order: "DESC" } as const;
 const listPerPage = 25;
@@ -215,25 +215,24 @@ export const createCrmScenario = ({
 };
 
 // Mount the minimum react-admin and app providers required by the CRM widgets
-// under test, without booting the full application shell.
+// under test, using the same router adapter as the staging application.
 export const CrmTestProvider = ({
   children,
   className,
-  initialEntries = ["/"],
   resource,
   scenario,
 }: {
   children: ReactNode;
   className?: string;
-  initialEntries?: string[];
   resource?: string;
   scenario: CrmScenario;
-}) => (
-  <MemoryRouter initialEntries={initialEntries}>
+}) => {
+  const content = (
     <CoreAdminContext
       authProvider={scenario.authProvider}
       dataProvider={scenario.dataProvider}
       i18nProvider={i18nProvider}
+      routerProvider={tanStackRouterProvider}
       store={scenario.store}
     >
       <ResourceDefinitionContextProvider definitions={resourceDefinitions}>
@@ -251,21 +250,25 @@ export const CrmTestProvider = ({
         </ThemeProvider>
       </ResourceDefinitionContextProvider>
     </CoreAdminContext>
-  </MemoryRouter>
-);
+  );
+
+  return (
+    <tanStackRouterProvider.RouterWrapper>
+      {content}
+    </tanStackRouterProvider.RouterWrapper>
+  );
+};
 
 // Reuse the same scenario factory in Storybook so stories match the integration
 // test environment as closely as possible.
 export const CrmStoryProvider = ({
   children,
   className,
-  initialEntries,
   resource,
   scenarioOptions,
 }: {
   children: ReactNode;
   className?: string;
-  initialEntries?: string[];
   resource?: string;
   scenarioOptions: CrmScenarioOptions;
 }) => {
@@ -277,7 +280,6 @@ export const CrmStoryProvider = ({
   return (
     <CrmTestProvider
       className={className}
-      initialEntries={initialEntries}
       resource={resource}
       scenario={scenario}
     >

@@ -1,10 +1,11 @@
 import path from "node:path";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite-plus";
 import { playwright } from "vite-plus/test/browser-playwright";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   optimizeDeps: {
     include: [
       "@testing-library/dom",
