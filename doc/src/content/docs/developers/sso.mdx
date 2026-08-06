@@ -7,7 +7,9 @@ Google Workspace domain to `/api/auth/sign-in/sso`; Better Auth redirects to the
 registered OIDC provider and returns to the requested callback URL.
 
 Register a provider with the Better Auth SSO API using a secret-managed issuer,
-client ID, and client secret. The callback URL is:
+client ID, and client secret. For staging, sign in as an administrator and run
+`pnpm run sso:register:staging` after setting the `STAGING_SSO_*` variables.
+The script is idempotent and never prints the client secret. The callback URL is:
 
 `https://<app-origin>/api/auth/sso/callback/<provider-id>`
 

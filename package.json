@@ -11,6 +11,8 @@
     "dev:demo": "vp dev --config vite.demo.config.ts",
     "dev:all": "concurrently --kill-others -n app,worker,mcp -c cyan,green,yellow \"vp dev --config vite.demo.config.ts\" \"wrangler dev --config wrangler.jsonc\" \"cd server && PORT= MCP_PORT=${MCP_PORT:-3108} npm run dev:mcp\"",
     "smoke:staging": "node ./scripts/cloudflare-staging-smoke.mjs",
+    "smoke:staging:browser": "node ./scripts/cloudflare-staging-browser-smoke.mjs",
+    "sso:register:staging": "node ./scripts/cloudflare-staging-sso.mjs",
     "dev:server": "cd server && npm run dev",
     "dev:mcp": "cd server && npm run dev:mcp",
     "dev:worker": "wrangler dev --config wrangler.jsonc",

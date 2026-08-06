@@ -6,3 +6,10 @@ VITE_INBOUND_EMAIL_ADDRESS=crm@atomic-crm.asomba.com
 COPILOTKIT_RUNTIME_MODE=proxy
 COPILOTKIT_RUNTIME_URL=http://localhost:4000/api/copilotkit
 CLOUDFLARE_AI_MODEL=@cf/openai/gpt-oss-20b
+
+# Optional Better Auth SSO registration values.
+STAGING_SSO_PROVIDER_ID=google-workspace
+STAGING_SSO_ISSUER=https://accounts.google.com
+STAGING_SSO_DOMAIN=example.com
+STAGING_SSO_CLIENT_ID=replace-with-oidc-client-id
+# STAGING_SSO_CLIENT_SECRET=replace-with-oidc-client-secret

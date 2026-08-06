@@ -1,8 +1,27 @@
-import { app, worker } from "../server/worker";
+import {
+  app,
+  getInboundMailboxAddresses,
+  getInboundSenderAddress,
+  worker,
+} from "../server/worker";
 import { shouldForwardCopilotEvent } from "../server/copilotkit";
 import { vi } from "vite-plus/test";
 
 describe("Cloudflare Worker HTTP boundary", () => {
+  it("normalizes inbound sender and recipient mailbox addresses", () => {
+    expect(getInboundSenderAddress({ address: " Sales@Example.com " })).toBe(
+      "sales@example.com",
+    );
+    expect(
+      getInboundMailboxAddresses([
+        { address: "Contact@Example.com" },
+        {
+          group: [{ address: "Cc@Example.com" }],
+        },
+      ]),
+    ).toEqual(["contact@example.com", "cc@example.com"]);
+  });
+
   it("does not forward TanStack thinking chunks to CopilotKit", () => {
     expect(
       shouldForwardCopilotEvent({

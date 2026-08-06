@@ -58,14 +58,15 @@ If you need debug the backend, you can access the following services:
 
 - Cloudflare Worker: [http://localhost:8787/](http://localhost:8787/)
 - REST API: [http://127.0.0.1:54321](http://127.0.0.1:54321)
-- Attachments storage: [http://localhost:54323/project/default/storage/buckets/attachments](http://localhost:54323/project/default/storage/buckets/attachments)
-- Inbucket email testing service: [http://localhost:54324/](http://localhost:54324/)
+- Local R2 attachments are managed by Wrangler's local Worker runtime.
+- Local inbound email uses the Worker `email()` handler; staging routes
+  `crm@atomic-crm.asomba.com` through Cloudflare Email Routing.
 
 ## CopilotKit assistant
 
 The in-app CopilotKit assistant uses the Cloudflare Worker runtime in staging and
 production, with the Node runtime retained only for local rollback and MCP
-development (see `render.yaml`):
+development:
 
 - `atomic-crm-app` — the static frontend (this repo)
 - `atomic-crm-copilot` — the local/rollback CopilotKit runtime (Hono server in `server/`)
@@ -118,6 +119,20 @@ different Workers AI model; no account ID or AI API token is required. Use
 `COPILOTKIT_RUNTIME_MODE=proxy` only for the local Node rollback path.
 Build the staging frontend with `vp run build:staging`; this selects the
 Cloudflare data/auth providers and same-origin Worker API before deployment.
+
+### Staging acceptance
+
+Set `STAGING_TEST_EMAIL` and `STAGING_TEST_PASSWORD` locally, then run:
+
+```sh
+pnpm run smoke:staging
+pnpm run sso:register:staging
+```
+
+The authenticated smoke test creates and removes a contact, note, task, and
+attachment. For inbound email, send from a CRM sales-user address to a CRM
+contact while CC'ing `crm@atomic-crm.asomba.com`; the Worker associates the
+sender with the sales user and a To/Cc/Bcc recipient with the contact.
 
 ### Router
 

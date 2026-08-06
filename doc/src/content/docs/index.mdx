@@ -33,5 +33,6 @@ wrangler deploy --dry-run --config wrangler.staging.jsonc
 ```
 
 Staging uses `pnpm run data:seed:staging:reset`, `pnpm run auth:bootstrap:staging`,
-and `pnpm run smoke:staging`. No production resources are modified by these
-commands.
+`pnpm run smoke:staging`, and the credential-gated
+`pnpm run smoke:staging:browser`. No production resources are modified by
+these commands.

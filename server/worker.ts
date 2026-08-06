@@ -15,7 +15,7 @@ import {
   notes,
   sales,
 } from "./db/schema.js";
-import { desc, eq, or, sql } from "drizzle-orm";
+import { and, desc, eq, or, sql } from "drizzle-orm";
 import { handleNativeCopilotKit } from "./copilotkit.js";
 
 const app = new Hono<{ Bindings: Env }>();
@@ -233,6 +233,13 @@ app.patch("/api/configuration", async (context) => {
   return context.json({ data: body.data });
 });
 
+app.post("/api/auth/sso/register", async (context) => {
+  const sale = await getAdminSale(context.env, context.req.raw.headers);
+  if (!sale)
+    return context.json({ error: "Administrator access required" }, 403);
+  return createAuth(context.env).handler(context.req.raw);
+});
+
 app.all("/api/auth/*", (context) =>
   createAuth(context.env).handler(context.req.raw),
 );
@@ -420,6 +427,33 @@ type InboundEmailJob = {
   receivedAt: string;
 };
 
+type ParsedMailbox = { address?: string; group?: ParsedMailbox[] };
+
+const mailboxAddresses = (mailboxes: ParsedMailbox[] | undefined) =>
+  (mailboxes ?? []).flatMap((mailbox) =>
+    mailbox.address
+      ? [mailbox.address.trim().toLowerCase()]
+      : mailbox.group
+        ? mailboxAddresses(mailbox.group)
+        : [],
+  );
+
+export const getInboundMailboxAddresses = mailboxAddresses;
+
+const addressFrom = (mailbox: ParsedMailbox | undefined) =>
+  mailbox?.address?.trim().toLowerCase() ?? "";
+
+export const getInboundSenderAddress = addressFrom;
+
+const emailColumnMatches = (column: typeof contacts.email, address: string) =>
+  or(
+    sql`lower(${column}) = ${address}`,
+    sql`EXISTS (
+      SELECT 1 FROM json_each(COALESCE(${contacts.emailJson}, '[]')) AS email_entry
+      WHERE lower(json_extract(email_entry.value, '$.email')) = ${address}
+    )`,
+  );
+
 const getHeader = (message: ForwardableEmailMessage, name: string) =>
   message.headers.get(name) ?? "";
 
@@ -527,31 +561,47 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
       const subject = parsed.subject ?? "";
       const db = createDb(env.DB);
       const sender =
-        parsed.from && "address" in parsed.from && parsed.from.address
-          ? parsed.from.address
-          : job.sender;
+        addressFrom(parsed.from) || job.sender.trim().toLowerCase();
       const normalizedSender = sender.trim().toLowerCase();
-      const [contact] = await db
-        .select({ id: contacts.id, salesId: contacts.salesId })
-        .from(contacts)
+      const [senderSale] = await db
+        .select({ id: sales.id })
+        .from(sales)
         .where(
-          or(
-            sql`lower(${contacts.email}) = ${normalizedSender}`,
-            sql`EXISTS (
-              SELECT 1 FROM json_each(COALESCE(${contacts.emailJson}, '[]')) AS email_entry
-              WHERE lower(json_extract(email_entry.value, '$.email')) = ${normalizedSender}
-            )`,
+          and(
+            sql`lower(${sales.email}) = ${normalizedSender}`,
+            eq(sales.disabled, false),
           ),
         )
         .limit(1)
         .all();
 
-      if (!contact) {
+      const recipientAddresses = [
+        ...mailboxAddresses(parsed.to),
+        ...mailboxAddresses(parsed.cc),
+        ...mailboxAddresses(parsed.bcc),
+      ].filter(
+        (address, index, addresses) => addresses.indexOf(address) === index,
+      );
+      const recipientMatches = recipientAddresses.map((address) =>
+        emailColumnMatches(contacts.email, address),
+      );
+      const [contact] = recipientMatches.length
+        ? await db
+            .select({ id: contacts.id, salesId: contacts.salesId })
+            .from(contacts)
+            .where(or(...recipientMatches))
+            .limit(1)
+            .all()
+        : [];
+
+      if (!senderSale || !contact) {
         await db
           .update(inboundEmailEvents)
           .set({
             status: "unmatched",
-            error: `No CRM contact matched ${normalizedSender}`,
+            error: !senderSale
+              ? `No CRM sales user matched ${normalizedSender}`
+              : `No CRM contact matched an inbound recipient`,
             processedAt: new Date().toISOString(),
           })
           .where(eq(inboundEmailEvents.id, job.eventId))
@@ -559,6 +609,8 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
         console.warn("Inbound email did not match a CRM contact", {
           eventId: job.eventId,
           sender,
+          recipientCount: recipientAddresses.length,
+          senderMatched: Boolean(senderSale),
         });
         message.ack();
         continue;
@@ -601,7 +653,7 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
         db.insert(notes).values({
           id: noteId,
           contactId: contact.id,
-          salesId: contact.salesId,
+          salesId: senderSale.id,
           title: subject.slice(0, 500) || "Inbound email",
           content: noteContent,
           source: "inbound_email",
@@ -611,7 +663,7 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
         db.insert(activities).values({
           id: activityId,
           contactId: contact.id,
-          salesId: contact.salesId,
+          salesId: senderSale.id,
           type: "inbound_email",
           metadata: { eventId: job.eventId, messageId: job.messageId },
           createdAt: now,

@@ -7,8 +7,15 @@ The configured staging address is `crm@atomic-crm.asomba.com`.
 
 Cloudflare stores the raw MIME message in R2, records an idempotent event in D1,
 and queues processing. `postal-mime` extracts the sender, recipients, body, and
-attachments. A matched contact receives a note and activity; unmatched events
-remain visible to administrators for replay.
+attachments. The sender must match a CRM sales user and one of the To/Cc/Bcc
+recipients must match a CRM contact. The contact receives a note and activity
+owned by the matching sales user; unmatched events remain visible to
+administrators for replay.
+
+For staging, send from the email address of a CRM sales user and CC
+`crm@atomic-crm.asomba.com` while retaining the CRM contact in To or Cc. A
+message sent only to the CRM address has no contact recipient and is correctly
+reported as unmatched.
 
 Set `VITE_INBOUND_EMAIL_ADDRESS` for the frontend display. Configure the
 `EMAIL` send binding and verify SPF, DKIM, and DMARC before enabling outbound
