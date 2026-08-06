@@ -33,6 +33,25 @@ structured UI components registered by the frontend over markdown. Keep answers
 concise and actionable. Forecast mutations require the existing human approval
 flow. Never invent CRM records, metrics, or contract contents.`;
 
+/**
+ * TanStack AI emits one STEP_FINISHED event for each reasoning chunk, while
+ * CopilotKit treats STEP_FINISHED as the terminal event for a step. Thinking
+ * is disabled for the Worker model, so these internal events are not useful to
+ * the browser and must not cross the CopilotKit protocol boundary.
+ */
+export const shouldForwardCopilotEvent = (event: {
+  type?: string;
+  stepName?: string;
+  stepType?: string;
+}) => {
+  const isThinkingStep =
+    (event.type === EventType.STEP_STARTED ||
+      event.type === EventType.STEP_FINISHED) &&
+    (event.stepName === "thinking" || event.stepType === "thinking");
+
+  return !isThinkingStep;
+};
+
 const toTanStackInput = (input: RunInput) => {
   const messages = (input.messages ?? [])
     .filter((message) => ["user", "assistant", "tool"].includes(message.role))
@@ -120,6 +139,7 @@ const streamRun = async (request: Request, env: Env, input: RunInput) => {
 
       for await (const event of response) {
         if (abortController.signal.aborted) break;
+        if (!shouldForwardCopilotEvent(event)) continue;
         if (
           event.type === EventType.RUN_STARTED ||
           event.type === EventType.RUN_FINISHED

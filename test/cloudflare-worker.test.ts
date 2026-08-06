@@ -1,7 +1,30 @@
 import { app, worker } from "../server/worker";
+import { shouldForwardCopilotEvent } from "../server/copilotkit";
 import { vi } from "vite-plus/test";
 
 describe("Cloudflare Worker HTTP boundary", () => {
+  it("does not forward TanStack thinking chunks to CopilotKit", () => {
+    expect(
+      shouldForwardCopilotEvent({
+        type: "STEP_STARTED",
+        stepName: "thinking",
+        stepType: "thinking",
+      }),
+    ).toBe(false);
+    expect(
+      shouldForwardCopilotEvent({
+        type: "STEP_FINISHED",
+        stepName: "thinking",
+        stepType: "thinking",
+      }),
+    ).toBe(false);
+    expect(
+      shouldForwardCopilotEvent({
+        type: "TEXT_MESSAGE_CONTENT",
+      }),
+    ).toBe(true);
+  });
+
   it("returns a health response with a request id", async () => {
     const response = await app.request(
       "http://localhost/api/health",
