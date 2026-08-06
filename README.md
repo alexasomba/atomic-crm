@@ -117,6 +117,8 @@ The staging Worker serves CopilotKit natively through the TanStack AI
 CopilotKit factory and its `AI` binding. Set `CLOUDFLARE_AI_MODEL` if you need a
 different Workers AI model; no account ID or AI API token is required. Use
 `COPILOTKIT_RUNTIME_MODE=proxy` only for the local Node rollback path.
+Build the staging frontend with `vp run build:staging`; this selects the
+Cloudflare data/auth providers and same-origin Worker API before deployment.
 
 ## Documentation
 

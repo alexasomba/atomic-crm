@@ -47,8 +47,8 @@
   },
   "vars": {
     "ENVIRONMENT": "staging",
-    "APP_ORIGIN": "http://localhost:5173",
-    "BETTER_AUTH_TRUSTED_ORIGINS": "http://localhost:5173",
+    "APP_ORIGIN": "https://atomic-crm-staging.gittech.workers.dev",
+    "BETTER_AUTH_TRUSTED_ORIGINS": "https://atomic-crm-staging.gittech.workers.dev,http://localhost:5173",
     "EMAIL_FROM": "noreply@atomic-crm.asomba.com",
     "VITE_INBOUND_EMAIL_ADDRESS": "crm@atomic-crm.asomba.com",
     "COPILOTKIT_RUNTIME_MODE": "native",
