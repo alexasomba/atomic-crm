@@ -75,6 +75,29 @@ const ConfiguredRoute = (props: RouterRouteProps) => {
   return <Route {...props} />;
 };
 
+const authenticatedRoutes = [
+  <ConfiguredRoute
+    key="profile"
+    path={ProfilePage.path}
+    element={<ProfilePage />}
+  />,
+  <ConfiguredRoute
+    key="settings"
+    path={SettingsPage.path}
+    element={<SettingsPage />}
+  />,
+  <ConfiguredRoute
+    key="import"
+    path={ImportPage.path}
+    element={<ImportPage />}
+  />,
+  <ConfiguredRoute
+    key="audit"
+    path={AuditLogPage.path}
+    element={<AuditLogPage />}
+  />,
+];
+
 export type CRMProps = {
   dataProvider?: CrmDataProvider;
   authProvider?: AuthProvider;
@@ -264,12 +287,7 @@ const DesktopAdmin = (props: CoreAdminProps) => {
         />
       </CustomRoutes>
 
-      <CustomRoutes>
-        <ConfiguredRoute path={ProfilePage.path} element={<ProfilePage />} />
-        <ConfiguredRoute path={SettingsPage.path} element={<SettingsPage />} />
-        <ConfiguredRoute path={ImportPage.path} element={<ImportPage />} />
-        <ConfiguredRoute path={AuditLogPage.path} element={<AuditLogPage />} />
-      </CustomRoutes>
+      <CustomRoutes>{authenticatedRoutes}</CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
       <Resource name="companies" {...companies} />
@@ -328,6 +346,7 @@ const MobileAdmin = (props: CoreAdminProps) => {
             element={<OAuthConsentPage />}
           />
         </CustomRoutes>
+        <CustomRoutes>{authenticatedRoutes}</CustomRoutes>
         <Resource
           name="contacts"
           list={ContactListMobile}
