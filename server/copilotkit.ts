@@ -109,6 +109,12 @@ const streamRun = async (request: Request, env: Env, input: RunInput) => {
         messages,
         systemPrompts,
         tools,
+        // Keep interactive CRM responses responsive. GPT-OSS otherwise emits
+        // a long reasoning stream before its first visible text event.
+        modelOptions: {
+          reasoning_effort: "low",
+          chat_template_kwargs: { enable_thinking: false },
+        },
         abortController,
       });
 
