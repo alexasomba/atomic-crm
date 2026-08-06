@@ -1,11 +1,29 @@
 import {
-  CopilotChat,
+  CopilotChatView,
   CopilotChatToolCallsView,
+  useAttachments,
   useAgent,
   useCopilotKit,
 } from "@copilotkit/react-core/v2";
+import type { Attachment as CopilotAttachment } from "@copilotkit/react-core/v2";
+import type { InputContent } from "@ag-ui/core";
 import { Loader2, Sparkles } from "lucide-react";
 import { useCallback, useState } from "react";
+import {
+  Attachment,
+  AttachmentAction,
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentGroup,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "@/components/ui/attachment";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import { Marker, MarkerContent, MarkerIcon } from "@/components/ui/marker";
 import { Message, MessageContent } from "@/components/ui/message";
@@ -109,6 +127,26 @@ function WorkspaceAssistantMessage({
   );
 }
 
+function WorkspaceReasoningMessage({
+  message,
+}: {
+  message: { content?: string };
+  [key: string]: unknown;
+}) {
+  if (!message.content?.trim()) return null;
+  return (
+    <Collapsible className="mb-2 rounded-lg border border-dashed px-3 py-2 text-xs text-muted-foreground">
+      <CollapsibleTrigger className="flex w-full items-center justify-between text-left font-medium">
+        <span>Reasoning details</span>
+        <span aria-hidden="true">+</span>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="whitespace-pre-wrap pt-2 leading-relaxed">
+        {message.content}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
 function WorkspaceUserMessage({
   message,
 }: {
@@ -129,14 +167,19 @@ function WorkspaceUserMessage({
 
 function WorkspaceScrollView({
   children,
+  className,
 }: {
   children?: React.ReactNode;
+  className?: string;
   [key: string]: unknown;
 }) {
   return (
     <MessageScrollerProvider autoScroll>
       <MessageScroller>
-        <MessageScrollerViewport aria-label="Copilot conversation">
+        <MessageScrollerViewport
+          className={className}
+          aria-label="Copilot conversation"
+        >
           <MessageScrollerContent>
             <MessageScrollerItem messageId="copilot-transcript" scrollAnchor>
               {children}
@@ -146,6 +189,45 @@ function WorkspaceScrollView({
         <MessageScrollerButton />
       </MessageScroller>
     </MessageScrollerProvider>
+  );
+}
+
+function WorkspaceAttachmentQueue({
+  attachments,
+  onRemove,
+}: {
+  attachments: CopilotAttachment[];
+  onRemove: (id: string) => void;
+}) {
+  if (attachments.length === 0) return null;
+  return (
+    <AttachmentGroup className="shrink-0 px-3">
+      {attachments.map((attachment) => (
+        <Attachment
+          key={attachment.id}
+          size="sm"
+          state={attachment.status === "uploading" ? "uploading" : "done"}
+        >
+          <AttachmentMedia>
+            <span aria-hidden="true">📎</span>
+          </AttachmentMedia>
+          <AttachmentContent>
+            <AttachmentTitle>
+              {attachment.filename ?? "Attachment"}
+            </AttachmentTitle>
+            <AttachmentDescription>{attachment.status}</AttachmentDescription>
+          </AttachmentContent>
+          <AttachmentActions>
+            <AttachmentAction
+              aria-label={`Remove ${attachment.filename ?? "attachment"}`}
+              onClick={() => onRemove(attachment.id)}
+            >
+              ×
+            </AttachmentAction>
+          </AttachmentActions>
+        </Attachment>
+      ))}
+    </AttachmentGroup>
   );
 }
 
@@ -258,12 +340,31 @@ export function CopilotWorkspace({
 }: CopilotWorkspaceProps) {
   const [view, setView] = useState<"chat" | "history">("chat");
   const [chatKey, setChatKey] = useState(0);
+  const [inputValue, setInputValue] = useState("");
   const { agent } = useAgent({
     agentId,
     runtimeAgentId: "default",
     threadId: threadId ?? "default",
   });
   const { copilotkit } = useCopilotKit();
+  const {
+    attachments,
+    fileInputRef,
+    handleFileUpload,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+    removeAttachment,
+    consumeAttachments,
+    dragOver,
+    containerRef,
+  } = useAttachments({
+    config: {
+      enabled: true,
+      accept: "image/*,application/pdf,text/plain",
+      maxSize: 10 * 1024 * 1024,
+    },
+  });
   const runAgent = useCallback(
     () => copilotkit.runAgent({ agent }),
     [agent, copilotkit],
@@ -278,6 +379,37 @@ export function CopilotWorkspace({
       await copilotkit.runAgent({ agent });
     },
     [agent, copilotkit],
+  );
+  const submitMessage = useCallback(
+    async (text: string) => {
+      const readyAttachments = consumeAttachments();
+      const content: string | InputContent[] = readyAttachments.length
+        ? [
+            { type: "text", text },
+            ...readyAttachments.map(
+              (attachment) =>
+                ({
+                  type: attachment.type,
+                  source: attachment.source,
+                  metadata: {
+                    ...(attachment.filename
+                      ? { filename: attachment.filename }
+                      : {}),
+                    ...attachment.metadata,
+                  },
+                }) as InputContent,
+            ),
+          ]
+        : text;
+      agent.addMessage({
+        id: crypto.randomUUID(),
+        role: "user",
+        content,
+      });
+      setInputValue("");
+      await copilotkit.runAgent({ agent });
+    },
+    [agent, consumeAttachments, copilotkit],
   );
   const handleToggleView = useCallback(
     () =>
@@ -325,18 +457,47 @@ export function CopilotWorkspace({
             ? children({ agent, runAgent })
             : children}
           <CopilotBrief onSubmit={submitBrief} />
-          <div className="copilot-chat-area">
-            <CopilotChat
+          <div ref={containerRef} className="copilot-chat-area min-h-0 flex-1">
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="sr-only"
+              accept="image/*,application/pdf,text/plain"
+              onChange={handleFileUpload}
+            />
+            <WorkspaceAttachmentQueue
+              attachments={attachments}
+              onRemove={removeAttachment}
+            />
+            <CopilotChatView
               key={chatKey}
-              agentId={agentId}
-              threadId={threadId}
               className="copilot-chat-inline"
+              messages={[...agent.messages]}
+              isRunning={agent.isRunning}
+              inputValue={inputValue}
+              onInputChange={setInputValue}
+              onSubmitMessage={submitMessage}
+              onStop={() => copilotkit.stopAgent({ agent })}
+              onAddFile={() => fileInputRef.current?.click()}
+              dragOver={dragOver}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              hasExplicitThreadId={Boolean(threadId)}
               messageView={{
                 assistantMessage: WorkspaceAssistantMessage as any,
                 userMessage: WorkspaceUserMessage as any,
+                reasoningMessage: WorkspaceReasoningMessage as any,
               }}
               scrollView={WorkspaceScrollView as any}
-            />
+            >
+              {({ messageView, input }) => (
+                <div className="flex h-full min-h-0 flex-col">
+                  <div className="min-h-0 flex-1">{messageView}</div>
+                  {input}
+                </div>
+              )}
+            </CopilotChatView>
           </div>
         </>
       )}

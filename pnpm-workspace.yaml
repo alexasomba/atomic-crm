@@ -66,6 +66,7 @@ minimumReleaseAgeExclude:
   - "@tanstack/store@0.11.1"
 
 catalog:
+  "@shadcn/helpers": "0.1.0"
   "@cloudflare/tanstack-ai": "0.2.1"
   "@ag-ui/mcp-apps-middleware": "0.0.3"
   "@supabase/auth-js": "2.112.1"
@@ -429,6 +430,7 @@ peerDependencyRules:
     - vite
     - vitest
   allowedVersions:
+    "@shadcn/helpers>@tanstack/ai": "0.43.0"
     drizzle-orm: "*"
     vite: "*"
     vitest: "*"

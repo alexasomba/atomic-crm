@@ -3,6 +3,8 @@ import {
   useDefaultRenderTool,
 } from "@copilotkit/react-core/v2";
 import { useGetIdentity } from "ra-core";
+import { Loader2 } from "lucide-react";
+import { Marker, MarkerContent, MarkerIcon } from "@/components/ui/marker";
 import { useRegisterComponents } from "./useRegisterComponents";
 import { usePersona } from "./usePersona";
 import { useSearchContacts } from "../tools/useSearchContacts";
@@ -81,13 +83,15 @@ export function useCopilotSetup({ context }: CopilotSetupOptions) {
       }
       const isComplete = status === "complete";
       return (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground py-1">
-          {isComplete ? "✓" : "⏳"}
-          <span>
+        <Marker role="status" variant="border" className="py-1">
+          <MarkerIcon>
+            {isComplete ? "✓" : <Loader2 className="animate-spin" />}
+          </MarkerIcon>
+          <MarkerContent className={isComplete ? undefined : "shimmer"}>
             {name}
-            {isComplete ? " — done" : " — running..."}
-          </span>
-        </div>
+            {isComplete ? " — done" : " — running…"}
+          </MarkerContent>
+        </Marker>
       );
     },
   });

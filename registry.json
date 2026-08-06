@@ -678,6 +678,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/copilot/deterministicChat.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/copilot/PersonaSelector.tsx",
           "type": "registry:component"
         },

@@ -94,6 +94,7 @@
     "@react-spring/types": "catalog:",
     "@react-spring/web": "catalog:",
     "@shadcn/react": "^0.3.0",
+    "@shadcn/helpers": "catalog:",
     "@standard-schema/spec": "catalog:",
     "@streamparser/json": "catalog:",
     "@streamparser/json-whatwg": "catalog:",
