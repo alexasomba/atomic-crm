@@ -206,6 +206,7 @@ export const inboundEmailEvents = sqliteTable(
     r2Key: text("r2_key").notNull(),
     sender: text("sender").notNull(),
     recipient: text("recipient").notNull(),
+    subject: text("subject"),
     status: text("status").notNull().default("queued"),
     error: text("error"),
     createdAt: text("created_at").notNull(),

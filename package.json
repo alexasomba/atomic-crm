@@ -40,6 +40,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@cloudflare/tanstack-ai": "catalog:",
     "@a2ui/web_core": "catalog:",
     "@ag-ui/client": "catalog:",
     "@ag-ui/core": "catalog:",
@@ -55,6 +56,7 @@
     "@copilotkit/license-verifier": "catalog:",
     "@copilotkit/react-core": "catalog:",
     "@copilotkit/react-ui": "catalog:",
+    "@copilotkit/runtime": "catalog:",
     "@copilotkit/runtime-client-gql": "catalog:",
     "@copilotkit/shared": "catalog:",
     "@copilotkit/web-components": "catalog:",
@@ -104,6 +106,7 @@
     "@tailwindcss/vite": "catalog:",
     "@tanstack/devtools-event-client": "catalog:",
     "@tanstack/pacer": "catalog:",
+    "@tanstack/ai": "catalog:",
     "@tanstack/query-async-storage-persister": "catalog:",
     "@tanstack/query-core": "catalog:",
     "@tanstack/query-persist-client-core": "catalog:",

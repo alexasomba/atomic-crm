@@ -3,7 +3,7 @@ const baseUrl = (
   "https://atomic-crm-staging.gittech.workers.dev"
 ).replace(/\/$/, "");
 const expectedCopilotStatus = Number(
-  process.env.STAGING_EXPECT_COPILOT_STATUS ?? 501,
+  process.env.STAGING_EXPECT_COPILOT_STATUS ?? 200,
 );
 
 const request = async (path, init) => {
@@ -40,7 +40,7 @@ assertStatus("unauthenticated configuration", configuration, 401);
 const crm = await request("/api/crm/contacts");
 assertStatus("unauthenticated CRM API", crm, 401);
 
-const copilot = await request("/api/copilotkit");
+const copilot = await request("/api/copilotkit/info");
 assertStatus("CopilotKit boundary", copilot, expectedCopilotStatus);
 
 const email = process.env.STAGING_TEST_EMAIL?.trim();

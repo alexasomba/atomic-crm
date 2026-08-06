@@ -28,14 +28,15 @@ describe("Cloudflare Worker HTTP boundary", () => {
     await expect(response.json()).resolves.toEqual({ error: "Not found" });
   });
 
-  it("reports an explicit CopilotKit configuration gap", async () => {
+  it("reports an explicit native CopilotKit configuration gap", async () => {
     const response = await app.request("http://localhost/api/copilotkit", {}, {
+      COPILOTKIT_RUNTIME_MODE: "native",
       COPILOTKIT_RUNTIME_URL: "",
     } as never);
 
-    expect(response.status).toBe(501);
+    expect(response.status).toBe(503);
     await expect(response.json()).resolves.toMatchObject({
-      error: expect.stringContaining("COPILOTKIT_RUNTIME_URL"),
+      error: expect.stringContaining("Workers AI binding"),
     });
   });
 
@@ -53,6 +54,7 @@ describe("Cloudflare Worker HTTP boundary", () => {
       },
       {
         APP_ORIGIN: "http://localhost:5173",
+        COPILOTKIT_RUNTIME_MODE: "proxy",
         COPILOTKIT_RUNTIME_URL: "http://localhost:4000/api/copilotkit",
       } as never,
     );

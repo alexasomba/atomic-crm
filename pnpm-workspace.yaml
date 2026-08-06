@@ -1,7 +1,10 @@
 allowBuilds:
+  "@google/genai": true
+  "@openrouter/sdk": true
   "@scarf/scarf": true
   esbuild: true
   msw: true
+  protobufjs: true
   rolldown: true
   workerd: true
 packages:
@@ -60,8 +63,10 @@ minimumReleaseAgeExclude:
   - wrangler@4.119.0
   - tsx@4.23.8
   - "@shadcn/react@0.3.0"
+  - '@tanstack/store@0.11.1'
 
 catalog:
+  "@cloudflare/tanstack-ai": "0.2.1"
   "@ag-ui/mcp-apps-middleware": "0.0.3"
   "@supabase/auth-js": "2.112.1"
   "@supabase/functions-js": "2.112.1"
@@ -162,6 +167,7 @@ catalog:
   "@tanstack/virtual-core": "^3.17.7"
   "@tanstack/query-core": "5.101.4"
   "@tanstack/pacer": "0.21.1"
+  "@tanstack/ai": "0.43.0"
   "@tanstack/react-virtual": "3.14.9"
   "@tanstack/query-persist-client-core": "^5.101.4"
   "@tanstack/react-query": "^5.101.4"

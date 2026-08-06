@@ -1,0 +1,1 @@
+ALTER TABLE `inbound_email_events` ADD `subject` text;

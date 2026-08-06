@@ -15,7 +15,8 @@ import {
   notes,
   sales,
 } from "./db/schema.js";
-import { eq } from "drizzle-orm";
+import { desc, eq, or, sql } from "drizzle-orm";
+import { handleNativeCopilotKit } from "./copilotkit.js";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -85,8 +86,15 @@ const proxyCopilotKit = async (context: {
   return fetch(new Request(target, requestInit));
 };
 
-app.all("/api/copilotkit", proxyCopilotKit);
-app.all("/api/copilotkit/*", proxyCopilotKit);
+const copilotKit = async (context: { req: { raw: Request }; env: Env }) => {
+  if (context.env.COPILOTKIT_RUNTIME_MODE === "proxy") {
+    return proxyCopilotKit(context);
+  }
+  return handleNativeCopilotKit(context.req.raw, context.env);
+};
+
+app.all("/api/copilotkit", copilotKit);
+app.all("/api/copilotkit/*", copilotKit);
 
 app.get("/api/me", async (context) => {
   const session = await createAuth(context.env).api.getSession({
@@ -114,6 +122,79 @@ app.get("/api/me", async (context) => {
       avatar: session.user.image,
     },
   });
+});
+
+const getAdminSale = async (env: Env, headers: Headers) => {
+  const session = await createAuth(env).api.getSession({ headers });
+  if (!session) return null;
+  const [sale] = await createDb(env.DB)
+    .select({ id: sales.id, role: sales.role })
+    .from(sales)
+    .where(eq(sales.userId, session.user.id))
+    .limit(1)
+    .all();
+  return sale?.role === "admin" ? sale : null;
+};
+
+app.get("/api/admin/inbound-email-events", async (context) => {
+  const sale = await getAdminSale(context.env, context.req.raw.headers);
+  if (!sale)
+    return context.json({ error: "Administrator access required" }, 403);
+  const limit = Math.min(Number(context.req.query("limit") ?? 50), 100);
+  const events = await createDb(context.env.DB)
+    .select({
+      id: inboundEmailEvents.id,
+      messageId: inboundEmailEvents.messageId,
+      sender: inboundEmailEvents.sender,
+      recipient: inboundEmailEvents.recipient,
+      subject: inboundEmailEvents.subject,
+      status: inboundEmailEvents.status,
+      error: inboundEmailEvents.error,
+      createdAt: inboundEmailEvents.createdAt,
+      processedAt: inboundEmailEvents.processedAt,
+    })
+    .from(inboundEmailEvents)
+    .orderBy(desc(inboundEmailEvents.createdAt))
+    .limit(Number.isSafeInteger(limit) && limit > 0 ? limit : 50)
+    .all();
+  return context.json({ data: events });
+});
+
+app.post("/api/admin/inbound-email-events/:id/replay", async (context) => {
+  const sale = await getAdminSale(context.env, context.req.raw.headers);
+  if (!sale)
+    return context.json({ error: "Administrator access required" }, 403);
+
+  const eventId = context.req.param("id");
+  const db = createDb(context.env.DB);
+  const [event] = await db
+    .select()
+    .from(inboundEmailEvents)
+    .where(eq(inboundEmailEvents.id, eventId))
+    .limit(1)
+    .all();
+  if (!event) return context.json({ error: "Inbound event not found" }, 404);
+  if (event.status === "processed" || event.status === "queued") {
+    return context.json(
+      { error: `Event is already ${event.status}`, data: event },
+      409,
+    );
+  }
+
+  await db
+    .update(inboundEmailEvents)
+    .set({ status: "queued", error: null, processedAt: null })
+    .where(eq(inboundEmailEvents.id, eventId))
+    .run();
+  await context.env.INBOUND_EMAIL_QUEUE.send({
+    eventId: event.id,
+    messageId: event.messageId,
+    r2Key: event.r2Key,
+    sender: event.sender,
+    recipient: event.recipient,
+    receivedAt: event.createdAt,
+  } satisfies InboundEmailJob);
+  return context.json({ data: { ...event, status: "queued" } });
 });
 
 app.get("/api/configuration", async (context) => {
@@ -402,6 +483,7 @@ const emailHandler = async (
         r2Key,
         sender: message.from,
         recipient: message.to,
+        subject: getHeader(message, "subject") || null,
         status: "queued",
         createdAt: job.receivedAt,
       })
@@ -421,6 +503,22 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
     const job = message.body as InboundEmailJob;
     const uploadedAttachmentKeys: string[] = [];
     try {
+      const eventDb = createDb(env.DB);
+      const [event] = await eventDb
+        .select({ status: inboundEmailEvents.status })
+        .from(inboundEmailEvents)
+        .where(eq(inboundEmailEvents.id, job.eventId))
+        .limit(1)
+        .all();
+      if (
+        !event ||
+        event.status === "processed" ||
+        event.status === "unmatched"
+      ) {
+        message.ack();
+        continue;
+      }
+
       const object = await env.BUCKET.get(job.r2Key);
       if (!object)
         throw new Error(`Missing inbound email object: ${job.r2Key}`);
@@ -432,17 +530,30 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
         parsed.from && "address" in parsed.from && parsed.from.address
           ? parsed.from.address
           : job.sender;
+      const normalizedSender = sender.trim().toLowerCase();
       const [contact] = await db
         .select({ id: contacts.id, salesId: contacts.salesId })
         .from(contacts)
-        .where(eq(contacts.email, sender))
+        .where(
+          or(
+            sql`lower(${contacts.email}) = ${normalizedSender}`,
+            sql`EXISTS (
+              SELECT 1 FROM json_each(COALESCE(${contacts.emailJson}, '[]')) AS email_entry
+              WHERE lower(json_extract(email_entry.value, '$.email')) = ${normalizedSender}
+            )`,
+          ),
+        )
         .limit(1)
         .all();
 
       if (!contact) {
         await db
           .update(inboundEmailEvents)
-          .set({ status: "unmatched", processedAt: new Date().toISOString() })
+          .set({
+            status: "unmatched",
+            error: `No CRM contact matched ${normalizedSender}`,
+            processedAt: new Date().toISOString(),
+          })
           .where(eq(inboundEmailEvents.id, job.eventId))
           .run();
         console.warn("Inbound email did not match a CRM contact", {
@@ -532,6 +643,14 @@ const queueHandler = async (batch: MessageBatch<unknown>, env: Env) => {
         eventId: job.eventId,
         error: error instanceof Error ? error.message : String(error),
       });
+      await createDb(env.DB)
+        .update(inboundEmailEvents)
+        .set({
+          status: "error",
+          error: error instanceof Error ? error.message : String(error),
+        })
+        .where(eq(inboundEmailEvents.id, job.eventId))
+        .run();
       message.retry();
     }
   }

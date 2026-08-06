@@ -63,17 +63,19 @@ If you need debug the backend, you can access the following services:
 
 ## CopilotKit assistant
 
-The in-app CopilotKit assistant is split across three services (see `render.yaml`):
+The in-app CopilotKit assistant uses the Cloudflare Worker runtime in staging and
+production, with the Node runtime retained only for local rollback and MCP
+development (see `render.yaml`):
 
 - `atomic-crm-app` — the static frontend (this repo)
-- `atomic-crm-copilot` — the CopilotKit runtime (Hono server in `server/`)
+- `atomic-crm-copilot` — the local/rollback CopilotKit runtime (Hono server in `server/`)
 - `atomic-crm-mcp` — the MCP contract analyzer (also in `server/mcp/`)
 
 The chat UI uses shadcn Base UI primitives for message rows, bubbles, streaming markers, anchored transcript scrolling, attachments, and guided Copilot briefs.
 
 Two env vars wire the frontend to the runtime:
 
-- `VITE_COPILOTKIT_RUNTIME_URL` — base URL for the CopilotKit chat endpoint (e.g. `https://atomic-crm-copilot.onrender.com/api/copilotkit`). Read at build time.
+- `VITE_COPILOTKIT_RUNTIME_URL` — optional alternate CopilotKit endpoint. Leave unset to use the same-origin Worker route, `/api/copilotkit`.
 - `VITE_COPILOTKIT_API_URL` — base URL for the runtime's REST endpoints used by frontend tools (`/api/contacts`, `/api/leads/top`, etc.). Read at build time.
 
 ### Local dev workflows
@@ -84,20 +86,19 @@ Run the **full local stack** (frontend + copilot runtime + MCP) — needs an LLM
   vp run dev:all
 ```
 
-Or run **only the frontend against the deployed CopilotKit backend** (no local server needed):
+Or run **only the frontend against the local Node rollback runtime** (no Worker needed):
 
 ```sh
 VITE_COPILOTKIT_API_URL=http://localhost:5173 \
-COPILOTKIT_PROXY_TARGET=https://atomic-crm-copilot.onrender.com \
+COPILOTKIT_PROXY_TARGET=http://localhost:4000 \
   vp run dev:demo
 ```
 
 The vite dev server proxies `/api/*` to `COPILOTKIT_PROXY_TARGET` so tool calls and chat both flow through the same origin (no CORS).
 
-When using the default local proxy target, start the CopilotKit runtime with
-`make start-server`; otherwise the browser will report connection-refused
-proxy errors for `/api/copilotkit`. Set `COPILOTKIT_PROXY_TARGET` when using a
-remote runtime.
+When using the local proxy target, start the CopilotKit runtime with
+`make start-server`; otherwise the browser will report connection-refused proxy
+errors for `/api/copilotkit`.
 
 ### Cloudflare Worker workflow
 
@@ -112,9 +113,10 @@ This runs the Vite frontend and Wrangler Worker together. Set
 it unset to keep the Supabase provider as the rollback default. Configure
 `BETTER_AUTH_SECRET` in `.dev.vars` before using authentication. Apply local
 D1 migrations with `pnpm run d1:migrate:local`.
-For CopilotKit, set `COPILOTKIT_RUNTIME_URL=http://localhost:4000` locally or
-to the deployed Node runtime; MCP and human-in-the-loop behavior remain on
-that runtime during the staged migration.
+The staging Worker serves CopilotKit natively through the TanStack AI
+CopilotKit factory and its `AI` binding. Set `CLOUDFLARE_AI_MODEL` if you need a
+different Workers AI model; no account ID or AI API token is required. Use
+`COPILOTKIT_RUNTIME_MODE=proxy` only for the local Node rollback path.
 
 ## Documentation
 

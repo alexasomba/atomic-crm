@@ -97,16 +97,13 @@ The profile page reads `VITE_INBOUND_EMAIL_ADDRESS`; the older
 `VITE_INBOUND_EMAIL` name remains a temporary fallback for existing Supabase
 deployments and should be removed after Cloudflare cutover.
 
-The Worker now exposes authenticated attachment upload/download/delete routes
-backed by R2 and a bounded `/api/ai` route backed by Workers AI. The AI route is
-an isolated compatibility spike; CopilotKit remains on the existing Node
-runtime until streaming, MCP, and human-approval behavior are verified on the
-Worker runtime. When the frontend is served by the Worker, set
-`COPILOTKIT_RUNTIME_URL` to the Node CopilotKit service. The Worker forwards
-`/api/copilotkit` requests to that configured runtime, preserving streaming
-responses and the browser contract. If it is empty, the Worker returns an
-explicit `501` configuration response instead of a misleading route-not-found
-error.
+The Worker exposes authenticated attachment upload/download/delete routes backed
+by R2 and a bounded `/api/ai` route backed by Workers AI. CopilotKit is served
+natively at `/api/copilotkit` through CopilotKit v2's TanStack AI factory and
+the native Workers AI `AI` binding. This preserves AG-UI streaming, frontend
+tools, and human approval events without an AI API token. Set
+`COPILOTKIT_RUNTIME_MODE=proxy` and `COPILOTKIT_RUNTIME_URL` only for the local
+Node rollback path.
 
 Run `pnpm run test:worker` for the Worker HTTP boundary tests. These use Hono's
 in-process request adapter and do not require a Cloudflare account.
@@ -125,13 +122,9 @@ Wrangler configuration before deploying.
 
 The repository has a deployed staging Worker at
 `https://atomic-crm-staging.gittech.workers.dev` using the resources declared in
-`wrangler.staging.jsonc`. Its D1 migrations are applied and the health,
-authentication boundary, and explicit CopilotKit runtime configuration response
-have been smoke-tested. Set a publicly reachable `COPILOTKIT_RUNTIME_URL` before
-testing CopilotKit remotely; `localhost` is intentionally not used by the
-deployed staging Worker. The historical Render URL currently returns 404, so
-it must not be configured until that service is deployed and responds to the
-CopilotKit endpoint. Email Sending is enabled for
+`wrangler.staging.jsonc`. Its D1 migrations, health, authentication boundary,
+and native CopilotKit route are validated through Wrangler smoke tests. Email
+Sending is enabled for
 `atomic-crm.asomba.com`, with `noreply@atomic-crm.asomba.com` configured as the
 sender and `crm@atomic-crm.asomba.com` routed to the staging Worker. Inbound
 delivery is ready; the three Cloudflare Email Routing MX records now resolve
