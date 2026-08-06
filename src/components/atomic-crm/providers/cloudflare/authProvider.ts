@@ -27,7 +27,20 @@ type SessionResponse = {
 };
 
 export const authProvider: AuthProvider = {
-  async login({ email, password }) {
+  async login({ email, password, ssoDomain, redirectTo }) {
+    if (ssoDomain) {
+      const result = await authRequest<{ url?: string }>("/sign-in/sso", {
+        method: "POST",
+        body: JSON.stringify({
+          domain: ssoDomain,
+          callbackURL: redirectTo ?? window.location.origin,
+          errorCallbackURL: window.location.href,
+        }),
+      });
+      if (!result.url) throw new Error("SSO provider is not configured");
+      window.location.assign(result.url);
+      return;
+    }
     await authRequest("/sign-in/email", {
       method: "POST",
       body: JSON.stringify({ email, password }),

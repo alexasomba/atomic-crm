@@ -36,11 +36,11 @@ export default defineConfig({
     },
     ignorePatterns: [
       "dist",
-      "supabase/functions",
       "doc",
       "server",
       "packages/license-verifier",
       "packages/create-react-admin/templates",
+      "server/worker-env.d.ts",
     ],
     overrides: [
       {
@@ -1405,6 +1405,7 @@ export default defineConfig({
       "docs/.jekyll-metadata",
       "docs/.jekyll-cache",
       "packages/react-admin/docs",
+      "server/worker-env.d.ts",
       "examples/**/static",
       "examples/**/dist",
       "cypress/videos",
@@ -1445,23 +1446,12 @@ export default defineConfig({
       manifest: false, // Use existing manifest.json from public/
     }),
   ]),
-  define:
-    process.env.NODE_ENV === "production" && process.env.VITE_SUPABASE_URL
-      ? {
-          "import.meta.env.VITE_IS_DEMO": JSON.stringify(
-            process.env.VITE_IS_DEMO,
-          ),
-          "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(
-            process.env.VITE_SUPABASE_URL,
-          ),
-          "import.meta.env.VITE_SB_PUBLISHABLE_KEY": JSON.stringify(
-            process.env.VITE_SB_PUBLISHABLE_KEY,
-          ),
-          "import.meta.env.VITE_INBOUND_EMAIL": JSON.stringify(
-            process.env.VITE_INBOUND_EMAIL,
-          ),
-        }
-      : undefined,
+  define: {
+    "import.meta.env.VITE_IS_DEMO": JSON.stringify(process.env.VITE_IS_DEMO),
+    "import.meta.env.VITE_INBOUND_EMAIL_ADDRESS": JSON.stringify(
+      process.env.VITE_INBOUND_EMAIL_ADDRESS,
+    ),
+  },
   base: "./",
   build: {
     sourcemap: true,

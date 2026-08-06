@@ -1,10 +1,8 @@
 # Cloudflare migration
 
-The Cloudflare runtime is being introduced as a strangler alongside the existing
-Node/CopilotKit runtime. `vp run dev:all` remains the compatibility workflow
-described in the README. Use `vp run dev:cloudflare` to run the Vite frontend
-against the Worker, or `wrangler dev --config wrangler.jsonc` for the Worker
-alone.
+The Cloudflare runtime is the application backend for local and staging. Use
+`vp run dev:all` for the Vite frontend, Worker, and MCP server, or
+`wrangler dev --config wrangler.jsonc` for the Worker alone.
 
 ## Local setup
 
@@ -41,27 +39,9 @@ CopilotKit 4000, and MCP 3108; override them with `VITE_DEV_PORT`,
 The command then keeps the frontend CORS origin aligned with the selected Vite
 port.
 
-For a Supabase export, provide `VITE_SUPABASE_URL` and
-`SUPABASE_SERVICE_ROLE_KEY`, then run `pnpm run data:export`. The export now
-includes CRM tables, non-secret Auth user metadata, and an attachment byte
-archive under `migration-data/storage/attachments` with a
-`migration-data/storage-manifest.json` manifest. Password hashes are not
-exported: verify whether the existing Supabase hashes can be safely imported
-before cutover; otherwise require a one-time Better Auth password reset. Set
-`MIGRATION_SKIP_STORAGE=1` only when a storage export is intentionally being
-performed separately.
-
-Review the generated `migration-data/d1-import.sql` from `pnpm run data:import`;
-it is a dry run by default. Set `MIGRATION_APPLY=1 MIGRATION_TARGET=local` only
-after reviewing the SQL. Run `MIGRATION_TARGET=local pnpm run data:reconcile`
-after import. Remote application requires the explicit
-`MIGRATION_TARGET=remote` choice and staging validation first. The attachment
-archive is deliberately separate from the SQL import because D1 and R2 do not
-share a transaction; upload it to R2 with an idempotent, checksum-verified
-import job and reconcile the resulting D1 metadata before production cutover.
-For an exported Supabase snapshot, run `MIGRATION_EXPORT=... pnpm run
-data:reconcile:staging` to compare it with the deployed staging database; the
-script uses `wrangler.staging.jsonc` and cannot target the default database.
+Staging data is deterministic and is created with `pnpm run data:seed:staging`.
+Use the guarded `data:seed:staging:reset` command when intentionally rebuilding
+staging; it preserves no production data and requires the staging target.
 
 The repository pins the Drizzle v1 release candidate and the matching Better
 Auth release candidate. The beta Better Auth CLI is used because it emits
@@ -75,8 +55,8 @@ Cloudflare Email Service is configured through the `EMAIL` send binding. The
 production domain must be verified and its SPF, DKIM, DMARC, sender, and
 suppression settings configured before outbound auth mail is enabled.
 
-Inbound mail is routed to the Worker at `crm@example.com` in development (set
-`VITE_INBOUND_EMAIL_ADDRESS` for another address). The Worker stores the raw
+Inbound mail is routed to the Worker at `crm@atomic-crm.asomba.com` (set
+`VITE_INBOUND_EMAIL_ADDRESS` for another local address). The Worker stores the raw
 message in R2, records an idempotency row in D1, queues MIME parsing, matches
 known contacts, and writes notes, activities, and attachment metadata in a D1
 batch. Unmatched messages remain in R2 and are marked `unmatched` for
@@ -84,18 +64,12 @@ operational follow-up.
 
 ## Frontend provider
 
-The Cloudflare `ra-core` providers are available from
-`src/components/atomic-crm/providers/cloudflare`. Set
-`VITE_CLOUDFLARE_API_URL` to the Worker origin and pass those providers to the
-`CRM` component when testing the new path. Alternatively, set
-`VITE_CRM_PROVIDER=cloudflare` to select them automatically. Supabase remains
-the default rollback path until data reconciliation, sales-role
-synchronization, attachments, and all custom CRM resources have passed staging
-tests.
+The Cloudflare `ra-core` providers in
+`src/components/atomic-crm/providers/cloudflare` are the default application
+providers. Set `VITE_CLOUDFLARE_API_URL` to a Worker origin when the frontend
+and Worker are on different origins; same-origin deployment needs no override.
 
-The profile page reads `VITE_INBOUND_EMAIL_ADDRESS`; the older
-`VITE_INBOUND_EMAIL` name remains a temporary fallback for existing Supabase
-deployments and should be removed after Cloudflare cutover.
+The profile page reads `VITE_INBOUND_EMAIL_ADDRESS`.
 
 The Worker exposes authenticated attachment upload/download/delete routes backed
 by R2 and a bounded `/api/ai` route backed by Workers AI. CopilotKit is served

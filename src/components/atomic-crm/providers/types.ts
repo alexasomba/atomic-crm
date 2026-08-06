@@ -2,7 +2,7 @@ import type { DataProvider, Identifier } from "ra-core";
 import type { ConfigurationContextValue } from "../root/ConfigurationContext";
 import type { Activity, Sale, SalesFormData, SignUpData } from "../types";
 
-/** Shared custom surface implemented by Supabase, FakeRest, and Cloudflare. */
+/** Shared custom surface implemented by FakeRest and Cloudflare. */
 export type CrmDataProvider = DataProvider & {
   signUp(data: SignUpData): Promise<{
     id: Identifier;

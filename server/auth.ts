@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth/minimal";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
+import { sso } from "@better-auth/sso";
 import { drizzle } from "drizzle-orm/d1";
 import * as authSchema from "./db/auth-schema.js";
 import * as schema from "./db/schema.js";
@@ -19,6 +20,7 @@ type AuthEnvironment = {
 
 const authOptions = {
   basePath: "/api/auth",
+  plugins: [sso()],
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,

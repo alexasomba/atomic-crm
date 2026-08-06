@@ -13,7 +13,6 @@ export default defineConfig({
       "jsonexport/dist",
       "lodash",
       "papaparse",
-      "ra-supabase-language-english",
       "@tanstack/react-router",
       "@tanstack/router-core",
       "@tanstack/history",

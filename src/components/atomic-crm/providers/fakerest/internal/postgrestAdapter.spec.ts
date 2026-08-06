@@ -1,5 +1,5 @@
 import type { DataProvider } from "ra-core";
-import { withSupabaseFilterAdapter } from "./supabaseAdapter";
+import { withPostgrestFilterAdapter } from "./postgrestAdapter";
 
 describe("getList", () => {
   it("should transform '@eq'", () => {
@@ -11,7 +11,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "a@id@eq": "1" } }),
@@ -31,7 +31,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "a@id@neq": "1" } }),
@@ -51,7 +51,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "a@id@eq": "1" } }),
@@ -71,7 +71,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "a@id@neq": "1" } }),
@@ -91,7 +91,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "id@is": null } }),
@@ -111,7 +111,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "id@not.is": null } }),
@@ -131,7 +131,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "a@id@lt": "1" } }),
@@ -151,7 +151,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "a@id@lte": "1" } }),
@@ -171,7 +171,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "a@id@gt": "1" } }),
@@ -191,7 +191,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "a@id@gte": "1" } }),
@@ -211,7 +211,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "id@in": "(1,2,a)" } }),
@@ -231,7 +231,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", { filter: { "tags@cs": "{1,2,a}" } }),
@@ -251,7 +251,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getListAdapter("resource", {
@@ -273,7 +273,7 @@ describe("getList", () => {
     getList.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getList: getListAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(getListAdapter("resource", { filter: { id: 1 } })).resolves.toEqual([
       { id: 1 },
@@ -295,7 +295,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -325,7 +325,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -355,7 +355,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -385,7 +385,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -415,7 +415,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -445,7 +445,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -475,7 +475,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -505,7 +505,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -535,7 +535,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -565,7 +565,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -595,7 +595,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -625,7 +625,7 @@ describe("getManyReference", () => {
     getManyReference.mockResolvedValueOnce([{ id: 1 }]);
 
     const { getManyReference: getManyReferenceAdapter } =
-      withSupabaseFilterAdapter(mockDataProvider);
+      withPostgrestFilterAdapter(mockDataProvider);
 
     expect(
       getManyReferenceAdapter("resource", {
@@ -658,7 +658,7 @@ it("should remove summary suffix", () => {
   const update = vi.fn();
   const updateMany = vi.fn();
 
-  const dataProvider: DataProvider = withSupabaseFilterAdapter({
+  const dataProvider: DataProvider = withPostgrestFilterAdapter({
     getOne,
     getList,
     getMany,

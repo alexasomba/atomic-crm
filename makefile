@@ -7,20 +7,8 @@ install: package.json ## install dependencies
 	vp install
 	@(cd server && npm install)
 
-start-supabase: ## start supabase locally
-	npx supabase start
-
-start-supabase-functions: ## start the supabase Functions watcher
-	npx supabase functions serve
-
-supabase-migrate-database: ## apply the migrations to the database
-	npx supabase migration up
-
-supabase-reset-database: ## reset (and clear!) the database
-	npx supabase db reset
-
 start-app: ## start the app locally
-	vp dev
+	vp run dev:cloudflare
 
 install-server: ## install server dependencies
 	@(cd server && npm install)
@@ -31,18 +19,16 @@ start-server: ## start the CopilotKit runtime server
 start-mcp: ## start the MCP contract analyzer server
 	@(cd server && npm run dev:mcp)
 
-start: start-supabase start-app ## start the stack locally
+start: start-app ## start the stack locally
 
 start-demo: ## start the app locally in demo mode
 	vp run dev:demo
 
-start-all: ## start everything (app + CopilotKit server + MCP server)
+start-all: ## start everything (app + Cloudflare Worker + MCP server)
 	vp run dev:all
 
-stop-supabase: ## stop local supabase
-	npx supabase stop
-
-stop: stop-supabase ## stop the stack locally
+stop: ## stop the local stack (Ctrl-C terminates vp run dev:cloudflare)
+	@true
 
 build: ## build the app
 	vp build
@@ -50,19 +36,12 @@ build: ## build the app
 build-demo: ## build the app in demo mode
 	vp run build:demo
 
-prod-start: build supabase-deploy
+prod-start: build
 	open http://127.0.0.1:3000 && npx serve -l tcp://127.0.0.1:3000 dist
 
-prod-deploy: build supabase-deploy
+prod-deploy: build
 	npm run ghpages:deploy
 
-supabase-remote-init:
-	npm run supabase:remote:init
-	$(MAKE) supabase-deploy
-
-supabase-deploy:
-	npx supabase db push
-	npx supabase functions deploy
 
 test:
 	vp test

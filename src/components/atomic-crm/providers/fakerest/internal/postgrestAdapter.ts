@@ -7,7 +7,7 @@ function removeSummarySuffix(resource: string) {
     : resource;
 }
 
-export function withSupabaseFilterAdapter<T extends DataProvider>(
+export function withPostgrestFilterAdapter<T extends DataProvider>(
   dataProvider: T,
 ): T {
   return {

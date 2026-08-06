@@ -1,6 +1,6 @@
 # Atomic CRM
 
-A full-featured CRM built with React, Vite+, shadcn-admin-kit/Base UI, Supabase, and a staged Cloudflare backend.
+A full-featured CRM built with React, Vite+, shadcn-admin-kit/Base UI, and a Cloudflare-native backend.
 
 <https://github.com/user-attachments/assets/0d7554b5-49ef-41c6-bcc9-a76214fc5c99>
 
@@ -25,7 +25,7 @@ To run this project locally, you will need the following tools installed on your
 
 - Make
 - Node 22 LTS
-- Docker (required by Supabase)
+- Docker (optional; only needed for unrelated local tooling)
 
 Fork the [`marmelab/atomic-crm`](https://github.com/marmelab/atomic-crm) repository to your user/organization, then clone it locally:
 
@@ -40,23 +40,23 @@ cd atomic-crm
 make install
 ```
 
-This will install the dependencies for the frontend and the backend, including a local Supabase instance.
+This will install the dependencies for the frontend and the backend, for the Cloudflare Worker and local D1.
 
-Start the Supabase-backed app locally:
+Start the Cloudflare-backed app locally:
 
 ```sh
 make start
 ```
 
-This will start the Vite dev server for the frontend, the local Supabase instance for the API, and a Postgres database (thanks to Docker).
+This starts the Vite frontend and Cloudflare Worker against local D1.
 
 You can then access the app via [http://localhost:5173/](http://localhost:5173/). You will be prompted to create the first user.
 
-For the demo provider, use `make start-demo`. To run the frontend, CopilotKit runtime, and MCP server together, use `vp run dev:all`. The staged Cloudflare/D1/Better Auth path is available with `vp run dev:cloudflare` and `VITE_CRM_PROVIDER=cloudflare`.
+For the demo provider, use `vp run dev:demo`. To run the Cloudflare-native frontend, Worker, and MCP server together, use `vp run dev:all` or `vp run dev:cloudflare`. Cloudflare D1 and Better Auth are the only application backend; FakeRest is available for demos.
 
 If you need debug the backend, you can access the following services:
 
-- Supabase dashboard: [http://localhost:54323/](http://localhost:54323/)
+- Cloudflare Worker: [http://localhost:8787/](http://localhost:8787/)
 - REST API: [http://127.0.0.1:54321](http://127.0.0.1:54321)
 - Attachments storage: [http://localhost:54323/project/default/storage/buckets/attachments](http://localhost:54323/project/default/storage/buckets/attachments)
 - Inbucket email testing service: [http://localhost:54324/](http://localhost:54324/)
@@ -108,10 +108,9 @@ The staged Cloudflare runtime can be started with:
 vp run dev:cloudflare
 ```
 
-This runs the Vite frontend and Wrangler Worker together. Set
-`VITE_CRM_PROVIDER=cloudflare` to exercise the D1/Better Auth provider; leave
-it unset to keep the Supabase provider as the rollback default. Configure
-`BETTER_AUTH_SECRET` in `.dev.vars` before using authentication. Apply local
+This runs the Vite frontend and Wrangler Worker together. Cloudflare D1 and
+Better Auth are selected automatically. Configure `BETTER_AUTH_SECRET` in
+`.dev.vars` before using authentication. Apply local
 D1 migrations with `pnpm run d1:migrate:local`.
 The staging Worker serves CopilotKit natively through the TanStack AI
 CopilotKit factory and its `AI` binding. Set `CLOUDFLARE_AI_MODEL` if you need a

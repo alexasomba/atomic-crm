@@ -100,8 +100,19 @@ export const verification = sqliteTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const ssoProvider = sqliteTable("sso_provider", {
+  id: text("id").primaryKey(),
+  issuer: text("issuer").notNull(),
+  oidcConfig: text("oidc_config"),
+  samlConfig: text("saml_config"),
+  userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+  providerId: text("provider_id").notNull().unique(),
+  organizationId: text("organization_id"),
+  domain: text("domain").notNull(),
+});
+
 export const authRelations = defineRelationsPart(
-  { user, session, account, verification },
+  { user, session, account, verification, ssoProvider },
   (r) => ({
     user: {
       sessions: r.many.session({
@@ -111,6 +122,10 @@ export const authRelations = defineRelationsPart(
       accounts: r.many.account({
         from: r.user.id,
         to: r.account.userId,
+      }),
+      ssoProviders: r.many.ssoProvider({
+        from: r.user.id,
+        to: r.ssoProvider.userId,
       }),
     },
     session: {
@@ -122,6 +137,12 @@ export const authRelations = defineRelationsPart(
     account: {
       user: r.one.user({
         from: r.account.userId,
+        to: r.user.id,
+      }),
+    },
+    ssoProvider: {
+      user: r.one.user({
+        from: r.ssoProvider.userId,
         to: r.user.id,
       }),
     },

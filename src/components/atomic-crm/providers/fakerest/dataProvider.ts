@@ -31,7 +31,7 @@ import {
 } from "./authProvider";
 import { generateFromCsv } from "./dataGenerator/generateFromCsv";
 import type { Db } from "./dataGenerator/types";
-import { withSupabaseFilterAdapter } from "./internal/supabaseAdapter";
+import { withPostgrestFilterAdapter } from "./internal/postgrestAdapter";
 
 const TASK_MARKED_AS_DONE = "TASK_MARKED_AS_DONE";
 const TASK_MARKED_AS_UNDONE = "TASK_MARKED_AS_UNDONE";
@@ -307,7 +307,7 @@ export const createDataProvider = ({
   };
 
   const dataProvider = withLifecycleCallbacks(
-    withSupabaseFilterAdapter(dataProviderWithCustomMethod),
+    withPostgrestFilterAdapter(dataProviderWithCustomMethod),
     [
       {
         resource: "configuration",

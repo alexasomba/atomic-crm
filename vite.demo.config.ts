@@ -25,12 +25,6 @@ export default defineConfig({
   ],
   define: {
     "import.meta.env.VITE_IS_DEMO": JSON.stringify("true"),
-    "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(
-      process.env.VITE_SUPABASE_URL ?? "https://demo.example.org",
-    ),
-    "import.meta.env.VITE_SB_PUBLISHABLE_KEY": JSON.stringify(
-      process.env.VITE_SB_PUBLISHABLE_KEY ?? "https://demo.example.org",
-    ),
   },
   base: "./",
   build: {
@@ -45,7 +39,7 @@ export default defineConfig({
       // COPILOTKIT_PROXY_TARGET to the deployed runtime URL to dev against
       // prod without running the local copilot server.
       "/api": {
-        target: process.env.COPILOTKIT_PROXY_TARGET || "http://localhost:4000",
+        target: process.env.COPILOTKIT_PROXY_TARGET || "http://localhost:8787",
         changeOrigin: true,
         ws: true,
       },

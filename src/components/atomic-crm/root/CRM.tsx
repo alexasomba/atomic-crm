@@ -10,9 +10,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { Admin } from "@/components/admin/admin";
-import { ForgotPasswordPage } from "@/components/supabase/forgot-password-page";
-import { SetPasswordPage } from "@/components/supabase/set-password-page";
-import { OAuthConsentPage } from "@/components/supabase/oauth-consent-page";
+import { ForgotPasswordPage } from "@/components/auth/forgot-password-page";
+import { SetPasswordPage } from "@/components/auth/set-password-page";
 
 import companies from "../companies";
 import contacts from "../contacts";
@@ -27,7 +26,7 @@ import { ImportPage } from "../misc/ImportPage";
 import {
   authProvider as defaultAuthProvider,
   dataProvider as defaultDataProvider,
-} from "../providers/supabase";
+} from "../providers/cloudflare";
 import sales from "../sales";
 import { ProfilePage } from "../settings/ProfilePage";
 import { SettingsPage } from "../settings/SettingsPage";
@@ -36,10 +35,6 @@ import {
   type ConfigurationContextValue,
 } from "./ConfigurationContext";
 import type { CrmDataProvider } from "../providers/types";
-import {
-  authProvider as cloudflareAuthProvider,
-  dataProvider as cloudflareDataProvider,
-} from "../providers/cloudflare";
 import {
   defaultCompanySectors,
   defaultDarkModeLogo,
@@ -63,8 +58,6 @@ import { AuditLogPage } from "../audit/AuditLogPage";
 import { tanStackRouterProvider } from "@/router/tanstackRouterProvider";
 
 const defaultStore = localStorageStore(undefined, "CRM");
-const useCloudflareProvider =
-  import.meta.env.VITE_CRM_PROVIDER?.toLowerCase() === "cloudflare";
 const ConfiguredRoute = tanStackRouterProvider.Route;
 
 const authenticatedRoutes = [
@@ -146,12 +139,8 @@ export const CRM = ({
   noteStatuses = defaultNoteStatuses,
   taskTypes = defaultTaskTypes,
   title = defaultTitle,
-  dataProvider = useCloudflareProvider
-    ? cloudflareDataProvider
-    : defaultDataProvider,
-  authProvider = useCloudflareProvider
-    ? cloudflareAuthProvider
-    : defaultAuthProvider,
+  dataProvider = defaultDataProvider,
+  authProvider = defaultAuthProvider,
   store = defaultStore,
   googleWorkplaceDomain = import.meta.env.VITE_GOOGLE_WORKPLACE_DOMAIN,
   disableEmailPasswordAuthentication = import.meta.env
@@ -273,10 +262,6 @@ const DesktopAdmin = (props: CoreAdminProps) => {
           path={ForgotPasswordPage.path}
           element={<ForgotPasswordPage />}
         />
-        <ConfiguredRoute
-          path={OAuthConsentPage.path}
-          element={<OAuthConsentPage />}
-        />
       </CustomRoutes>
 
       <CustomRoutes>{authenticatedRoutes}</CustomRoutes>
@@ -332,10 +317,6 @@ const MobileAdmin = (props: CoreAdminProps) => {
           <ConfiguredRoute
             path={ForgotPasswordPage.path}
             element={<ForgotPasswordPage />}
-          />
-          <ConfiguredRoute
-            path={OAuthConsentPage.path}
-            element={<OAuthConsentPage />}
           />
         </CustomRoutes>
         <CustomRoutes>{authenticatedRoutes}</CustomRoutes>

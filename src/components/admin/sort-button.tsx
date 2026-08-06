@@ -89,7 +89,7 @@ const SortButtonComponent = (props: SortButtonProps) => {
       {isMobile ? (
         <TooltipProvider>
           <Tooltip>
-            <DropdownMenuTrigger render={<span />}>
+            <DropdownMenuTrigger render={<span />} nativeButton={false}>
               <TooltipTrigger
                 render={
                   <Button

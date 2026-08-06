@@ -3,7 +3,7 @@
  * e.g. "Communication Services" → "communication-services"
  *
  * Must stay in sync with the SQL equivalent in
- * supabase/migrations/20260211194545_app_configuration.sql
+ * drizzle/20260805183730_slow_polaris/migration.sql
  */
 export const toSlug = (label: string): string =>
   label

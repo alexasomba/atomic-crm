@@ -4,7 +4,6 @@ import { useConfigurationContext } from "@/components/atomic-crm/root/Configurat
 
 export const Layout = ({ children }: React.PropsWithChildren) => {
   const { darkModeLogo, title } = useConfigurationContext();
-
   return (
     <div className="min-h-screen flex">
       <div className="container relative grid flex-col items-center justify-center sm:max-w-none lg:grid-cols-2 lg:px-0">
