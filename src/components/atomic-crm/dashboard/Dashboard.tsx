@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useGetList } from "ra-core";
-import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { randomUUID } from "@copilotkit/shared";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,12 +23,6 @@ export const Dashboard = () => {
   // CopilotChat renders messages from a different cloned agent and the
   // panel never updates).
   const [threadId, setThreadId] = useState<string>(() => randomUUID());
-  const { agent } = useAgent({
-    agentId: "default",
-    runtimeAgentId: "default",
-    threadId,
-  });
-  const { copilotkit } = useCopilotKit();
   const [rightTab, setRightTab] = useState("tasks");
 
   useCopilotSetup({
@@ -44,15 +37,6 @@ export const Dashboard = () => {
   useEffect(() => {
     return registerPage(() => setRightTab("copilot"));
   }, [registerPage]);
-
-  const triggerAgent = useCallback(
-    async (prompt: string) => {
-      setRightTab("copilot");
-      agent.addMessage({ id: randomUUID(), role: "user", content: prompt });
-      await copilotkit.runAgent({ agent });
-    },
-    [agent, copilotkit],
-  );
 
   const handleNewConversation = useCallback(() => {
     setThreadId(randomUUID());
@@ -139,27 +123,35 @@ export const Dashboard = () => {
               keepMounted
             >
               <CopilotWorkspace
+                agentId="dashboard"
                 className="flex-1 min-h-0"
                 threadId={threadId}
                 onNewConversation={handleNewConversation}
                 onSelectThread={handleSelectThread}
               >
-                <div className="flex gap-1.5 flex-wrap px-3 py-2 shrink-0">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-xs h-7"
-                    disabled={agent.isRunning}
-                    onClick={() =>
-                      triggerAgent(
-                        `Triage the top leads. Show the lead priority list.`,
-                      )
-                    }
-                  >
-                    <Users className="h-3 w-3 mr-1" />
-                    Lead Triage
-                  </Button>
-                </div>
+                {({ agent, runAgent }) => (
+                  <div className="flex gap-1.5 flex-wrap px-3 py-2 shrink-0">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-7"
+                      disabled={agent.isRunning}
+                      onClick={async () => {
+                        agent.addMessage({
+                          id: randomUUID(),
+                          role: "user",
+                          content:
+                            "Triage the top leads. Show the lead priority list.",
+                        });
+                        setRightTab("copilot");
+                        await runAgent();
+                      }}
+                    >
+                      <Users className="h-3 w-3 mr-1" />
+                      Lead Triage
+                    </Button>
+                  </div>
+                )}
               </CopilotWorkspace>
             </TabsContent>
           </Tabs>

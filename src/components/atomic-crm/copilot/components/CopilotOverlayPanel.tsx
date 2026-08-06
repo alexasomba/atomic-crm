@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { randomUUID } from "@copilotkit/shared";
 import { Users, X } from "lucide-react";
 import { useCopilotOverlay } from "../useCopilotOverlay";
@@ -16,12 +15,6 @@ export function CopilotOverlayPanel() {
   // renders messages from a different cloned agent — meaning addMessage +
   // runAgent here would never appear in the chat panel.
   const [threadId, setThreadId] = useState<string>(() => randomUUID());
-  const { agent } = useAgent({
-    agentId: "default",
-    runtimeAgentId: "default",
-    threadId,
-  });
-  const { copilotkit } = useCopilotKit();
 
   useCopilotSetup({
     context: {
@@ -29,14 +22,6 @@ export function CopilotOverlayPanel() {
       value: null,
     },
   });
-
-  const triggerAgent = useCallback(
-    async (prompt: string) => {
-      agent.addMessage({ id: randomUUID(), role: "user", content: prompt });
-      await copilotkit.runAgent({ agent });
-    },
-    [agent, copilotkit],
-  );
 
   const handleNewConversation = useCallback(() => {
     setThreadId(randomUUID());
@@ -68,37 +53,50 @@ export function CopilotOverlayPanel() {
 
       {/* Chat workspace (includes thread header, action buttons, chat, and thread history) */}
       <CopilotWorkspace
+        agentId="overlay"
         className="flex-1 min-h-0"
         threadId={threadId}
         onNewConversation={handleNewConversation}
         onSelectThread={handleSelectThread}
       >
-        <div className="flex gap-1.5 flex-wrap px-3 py-2 shrink-0">
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-xs h-7"
-            disabled={agent.isRunning}
-            onClick={() =>
-              triggerAgent("Search contacts in the CRM. Show results.")
-            }
-          >
-            <Users className="h-3 w-3 mr-1" />
-            Search Contacts
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-xs h-7"
-            disabled={agent.isRunning}
-            onClick={() =>
-              triggerAgent("Triage the top leads. Show the lead priority list.")
-            }
-          >
-            <Users className="h-3 w-3 mr-1" />
-            Lead Triage
-          </Button>
-        </div>
+        {({ agent, runAgent }) => (
+          <div className="flex gap-1.5 flex-wrap px-3 py-2 shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs h-7"
+              disabled={agent.isRunning}
+              onClick={async () => {
+                agent.addMessage({
+                  id: randomUUID(),
+                  role: "user",
+                  content: "Search contacts in the CRM. Show results.",
+                });
+                await runAgent();
+              }}
+            >
+              <Users className="h-3 w-3 mr-1" />
+              Search Contacts
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs h-7"
+              disabled={agent.isRunning}
+              onClick={async () => {
+                agent.addMessage({
+                  id: randomUUID(),
+                  role: "user",
+                  content: "Triage the top leads. Show the lead priority list.",
+                });
+                await runAgent();
+              }}
+            >
+              <Users className="h-3 w-3 mr-1" />
+              Lead Triage
+            </Button>
+          </div>
+        )}
       </CopilotWorkspace>
     </div>
   );

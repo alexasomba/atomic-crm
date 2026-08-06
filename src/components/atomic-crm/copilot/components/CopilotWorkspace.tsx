@@ -36,7 +36,7 @@ import { Button } from "@/components/ui/button";
 import { CopilotHeader } from "./CopilotHeader";
 import { ThreadHistory } from "./ThreadHistory";
 
-const AGENT_ID = "default";
+const DEFAULT_AGENT_ID = "copilot-workspace";
 
 function WorkspaceAssistantMessage({
   message,
@@ -233,9 +233,16 @@ function CopilotBrief({ onSubmit }: { onSubmit: (prompt: string) => void }) {
   );
 }
 
+type WorkspaceAgent = ReturnType<typeof useAgent>["agent"];
+type WorkspaceActions = {
+  agent: WorkspaceAgent;
+  runAgent: () => Promise<unknown>;
+};
+
 interface CopilotWorkspaceProps {
   className?: string;
-  children?: React.ReactNode;
+  children?: React.ReactNode | ((actions: WorkspaceActions) => React.ReactNode);
+  agentId?: string;
   threadId?: string;
   onNewConversation?: () => void;
   onSelectThread?: (id: string) => void;
@@ -244,6 +251,7 @@ interface CopilotWorkspaceProps {
 export function CopilotWorkspace({
   className,
   children,
+  agentId = DEFAULT_AGENT_ID,
   threadId,
   onNewConversation,
   onSelectThread,
@@ -251,11 +259,15 @@ export function CopilotWorkspace({
   const [view, setView] = useState<"chat" | "history">("chat");
   const [chatKey, setChatKey] = useState(0);
   const { agent } = useAgent({
-    agentId: AGENT_ID,
-    runtimeAgentId: AGENT_ID,
+    agentId,
+    runtimeAgentId: "default",
     threadId: threadId ?? "default",
   });
   const { copilotkit } = useCopilotKit();
+  const runAgent = useCallback(
+    () => copilotkit.runAgent({ agent }),
+    [agent, copilotkit],
+  );
   const submitBrief = useCallback(
     async (prompt: string) => {
       agent.addMessage({
@@ -302,19 +314,21 @@ export function CopilotWorkspace({
       {view === "history" ? (
         <div className="min-h-0 flex-1 overflow-y-auto">
           <ThreadHistory
-            agentId={AGENT_ID}
+            agentId={agentId}
             activeThreadId={threadId}
             onSelectThread={handleSelectThread}
           />
         </div>
       ) : (
         <>
-          {children}
+          {typeof children === "function"
+            ? children({ agent, runAgent })
+            : children}
           <CopilotBrief onSubmit={submitBrief} />
           <div className="copilot-chat-area">
             <CopilotChat
               key={chatKey}
-              agentId={AGENT_ID}
+              agentId={agentId}
               threadId={threadId}
               className="copilot-chat-inline"
               messageView={{

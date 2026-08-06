@@ -63,7 +63,7 @@ minimumReleaseAgeExclude:
   - wrangler@4.119.0
   - tsx@4.23.8
   - "@shadcn/react@0.3.0"
-  - '@tanstack/store@0.11.1'
+  - "@tanstack/store@0.11.1"
 
 catalog:
   "@cloudflare/tanstack-ai": "0.2.1"
