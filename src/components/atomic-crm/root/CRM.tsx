@@ -4,8 +4,6 @@ import {
   localStorageStore,
   Resource,
   type AuthProvider,
-  type RouterRouteProps,
-  useRouterProvider,
 } from "ra-core";
 import { useEffect, useMemo } from "react";
 import { QueryClient } from "@tanstack/react-query";
@@ -67,13 +65,7 @@ import { tanStackRouterProvider } from "@/router/tanstackRouterProvider";
 const defaultStore = localStorageStore(undefined, "CRM");
 const useCloudflareProvider =
   import.meta.env.VITE_CRM_PROVIDER?.toLowerCase() === "cloudflare";
-const useTanStackRouter =
-  import.meta.env.VITE_ROUTER?.toLowerCase() === "tanstack";
-
-const ConfiguredRoute = (props: RouterRouteProps) => {
-  const { Route } = useRouterProvider();
-  return <Route {...props} />;
-};
+const ConfiguredRoute = tanStackRouterProvider.Route;
 
 const authenticatedRoutes = [
   <ConfiguredRoute
@@ -255,7 +247,7 @@ export const CRM = ({
       authProvider={wrappedAuthProvider}
       i18nProvider={i18nProvider}
       store={store}
-      routerProvider={useTanStackRouter ? tanStackRouterProvider : undefined}
+      routerProvider={tanStackRouterProvider}
       loginPage={StartPage}
       requireAuth
       disableTelemetry
