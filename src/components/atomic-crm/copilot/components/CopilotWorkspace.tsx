@@ -4,6 +4,7 @@ import {
   useAttachments,
   useAgent,
   useCopilotKit,
+  UseAgentUpdate,
 } from "@copilotkit/react-core/v2";
 import type { Attachment as CopilotAttachment } from "@copilotkit/react-core/v2";
 import type { InputContent } from "@ag-ui/core";
@@ -56,6 +57,23 @@ import { ThreadHistory } from "./ThreadHistory";
 
 const DEFAULT_AGENT_ID = "copilot-workspace";
 
+function getMessageText(content: unknown) {
+  if (typeof content === "string") return content.trim();
+  if (!Array.isArray(content)) return "";
+  return content
+    .filter((part): part is { type: "text"; text: string } =>
+      Boolean(
+        part &&
+        typeof part === "object" &&
+        (part as { type?: unknown }).type === "text" &&
+        typeof (part as { text?: unknown }).text === "string",
+      ),
+    )
+    .map((part) => part.text)
+    .join("\n")
+    .trim();
+}
+
 function WorkspaceAssistantMessage({
   message,
   messages,
@@ -64,7 +82,7 @@ function WorkspaceAssistantMessage({
   message: {
     id: string;
     role: string;
-    content?: string;
+    content?: unknown;
     toolCalls?: unknown[];
   };
   messages: unknown[];
@@ -72,7 +90,7 @@ function WorkspaceAssistantMessage({
   [key: string]: unknown;
 }) {
   const hasToolCalls = Boolean(message.toolCalls?.length);
-  const textContent = message.content?.trim();
+  const textContent = getMessageText(message.content);
   const isLatest =
     (messages as Array<{ id: string }>)?.at(-1)?.id === message.id;
   const isThinking = isRunning && isLatest && !textContent && !hasToolCalls;
@@ -130,10 +148,11 @@ function WorkspaceAssistantMessage({
 function WorkspaceReasoningMessage({
   message,
 }: {
-  message: { content?: string };
+  message: { content?: unknown };
   [key: string]: unknown;
 }) {
-  if (!message.content?.trim()) return null;
+  const textContent = getMessageText(message.content);
+  if (!textContent) return null;
   return (
     <Collapsible className="mb-2 rounded-lg border border-dashed px-3 py-2 text-xs text-muted-foreground">
       <CollapsibleTrigger className="flex w-full items-center justify-between text-left font-medium">
@@ -141,7 +160,7 @@ function WorkspaceReasoningMessage({
         <span aria-hidden="true">+</span>
       </CollapsibleTrigger>
       <CollapsibleContent className="whitespace-pre-wrap pt-2 leading-relaxed">
-        {message.content}
+        {textContent}
       </CollapsibleContent>
     </Collapsible>
   );
@@ -150,15 +169,16 @@ function WorkspaceReasoningMessage({
 function WorkspaceUserMessage({
   message,
 }: {
-  message: { content?: string };
+  message: { content?: unknown };
   [key: string]: unknown;
 }) {
-  if (!message?.content?.trim()) return null;
+  const textContent = getMessageText(message?.content);
+  if (!textContent) return null;
   return (
     <Message align="end">
       <MessageContent>
         <Bubble align="end" variant="secondary">
-          <BubbleContent>{message.content}</BubbleContent>
+          <BubbleContent>{textContent}</BubbleContent>
         </Bubble>
       </MessageContent>
     </Message>
@@ -341,10 +361,16 @@ export function CopilotWorkspace({
   const [view, setView] = useState<"chat" | "history">("chat");
   const [chatKey, setChatKey] = useState(0);
   const [inputValue, setInputValue] = useState("");
+  const [runError, setRunError] = useState<string | null>(null);
   const { agent } = useAgent({
     agentId,
     runtimeAgentId: "default",
     threadId: threadId ?? "default",
+    updates: [
+      UseAgentUpdate.OnMessagesChanged,
+      UseAgentUpdate.OnRunStatusChanged,
+    ],
+    throttleMs: 50,
   });
   const { copilotkit } = useCopilotKit();
   const {
@@ -365,23 +391,42 @@ export function CopilotWorkspace({
       maxSize: 10 * 1024 * 1024,
     },
   });
-  const runAgent = useCallback(
-    () => copilotkit.runAgent({ agent }),
-    [agent, copilotkit],
-  );
+  const runAgent = useCallback(async () => {
+    setRunError(null);
+    try {
+      return await copilotkit.runAgent({ agent });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Copilot could not complete this request.";
+      setRunError(message);
+      throw error;
+    }
+  }, [agent, copilotkit]);
   const submitBrief = useCallback(
     async (prompt: string) => {
+      setRunError(null);
       agent.addMessage({
         id: crypto.randomUUID(),
         role: "user",
         content: prompt,
       });
-      await copilotkit.runAgent({ agent });
+      try {
+        await copilotkit.runAgent({ agent });
+      } catch (error) {
+        setRunError(
+          error instanceof Error
+            ? error.message
+            : "Copilot could not complete this request.",
+        );
+      }
     },
     [agent, copilotkit],
   );
   const submitMessage = useCallback(
     async (text: string) => {
+      setRunError(null);
       const readyAttachments = consumeAttachments();
       const content: string | InputContent[] = readyAttachments.length
         ? [
@@ -407,7 +452,15 @@ export function CopilotWorkspace({
         content,
       });
       setInputValue("");
-      await copilotkit.runAgent({ agent });
+      try {
+        await copilotkit.runAgent({ agent });
+      } catch (error) {
+        setRunError(
+          error instanceof Error
+            ? error.message
+            : "Copilot could not complete this request.",
+        );
+      }
     },
     [agent, consumeAttachments, copilotkit],
   );
@@ -433,6 +486,13 @@ export function CopilotWorkspace({
     },
     [onSelectThread],
   );
+  const latestMessage = agent.messages.at(-1);
+  const showGlobalRunMarker =
+    agent.isRunning &&
+    !(
+      latestMessage?.role === "assistant" &&
+      getMessageText(latestMessage.content)
+    );
 
   return (
     <div
@@ -469,6 +529,18 @@ export function CopilotWorkspace({
               attachments={attachments}
               onRemove={removeAttachment}
             />
+            {runError && (
+              <div className="px-3 pb-2" role="alert">
+                <Marker variant="border" className="text-destructive">
+                  <MarkerIcon>
+                    <span aria-hidden="true">!</span>
+                  </MarkerIcon>
+                  <MarkerContent>
+                    Copilot couldn’t respond. {runError}
+                  </MarkerContent>
+                </Marker>
+              </div>
+            )}
             <CopilotChatView
               key={chatKey}
               className="copilot-chat-inline"
@@ -494,6 +566,16 @@ export function CopilotWorkspace({
               {({ messageView, input }) => (
                 <div className="flex h-full min-h-0 flex-col">
                   <div className="min-h-0 flex-1">{messageView}</div>
+                  {showGlobalRunMarker && (
+                    <div className="shrink-0 px-3 pb-2" aria-live="polite">
+                      <Marker role="status">
+                        <MarkerIcon>
+                          <Loader2 className="animate-spin" />
+                        </MarkerIcon>
+                        <MarkerContent>Copilot is working…</MarkerContent>
+                      </Marker>
+                    </div>
+                  )}
                   {input}
                 </div>
               )}
