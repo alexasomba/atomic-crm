@@ -273,6 +273,8 @@ const DesktopAdmin = (props: CoreAdminProps) => {
       <Resource name="tasks" />
       <Resource name="sales" {...sales} />
       <Resource name="tags" />
+      <Resource name="contact_insights" />
+      <Resource name="copilot_audit" />
     </Admin>
   );
 };
@@ -333,6 +335,8 @@ const MobileAdmin = (props: CoreAdminProps) => {
         </Resource>
         <Resource name="companies" show={CompanyShow} />
         <Resource name="tasks" list={MobileTasksList} />
+        <Resource name="contact_insights" />
+        <Resource name="copilot_audit" />
       </Admin>
     </PersistQueryClientProvider>
   );

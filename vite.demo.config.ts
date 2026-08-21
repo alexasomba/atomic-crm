@@ -34,10 +34,8 @@ export default defineConfig({
     port: Number(process.env.VITE_DEV_PORT ?? 5173),
     strictPort: true,
     proxy: {
-      // Forward ALL /api/* paths so tools that hit /api/leads, /api/contacts,
-      // /api/audit, etc. work too (not just /api/copilotkit). Set
-      // COPILOTKIT_PROXY_TARGET to the deployed runtime URL to dev against
-      // prod without running the local copilot server.
+      // Forward ALL /api/* paths to the Cloudflare Worker (or Node rollback).
+      // Override with COPILOTKIT_PROXY_TARGET when the Worker is not on 8787.
       "/api": {
         target: process.env.COPILOTKIT_PROXY_TARGET || "http://localhost:8787",
         changeOrigin: true,

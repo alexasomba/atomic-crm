@@ -59,6 +59,24 @@ describe("Cloudflare Worker HTTP boundary", () => {
     });
   });
 
+  it("requires a CRM session for copilot contact search", async () => {
+    const response = await app.request(
+      "http://localhost/api/contacts",
+      {},
+      {} as never,
+    );
+    expect(response.status).toBe(401);
+  });
+
+  it("requires a CRM session for forecast updates", async () => {
+    const response = await app.request(
+      "http://localhost/api/contacts/1/forecast",
+      { method: "PATCH", body: "{}" },
+      {} as never,
+    );
+    expect(response.status).toBe(401);
+  });
+
   it("rejects unknown routes with a JSON error", async () => {
     const response = await app.request(
       "http://localhost/api/does-not-exist",

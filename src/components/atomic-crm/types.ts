@@ -81,6 +81,40 @@ export type PhoneNumberAndType = {
   type: "Work" | "Home" | "Other";
 };
 
+export type ContactInsights = {
+  id: Identifier;
+  contact_id: Identifier;
+  lifecycle_stage: string | null;
+  lead_score: number;
+  last_activity_date: string | null;
+  last_activity_type: string | null;
+  renewal_amount: number | null;
+  renewal_date: string | null;
+  renewal_forecast_category: string | null;
+  renewal_probability: number | null;
+  contract_attachment_id: string | null;
+  contract_text?: string | null;
+  economic_buyer_identified: boolean;
+  budget_confirmed: boolean;
+  legal_review_status: string | null;
+  security_review_status: string | null;
+  champion_confidence: string | null;
+  competitor: string | null;
+  next_best_action: string | null;
+  notes_summary: string | null;
+  updated_at: string;
+};
+
+export type CopilotAuditEvent = {
+  id: string;
+  actionType: string;
+  toolName: string | null;
+  contactName: string | null;
+  companyName: string | null;
+  summary: string;
+  createdAt: string;
+};
+
 export type Contact = {
   first_name: string;
   last_name: string;
@@ -100,6 +134,7 @@ export type Contact = {
   phone_jsonb: PhoneNumberAndType[];
   nb_tasks?: number;
   company_name?: string;
+  insights?: ContactInsights;
 } & Pick<RaRecord, "id">;
 
 export type ContactNote = {
@@ -125,6 +160,7 @@ export type Deal = {
   expected_closing_date: string;
   sales_id?: Identifier | null;
   index: number;
+  status?: string;
 } & Pick<RaRecord, "id">;
 
 export type DealNote = {

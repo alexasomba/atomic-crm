@@ -74,32 +74,38 @@ development:
 
 The chat UI uses shadcn Base UI primitives for message rows, bubbles, streaming markers, anchored transcript scrolling, attachments, and guided Copilot briefs.
 
-Two env vars wire the frontend to the runtime:
+Copilot tools talk to the same authenticated CRM APIs as the rest of the app
+(D1 on Cloudflare, FakeRest in demo). `VITE_COPILOTKIT_API_URL` is optional and
+is not needed in Cloudflare mode.
 
 - `VITE_COPILOTKIT_RUNTIME_URL` — optional alternate CopilotKit endpoint. Leave unset to use the same-origin Worker route, `/api/copilotkit`.
-- `VITE_COPILOTKIT_API_URL` — base URL for the runtime's REST endpoints used by frontend tools (`/api/contacts`, `/api/leads/top`, etc.). Read at build time.
 
 ### Local dev workflows
 
-Run the **full local stack** (frontend + copilot runtime + MCP) — needs an LLM provider configured in `server/.env`:
+The default local stack is the Vite frontend plus the Cloudflare Worker:
 
 ```sh
-  vp run dev:all
+pnpm run d1:migrate:local
+vp run dev:cloudflare
 ```
 
-Or run **only the frontend against the local Node rollback runtime** (no Worker needed):
+Configure `BETTER_AUTH_SECRET` in `.dev.vars` before signing in. CopilotKit
+runs natively on the Worker; MCP is optional:
 
 ```sh
-VITE_COPILOTKIT_API_URL=http://localhost:5173 \
-COPILOTKIT_PROXY_TARGET=http://localhost:4000 \
-  vp run dev:demo
+vp run dev:all
 ```
 
-The vite dev server proxies `/api/*` to `COPILOTKIT_PROXY_TARGET` so tool calls and chat both flow through the same origin (no CORS).
+The in-browser FakeRest demo (no Worker) is:
 
-When using the local proxy target, start the CopilotKit runtime with
-`make start-server`; otherwise the browser will report connection-refused proxy
-errors for `/api/copilotkit`.
+```sh
+vp run dev:demo
+```
+
+The Vite dev server proxies `/api` to the Worker at
+`http://localhost:8787` (override with `COPILOTKIT_PROXY_TARGET`). Use
+`COPILOTKIT_RUNTIME_MODE=proxy` and `make start-server` only for the Node
+rollback runtime.
 
 ### Cloudflare Worker workflow
 

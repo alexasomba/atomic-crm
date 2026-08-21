@@ -1,8 +1,9 @@
 # Cloudflare migration
 
 The Cloudflare runtime is the application backend for local and staging. Use
-`vp run dev:all` for the Vite frontend, Worker, and MCP server, or
-`wrangler dev --config wrangler.jsonc` for the Worker alone.
+`vp run dev:cloudflare` for the Vite frontend and Worker. Add MCP with
+`vp run dev:all`, or run `wrangler dev --config wrangler.jsonc` for the Worker
+alone.
 
 ## Local setup
 
@@ -33,11 +34,9 @@ expecting HTTP 501 from `/api/copilotkit` while no runtime is configured; set
 `STAGING_EXPECT_COPILOT_STATUS=200` only after a reachable CopilotKit runtime
 has been deployed and configured.
 
-`vp run dev:all` now uses strict, explicit ports. Defaults are Vite 5173,
-CopilotKit 4000, and MCP 3108; override them with `VITE_DEV_PORT`,
-`COPILOTKIT_PORT`, and `MCP_PORT` when another local process is using a port.
-The command then keeps the frontend CORS origin aligned with the selected Vite
-port.
+`vp run dev:cloudflare` uses Vite 5173 and Wrangler 8787. `vp run dev:all`
+adds the MCP server on 3108; override with `VITE_DEV_PORT`, and `MCP_PORT`
+when another local process is using a port.
 
 Staging data is deterministic and is created with `pnpm run data:seed:staging`.
 Use the guarded `data:seed:staging:reset` command when intentionally rebuilding

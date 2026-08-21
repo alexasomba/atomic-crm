@@ -15,6 +15,12 @@ import { useDraftEmail } from "../tools/useDraftEmail";
 import { useUpdateRenewalForecast } from "../tools/useUpdateRenewalForecast";
 import { useUpdateContactStatus } from "../tools/useUpdateContactStatus";
 import { useLogAuditEvent } from "../tools/useLogAuditEvent";
+import { useAnalyzeContract } from "../tools/useAnalyzeContract";
+import {
+  useCreateNote,
+  useListDeals,
+  useUpdateDeal,
+} from "../tools/useDealAndNoteTools";
 import { logComponentRender } from "../tools/auditLogger";
 
 interface CopilotSetupOptions {
@@ -70,6 +76,10 @@ export function useCopilotSetup({ context }: CopilotSetupOptions) {
     "NextActions",
     "ContractRiskReport",
     "LeadPriorityList",
+    "analyzeContract",
+    "listDeals",
+    "updateDeal",
+    "createNote",
     // Explicit audit tool
     "logAuditEvent",
   ]);
@@ -104,5 +114,9 @@ export function useCopilotSetup({ context }: CopilotSetupOptions) {
   useDraftEmail();
   useUpdateRenewalForecast();
   useUpdateContactStatus();
+  useAnalyzeContract();
+  useListDeals();
+  useUpdateDeal();
+  useCreateNote();
   useLogAuditEvent();
 }

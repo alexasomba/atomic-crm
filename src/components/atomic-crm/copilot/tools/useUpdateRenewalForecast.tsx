@@ -1,13 +1,11 @@
 import { useHumanInTheLoop } from "@copilotkit/react-core/v2";
 import { z } from "zod";
 import { useEffect, useRef } from "react";
-import { useGetIdentity } from "ra-core";
+import { useDataProvider, useGetIdentity } from "ra-core";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { logToolCall } from "./auditLogger";
-
-const API_BASE =
-  import.meta.env.VITE_COPILOTKIT_API_URL || "http://localhost:4000";
+import type { CrmDataProvider } from "../../providers/types";
 
 export function useUpdateRenewalForecast() {
   useHumanInTheLoop({
@@ -51,6 +49,7 @@ interface ForecastCardProps {
 
 function ForecastCard({ args, respond, status: _status }: ForecastCardProps) {
   const { data: identity } = useGetIdentity({ staleTime: 0 });
+  const dataProvider = useDataProvider<CrmDataProvider>();
   const isAdmin = !!(identity as { administrator?: boolean })?.administrator;
 
   const hasAutoResponded = useRef(false);
@@ -99,17 +98,11 @@ function ForecastCard({ args, respond, status: _status }: ForecastCardProps) {
             <Button
               size="sm"
               onClick={async () => {
-                await fetch(
-                  `${API_BASE}/api/contacts/${args.contactId}/forecast`,
-                  {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      renewal_forecast_category: args.proposedCategory,
-                      renewal_probability: args.proposedProbability,
-                    }),
-                  },
-                );
+                if (args.contactId == null) return;
+                await dataProvider.updateRenewalForecast(args.contactId, {
+                  renewal_forecast_category: args.proposedCategory,
+                  renewal_probability: args.proposedProbability,
+                });
                 respond({ approved: true });
                 logToolCall("updateRenewalForecast", {
                   contactName: args.contactName,

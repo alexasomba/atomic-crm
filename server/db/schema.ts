@@ -215,6 +215,60 @@ export const inboundEmailEvents = sqliteTable(
   (table) => [uniqueIndex("inbound_email_message_id_idx").on(table.messageId)],
 );
 
+export const contactInsights = sqliteTable(
+  "contact_insights",
+  {
+    contactId: integer("contact_id")
+      .primaryKey()
+      .references(() => contacts.id),
+    lifecycleStage: text("lifecycle_stage"),
+    leadScore: integer("lead_score").notNull().default(0),
+    lastActivityDate: text("last_activity_date"),
+    lastActivityType: text("last_activity_type"),
+    renewalAmount: integer("renewal_amount"),
+    renewalDate: text("renewal_date"),
+    renewalForecastCategory: text("renewal_forecast_category"),
+    renewalProbability: integer("renewal_probability"),
+    contractAttachmentId: text("contract_attachment_id").references(
+      () => attachments.id,
+    ),
+    economicBuyerIdentified: integer("economic_buyer_identified", {
+      mode: "boolean",
+    })
+      .notNull()
+      .default(false),
+    budgetConfirmed: integer("budget_confirmed", { mode: "boolean" })
+      .notNull()
+      .default(false),
+    legalReviewStatus: text("legal_review_status"),
+    securityReviewStatus: text("security_review_status"),
+    championConfidence: text("champion_confidence"),
+    competitor: text("competitor"),
+    nextBestAction: text("next_best_action"),
+    notesSummary: text("notes_summary"),
+    updatedAt: text("updated_at").notNull(),
+  },
+  (table) => [
+    index("contact_insights_lead_score_idx").on(table.leadScore),
+    index("contact_insights_forecast_idx").on(table.renewalForecastCategory),
+  ],
+);
+
+export const copilotAudit = sqliteTable(
+  "copilot_audit",
+  {
+    id: text("id").primaryKey(),
+    actionType: text("action_type").notNull(),
+    toolName: text("tool_name"),
+    contactName: text("contact_name"),
+    companyName: text("company_name"),
+    summary: text("summary").notNull().default(""),
+    salesId: integer("sales_id").references(() => sales.id),
+    createdAt: text("created_at").notNull(),
+  },
+  (table) => [index("copilot_audit_created_at_idx").on(table.createdAt)],
+);
+
 export const applicationSchema = {
   companies,
   contacts,
@@ -227,6 +281,8 @@ export const applicationSchema = {
   tags,
   configuration,
   inboundEmailEvents,
+  contactInsights,
+  copilotAudit,
 };
 
 export const schema = { ...applicationSchema, ...authSchema };

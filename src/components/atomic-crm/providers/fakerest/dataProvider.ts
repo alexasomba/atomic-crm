@@ -26,6 +26,13 @@ import { getContactAvatar } from "../commons/getContactAvatar";
 import { mergeContacts } from "../commons/mergeContacts";
 import type { CrmDataProvider } from "../types";
 import {
+  contactsByCompany,
+  filterCopilotContacts,
+  fromContactRecords,
+  rankTopLeads,
+} from "@/lib/copilotContacts";
+import type { ContactInsights, CopilotAuditEvent } from "../../types";
+import {
   authProvider as defaultAuthProvider,
   USER_STORAGE_KEY,
 } from "./authProvider";
@@ -304,6 +311,171 @@ export const createDataProvider = ({
       });
       return config;
     },
+    async searchCopilotContacts(filters) {
+      const contacts = await listCopilotContacts();
+      return filterCopilotContacts(contacts, filters);
+    },
+    async getCopilotContact(id) {
+      const contacts = await listCopilotContacts();
+      return contacts.find((contact) => contact.id === Number(id)) ?? null;
+    },
+    async getCopilotContactsByCompany(company) {
+      return contactsByCompany(await listCopilotContacts(), company);
+    },
+    async getTopCopilotLeads(limit = 10) {
+      return rankTopLeads(await listCopilotContacts(), limit);
+    },
+    async updateRenewalForecast(id, data) {
+      const insightId = Number(id);
+      let previous: ContactInsights;
+      try {
+        const current = await baseDataProvider.getOne<ContactInsights>(
+          "contact_insights",
+          { id: insightId },
+        );
+        previous = current.data;
+      } catch {
+        previous = {
+          id: insightId,
+          contact_id: insightId,
+          lifecycle_stage: null,
+          lead_score: 0,
+          last_activity_date: null,
+          last_activity_type: null,
+          renewal_amount: null,
+          renewal_date: null,
+          renewal_forecast_category: null,
+          renewal_probability: null,
+          contract_attachment_id: null,
+          economic_buyer_identified: false,
+          budget_confirmed: false,
+          legal_review_status: null,
+          security_review_status: null,
+          champion_confidence: null,
+          competitor: null,
+          next_best_action: null,
+          notes_summary: null,
+          updated_at: new Date().toISOString(),
+        };
+        await baseDataProvider.create("contact_insights", { data: previous });
+      }
+      await baseDataProvider.update("contact_insights", {
+        id: insightId,
+        data: {
+          ...previous,
+          ...data,
+          updated_at: new Date().toISOString(),
+        },
+        previousData: previous,
+      });
+      const contact = await dataProviderWithCustomMethod.getCopilotContact(id);
+      if (!contact) throw new Error("Contact not found");
+      return contact;
+    },
+    async getContactContract(id) {
+      const { data: insights } =
+        await baseDataProvider.getList<ContactInsights>("contact_insights", {
+          filter: { contact_id: Number(id) },
+          pagination: { page: 1, perPage: 1 },
+          sort: { field: "id", order: "ASC" },
+        });
+      const insight = insights[0];
+      if (insight?.contract_text) {
+        return {
+          contactId: Number(id),
+          filename: "contract.md",
+          text: insight.contract_text,
+        };
+      }
+      const { data: contact } = await baseDataProvider.getOne<Contact>(
+        "contacts",
+        { id },
+      );
+      const { data: companyInsights } =
+        await baseDataProvider.getList<ContactInsights>("contact_insights", {
+          filter: {},
+          pagination: { page: 1, perPage: 5000 },
+          sort: { field: "id", order: "ASC" },
+        });
+      const { data: contacts } = await baseDataProvider.getList<Contact>(
+        "contacts",
+        {
+          filter: { company_id: contact.company_id },
+          pagination: { page: 1, perPage: 5000 },
+          sort: { field: "id", order: "ASC" },
+        },
+      );
+      const match = companyInsights.find(
+        (row) =>
+          Boolean(row.contract_text) &&
+          contacts.some((item) => item.id === row.contact_id),
+      );
+      return {
+        contactId: Number(id),
+        filename: match ? "contract.md" : null,
+        text: match?.contract_text ?? "",
+      };
+    },
+    async logCopilotAudit(event) {
+      await baseDataProvider.create("copilot_audit", {
+        data: {
+          id: crypto.randomUUID(),
+          ...event,
+          createdAt: new Date().toISOString(),
+        } satisfies CopilotAuditEvent,
+      });
+    },
+    async listCopilotAudit(filters = {}) {
+      const { data } = await baseDataProvider.getList<CopilotAuditEvent>(
+        "copilot_audit",
+        {
+          filter: {
+            ...(filters.contactName
+              ? { contactName: filters.contactName }
+              : {}),
+            ...(filters.companyName
+              ? { companyName: filters.companyName }
+              : {}),
+          },
+          pagination: { page: 1, perPage: 200 },
+          sort: { field: "createdAt", order: "DESC" },
+        },
+      );
+      return data;
+    },
+  };
+
+  const listCopilotContacts = async () => {
+    const [{ data: contacts }, { data: insights }] = await Promise.all([
+      baseDataProvider.getList<Contact>("contacts", {
+        filter: {},
+        pagination: { page: 1, perPage: 10_000 },
+        sort: { field: "id", order: "ASC" },
+      }),
+      baseDataProvider.getList<ContactInsights>("contact_insights", {
+        filter: {},
+        pagination: { page: 1, perPage: 10_000 },
+        sort: { field: "id", order: "ASC" },
+      }),
+    ]);
+    const insightsByContact = new Map(
+      insights.map((insight) => [insight.contact_id, insight]),
+    );
+    return contacts.map((contact) =>
+      fromContactRecords(
+        {
+          id: Number(contact.id),
+          first_name: contact.first_name,
+          last_name: contact.last_name,
+          gender: contact.gender,
+          title: contact.title,
+          company_id: contact.company_id as number | null,
+          company_name: contact.company_name,
+          status: contact.status,
+        },
+        insightsByContact.get(contact.id),
+      ),
+    );
   };
 
   const dataProvider = withLifecycleCallbacks(
@@ -435,6 +607,30 @@ export const createDataProvider = ({
               nb_contacts: (company.nb_contacts ?? 0) + 1,
             }));
           }
+          await baseDataProvider.create("contact_insights", {
+            data: {
+              id: result.data.id,
+              contact_id: result.data.id,
+              lifecycle_stage: null,
+              lead_score: 0,
+              last_activity_date: null,
+              last_activity_type: null,
+              renewal_amount: null,
+              renewal_date: null,
+              renewal_forecast_category: null,
+              renewal_probability: null,
+              contract_attachment_id: null,
+              economic_buyer_identified: false,
+              budget_confirmed: false,
+              legal_review_status: null,
+              security_review_status: null,
+              champion_confidence: null,
+              competitor: null,
+              next_best_action: null,
+              notes_summary: null,
+              updated_at: new Date().toISOString(),
+            },
+          });
 
           return result;
         },
@@ -448,6 +644,12 @@ export const createDataProvider = ({
               nb_contacts: (company.nb_contacts ?? 1) - 1,
             }));
           }
+          await baseDataProvider
+            .delete("contact_insights", {
+              id: result.data.id,
+              previousData: { id: result.data.id },
+            })
+            .catch(() => undefined);
 
           return result;
         },

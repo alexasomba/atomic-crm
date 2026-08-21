@@ -7,6 +7,7 @@ import { createDb } from "../db/client.js";
 import {
   activities,
   companies,
+  contactInsights,
   contacts,
   deals,
   notes,
@@ -577,6 +578,14 @@ api.post("/contacts", async (context) => {
     .returning()
     .all();
 
+  await createDb(context.env.DB)
+    .insert(contactInsights)
+    .values({
+      contactId: contact.id,
+      updatedAt: now,
+    })
+    .run();
+
   return context.json({ data: contact }, 201);
 });
 
@@ -619,7 +628,12 @@ api.delete("/contacts/:id", async (context) => {
   const id = Number(context.req.param("id"));
   if (!Number.isSafeInteger(id))
     return context.json({ error: "Invalid id" }, 400);
-  const [contact] = await createDb(context.env.DB)
+  const db = createDb(context.env.DB);
+  await db
+    .delete(contactInsights)
+    .where(eq(contactInsights.contactId, id))
+    .run();
+  const [contact] = await db
     .delete(contacts)
     .where(eq(contacts.id, id))
     .returning()
@@ -742,6 +756,9 @@ api.post("/contacts/merge", async (context) => {
       .update(activities)
       .set({ contactId: body.data.targetId })
       .where(eq(activities.contactId, body.data.sourceId)),
+    db
+      .delete(contactInsights)
+      .where(eq(contactInsights.contactId, body.data.sourceId)),
     db.delete(contacts).where(eq(contacts.id, body.data.sourceId)),
   ]);
   return context.json({ data: { id: body.data.targetId } });

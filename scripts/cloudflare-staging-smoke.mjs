@@ -40,6 +40,9 @@ assertStatus("unauthenticated configuration", configuration, 401);
 const crm = await request("/api/crm/contacts");
 assertStatus("unauthenticated CRM API", crm, 401);
 
+const copilotContacts = await request("/api/contacts");
+assertStatus("unauthenticated copilot contacts", copilotContacts, 401);
+
 const copilot = await request("/api/copilotkit/info");
 assertStatus("CopilotKit boundary", copilot, expectedCopilotStatus);
 
@@ -72,6 +75,11 @@ if (email && password) {
   });
   assertStatus("authenticated CRM contacts", authenticatedContacts, 200);
 
+  const copilotSearch = await request("/api/contacts", {
+    headers: authHeaders,
+  });
+  assertStatus("authenticated copilot contacts", copilotSearch, 200);
+
   const smokeEmail = `staging-smoke-${Date.now()}@example.invalid`;
   const createdContact = await request("/api/crm/contacts", {
     method: "POST",
@@ -86,6 +94,33 @@ if (email && password) {
   const contactId = createdContact.body?.data?.id;
   if (!Number.isSafeInteger(contactId))
     throw new Error("Contact create did not return a numeric id");
+
+  const createdInsights = await request(`/api/contacts/${contactId}`, {
+    headers: authHeaders,
+  });
+  assertStatus("authenticated copilot contact show", createdInsights, 200);
+
+  const forecast = await request(`/api/contacts/${contactId}/forecast`, {
+    method: "PATCH",
+    headers: { ...authHeaders, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      renewal_forecast_category: "commit",
+      renewal_probability: 55,
+    }),
+  });
+  if (forecast.response.status === 403) {
+    console.log("SKIP forecast patch (staging user is not an admin)");
+  } else {
+    assertStatus("authenticated forecast patch", forecast, 200);
+    if (forecast.body?.renewal_forecast_category !== "commit") {
+      throw new Error("Forecast patch did not persist the category");
+    }
+  }
+
+  const contract = await request(`/api/contacts/${contactId}/contract`, {
+    headers: authHeaders,
+  });
+  assertStatus("authenticated contract text", contract, 200);
 
   const createdNote = await request("/api/crm/notes", {
     method: "POST",

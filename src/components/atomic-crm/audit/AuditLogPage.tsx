@@ -1,19 +1,9 @@
 import { useEffect, useState } from "react";
+import { useDataProvider } from "ra-core";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "@/router";
-
-const API_BASE =
-  import.meta.env.VITE_COPILOTKIT_API_URL || "http://localhost:4000";
-
-interface AuditEvent {
-  id: string;
-  timestamp: string;
-  actionType: "tool_call" | "component_render" | "agent_summary";
-  toolName: string | null;
-  contactName: string | null;
-  companyName: string | null;
-  summary: string;
-}
+import type { CopilotAuditEvent } from "../types";
+import type { CrmDataProvider } from "../providers/types";
 
 const badgeStyles: Record<string, string> = {
   tool_call: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
@@ -41,14 +31,13 @@ function relativeTime(timestamp: string): string {
 }
 
 export const AuditLogPage = () => {
-  const [events, setEvents] = useState<AuditEvent[]>([]);
+  const dataProvider = useDataProvider<CrmDataProvider>();
+  const [events, setEvents] = useState<CopilotAuditEvent[]>([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/audit`);
-        const data = await res.json();
-        setEvents(data);
+        setEvents(await dataProvider.listCopilotAudit());
       } catch {
         // Silently fail
       }
@@ -59,7 +48,7 @@ export const AuditLogPage = () => {
       void fetchEvents();
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [dataProvider]);
 
   return (
     <div className="max-w-3xl mx-auto mt-8 px-4" data-demo="audit-list">
@@ -76,7 +65,7 @@ export const AuditLogPage = () => {
             <Card key={event.id}>
               <CardContent className="py-3 flex items-start gap-3">
                 <div className="text-xs text-muted-foreground w-16 flex-shrink-0 pt-0.5">
-                  {relativeTime(event.timestamp)}
+                  {relativeTime(event.createdAt)}
                 </div>
                 <span
                   className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium flex-shrink-0 ${badgeStyles[event.actionType] ?? ""}`}

@@ -1,10 +1,11 @@
 import { useAuditedFrontendTool as useFrontendTool } from "./useAuditedFrontendTool";
+import { useDataProvider } from "ra-core";
 import { z } from "zod";
-
-const API_BASE =
-  import.meta.env.VITE_COPILOTKIT_API_URL || "http://localhost:4000";
+import type { CrmDataProvider } from "../../providers/types";
 
 export function useSearchContacts() {
+  const dataProvider = useDataProvider<CrmDataProvider>();
+
   useFrontendTool({
     name: "searchContacts",
     description:
@@ -30,27 +31,26 @@ export function useSearchContacts() {
         .optional()
         .describe("Filter by status (hot, warm, cold, in-contract)"),
     }),
-    handler: async (params) => {
-      const searchParams = new URLSearchParams();
-      if (typeof params.firstName === "string")
-        searchParams.set("first_name", params.firstName);
-      if (typeof params.lastName === "string")
-        searchParams.set("last_name", params.lastName);
-      if (typeof params.company === "string")
-        searchParams.set("company", params.company);
-      if (typeof params.lifecycleStage === "string")
-        searchParams.set("lifecycle_stage", params.lifecycleStage);
-      if (params.leadScoreMin != null)
-        searchParams.set("lead_score_min", String(params.leadScoreMin));
-      if (params.leadScoreMax != null)
-        searchParams.set("lead_score_max", String(params.leadScoreMax));
-      if (typeof params.status === "string")
-        searchParams.set("status", params.status);
-      const res = await fetch(`${API_BASE}/api/contacts?${searchParams}`);
-      if (!res.ok) {
-        throw new Error(`searchContacts HTTP ${res.status} ${res.statusText}`);
-      }
-      return res.json();
-    },
+    handler: async (params) =>
+      dataProvider.searchCopilotContacts({
+        firstName:
+          typeof params.firstName === "string" ? params.firstName : undefined,
+        lastName:
+          typeof params.lastName === "string" ? params.lastName : undefined,
+        company: typeof params.company === "string" ? params.company : undefined,
+        lifecycleStage:
+          typeof params.lifecycleStage === "string"
+            ? params.lifecycleStage
+            : undefined,
+        leadScoreMin:
+          typeof params.leadScoreMin === "number"
+            ? params.leadScoreMin
+            : undefined,
+        leadScoreMax:
+          typeof params.leadScoreMax === "number"
+            ? params.leadScoreMax
+            : undefined,
+        status: typeof params.status === "string" ? params.status : undefined,
+      }),
   });
 }

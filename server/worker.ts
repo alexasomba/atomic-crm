@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 import PostalMime from "postal-mime";
 import { createAuth } from "./auth.js";
+import { copilotApi } from "./api/copilot.js";
 import { crmApi } from "./api/crm.js";
 import { createDb } from "./db/client.js";
 import {
@@ -245,6 +246,7 @@ app.all("/api/auth/*", (context) =>
 );
 
 app.route("/api/crm", crmApi);
+app.route("/api", copilotApi);
 
 app.use("/api/uploads/*", bodyLimit({ maxSize: 10 * 1024 * 1024 }));
 

@@ -225,10 +225,7 @@ const ContactShowContent = () => {
   }, [registerPage]);
 
   // Enrichment and copilot setup — must be BEFORE any early return
-  const { data: enriched } = useContactEnrichment(
-    record?.first_name,
-    record?.last_name,
-  );
+  const { data: enriched } = useContactEnrichment(record?.id);
 
   useCopilotSetup({
     context: {

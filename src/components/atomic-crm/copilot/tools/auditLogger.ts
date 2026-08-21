@@ -1,7 +1,19 @@
-const API_BASE =
-  import.meta.env.VITE_COPILOTKIT_API_URL || "http://localhost:4000";
+type AuditEvent = {
+  actionType: string;
+  toolName: string | null;
+  contactName: string | null;
+  companyName: string | null;
+  summary: string;
+};
 
-// Dedup set: tool calls already logged by useAuditedFrontendTool
+type AuditSink = (event: AuditEvent) => Promise<void>;
+
+let auditSink: AuditSink = async () => {};
+
+export function configureCopilotAudit(sink: AuditSink) {
+  auditSink = sink;
+}
+
 const recentlyLogged = new Set<string>();
 
 function makeKey(toolName: string, args: Record<string, unknown>): string {
@@ -35,6 +47,12 @@ const summaryRules: Record<string, (args: Record<string, unknown>) => string> =
       `Drafted email to ${a.contactName || "unknown"}: ${a.subject || ""}`,
     updateContactStatus: (a) =>
       `Updated contact status to ${a.status || "unknown"}`,
+    listDeals: (a) =>
+      `Listed deals${a.companyName ? ` for ${a.companyName}` : ""}`,
+    updateDeal: (a) => `Updated deal ${a.dealId ?? ""}`,
+    createNote: (a) => `Created a note for contact ${a.contactId ?? ""}`,
+    analyzeContract: (a) =>
+      `Loaded contract for ${a.companyName || a.contactId || "unknown"}`,
   };
 
 function generateSummary(
@@ -49,21 +67,11 @@ function generateSummary(
   return `Called ${toolName}`;
 }
 
-async function postAuditEvent(event: {
-  actionType: string;
-  toolName: string | null;
-  contactName: string | null;
-  companyName: string | null;
-  summary: string;
-}): Promise<void> {
+async function postAuditEvent(event: AuditEvent): Promise<void> {
   try {
-    await fetch(`${API_BASE}/api/audit`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(event),
-    });
+    await auditSink(event);
   } catch {
-    // Silently fail — audit logging should never break the app
+    // Audit logging should never break the app.
   }
 }
 

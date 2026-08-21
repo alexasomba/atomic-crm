@@ -10,6 +10,8 @@ import type {
 import type { Activity, Sale, SalesFormData, SignUpData } from "../../types";
 import type { ConfigurationContextValue } from "../../root/ConfigurationContext";
 import { getActivityLog } from "../commons/activity";
+import type { CrmDataProvider } from "../types";
+import { cloudflareCopilotMethods } from "@/lib/copilotApi";
 
 const apiOrigin = (import.meta.env.VITE_CLOUDFLARE_API_URL ?? "").replace(
   /\/$/,
@@ -240,29 +242,7 @@ const implementation = {
     );
     return result.data;
   },
+  ...cloudflareCopilotMethods(),
 };
 
-export const dataProvider = implementation as DataProvider & {
-  signUp: (data: SignUpData) => Promise<{
-    id: Identifier;
-    email: string;
-    password: string;
-  }>;
-  salesCreate: (data: SalesFormData) => Promise<Sale>;
-  salesUpdate: (
-    id: Identifier,
-    data: Partial<Omit<SalesFormData, "password">>,
-  ) => Promise<Sale>;
-  updatePassword: (id: Identifier) => Promise<true>;
-  getActivityLog: (companyId?: Identifier) => Promise<Activity[]>;
-  isInitialized: () => Promise<boolean>;
-  getConfiguration: () => Promise<ConfigurationContextValue>;
-  updateConfiguration: (
-    config: ConfigurationContextValue,
-  ) => Promise<ConfigurationContextValue>;
-  mergeContacts: (
-    sourceId: Identifier,
-    targetId: Identifier,
-  ) => Promise<unknown>;
-  unarchiveDeal: (deal: { id: Identifier }) => Promise<unknown>;
-};
+export const dataProvider = implementation as CrmDataProvider;

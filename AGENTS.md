@@ -74,7 +74,7 @@ server/db/
 - Cloudflare is the default provider and supplies D1, Hono, Better Auth, R2, queues, and Worker email handling.
 - FakeRest is an in-browser demo provider and resets on reload.
 - Cloudflare uses D1/Drizzle and Better Auth as the canonical application provider.
-- CopilotKit uses `VITE_COPILOTKIT_RUNTIME_URL` and `VITE_COPILOTKIT_API_URL`, with the local runtime and MCP started through `vp run dev:all`.
+- CopilotKit uses same-origin `/api/copilotkit` by default. Copilot tools read and write CRM data through the Cloudflare Worker (D1) or FakeRest in demo. `vp run dev:cloudflare` is enough locally; `vp run dev:all` adds the optional MCP server.
 
 ### UI and shadcn conventions
 

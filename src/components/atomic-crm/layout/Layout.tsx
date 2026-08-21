@@ -11,6 +11,7 @@ import { PersonaProvider } from "../copilot/PersonaProvider";
 import { CopilotOverlayProvider } from "../copilot/CopilotOverlayContext";
 import { useCopilotOverlay } from "../copilot/useCopilotOverlay";
 import { CopilotOverlayPanel } from "../copilot/components/CopilotOverlayPanel";
+import { CopilotAuditBridge } from "../copilot/CopilotAuditBridge";
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   useConfigurationLoader();
@@ -36,6 +37,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           >
             <CopilotOverlayPanelGate />
           </ErrorBoundary>
+          <CopilotAuditBridge />
           <Notification />
         </CopilotOverlayProvider>
       </DemoProvider>

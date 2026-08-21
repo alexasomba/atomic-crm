@@ -280,6 +280,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/providers/fakerest/dataGenerator/contactInsights.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/providers/fakerest/dataGenerator/companies.ts",
           "type": "registry:component"
         },
@@ -684,6 +688,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/copilot/CopilotAuditBridge.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/copilot/tools/useUpdateRenewalForecast.tsx",
           "type": "registry:component"
         },
@@ -712,11 +720,19 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/copilot/tools/useDealAndNoteTools.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/copilot/tools/useCreateTask.ts",
           "type": "registry:component"
         },
         {
           "path": "src/components/atomic-crm/copilot/tools/useAuditedFrontendTool.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/copilot/tools/useAnalyzeContract.ts",
           "type": "registry:component"
         },
         {
@@ -1093,6 +1109,14 @@
         },
         {
           "path": "src/lib/segment-analytics-node-browser.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/copilotContacts.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/copilotApi.ts",
           "type": "registry:lib"
         }
       ]

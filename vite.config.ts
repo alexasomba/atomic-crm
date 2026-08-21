@@ -29,7 +29,7 @@ export default defineConfig({
   lint: {
     plugins: ["oxc", "typescript", "unicorn", "react"],
     categories: {
-      correctness: "warn",
+      correctness: "error",
     },
     env: {
       builtin: true,
@@ -1458,8 +1458,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/api/copilotkit": {
-        target: "http://localhost:4000",
+      "/api": {
+        target: process.env.COPILOTKIT_PROXY_TARGET || "http://localhost:8787",
         changeOrigin: true,
         ws: true,
       },

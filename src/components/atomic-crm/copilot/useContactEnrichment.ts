@@ -1,50 +1,62 @@
-import { useState, useEffect } from "react";
+import { useDataProvider } from "ra-core";
+import { useEffect, useState } from "react";
+import type { ContactInsights } from "../types";
+import type { CrmDataProvider } from "../providers/types";
+import type { CopilotContact } from "@/lib/copilotContacts";
 
-const API_BASE =
-  import.meta.env.VITE_COPILOTKIT_API_URL || "http://localhost:4000";
+const toInsights = (
+  contactId: number,
+  contact: CopilotContact,
+): ContactInsights => ({
+  id: contactId,
+  contact_id: contactId,
+  lifecycle_stage: contact.lifecycle_stage,
+  lead_score: contact.lead_score,
+  last_activity_date: contact.last_activity_date,
+  last_activity_type: contact.last_activity_type,
+  renewal_amount: contact.renewal_amount,
+  renewal_date: contact.renewal_date,
+  renewal_forecast_category: contact.renewal_forecast_category,
+  renewal_probability: contact.renewal_probability,
+  contract_attachment_id: contact.contract_file,
+  economic_buyer_identified: contact.economic_buyer_identified,
+  budget_confirmed: contact.budget_confirmed,
+  legal_review_status: contact.legal_review_status,
+  security_review_status: contact.security_review_status,
+  champion_confidence: contact.champion_confidence,
+  competitor: contact.competitor,
+  next_best_action: contact.next_best_action,
+  notes_summary: contact.notes_summary,
+  updated_at: contact.last_activity_date ?? new Date().toISOString(),
+});
 
-export interface EnrichedContactData {
-  lifecycle_stage: string;
-  lead_score: number;
-  last_activity_date: string;
-  last_activity_type: string;
-  renewal_amount: number | null;
-  renewal_date: string | null;
-  renewal_forecast_category: string | null;
-  renewal_probability: number | null;
-  contract_file: string | null;
-  economic_buyer_identified: boolean;
-  budget_confirmed: boolean;
-  legal_review_status: string;
-  security_review_status: string;
-  champion_confidence: string;
-  competitor: string | null;
-  next_best_action: string | null;
-  notes_summary: string | null;
-}
-
-export function useContactEnrichment(
-  firstName?: string,
-  lastName?: string,
-): { data: EnrichedContactData | null; isLoading: boolean } {
-  const [data, setData] = useState<EnrichedContactData | null>(null);
+export function useContactEnrichment(contactId?: number | string): {
+  data: ContactInsights | null;
+  isLoading: boolean;
+} {
+  const dataProvider = useDataProvider<CrmDataProvider>();
+  const [data, setData] = useState<ContactInsights | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!firstName || !lastName) return;
+    if (contactId == null) return;
+    let cancelled = false;
     setIsLoading(true);
-    fetch(
-      `${API_BASE}/api/contacts?first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}`,
-    )
-      .then((r) => r.json())
-      .then((contacts) => {
-        if (Array.isArray(contacts) && contacts.length > 0) {
-          setData(contacts[0]);
+    dataProvider
+      .getCopilotContact(contactId)
+      .then((contact) => {
+        if (!cancelled) {
+          setData(contact ? toInsights(Number(contactId), contact) : null);
         }
       })
-      .catch((err) => console.warn("Contact enrichment failed:", err))
-      .finally(() => setIsLoading(false));
-  }, [firstName, lastName]);
+      .catch((error) => console.warn("Contact enrichment failed:", error))
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [contactId, dataProvider]);
 
   return { data, isLoading };
 }

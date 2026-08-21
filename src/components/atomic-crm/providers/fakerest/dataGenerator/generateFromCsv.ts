@@ -18,6 +18,30 @@ import { generateDealNotes } from "./dealNotes";
 import { generateTasks } from "./tasks";
 import { finalize } from "./finalize";
 import csvText from "../../../../../../test-data/contacts_demo_v2.csv?raw";
+import gottliebContract from "../../../../../../server/contracts/gottlieb-and-sons.md?raw";
+import gradyContract from "../../../../../../server/contracts/grady-llc.md?raw";
+import bergstromContract from "../../../../../../server/contracts/bergstrom-inc.md?raw";
+import okunevaContract from "../../../../../../server/contracts/okuneva-group.md?raw";
+import schmittContract from "../../../../../../server/contracts/schmitt-and-sons.md?raw";
+import { insightFromCsvRow } from "./contactInsights";
+import type { ContactNote } from "../../../types";
+
+const CONTRACTS: Record<string, string> = {
+  "gottlieb-and-sons": gottliebContract,
+  "grady-llc": gradyContract,
+  "bergstrom-inc": bergstromContract,
+  "okuneva-group": okunevaContract,
+  "schmitt-and-sons": schmittContract,
+};
+
+export const companyContractSlug = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+export const contractTextForCompany = (name: string) =>
+  CONTRACTS[companyContractSlug(name)] ?? null;
 
 interface CsvRow {
   id: string;
@@ -43,6 +67,23 @@ interface CsvRow {
   phone_work: string;
   phone_home: string;
   phone_other: string;
+  lifecycle_stage: string;
+  lead_score: string;
+  last_activity_date: string;
+  last_activity_type: string;
+  renewal_amount: string;
+  renewal_date: string;
+  renewal_forecast_category: string;
+  renewal_probability: string;
+  contract_file: string;
+  economic_buyer_identified: string;
+  budget_confirmed: string;
+  legal_review_status: string;
+  security_review_status: string;
+  champion_confidence: string;
+  competitor: string;
+  next_best_action: string;
+  notes_summary: string;
 }
 
 export function generateFromCsv(): Db {
@@ -123,6 +164,12 @@ export function generateFromCsv(): Db {
       phones.push({ number: row.phone_other, type: "Other" as const });
 
     const id = parseInt(row.id, 10);
+    const companyName = row.company_name || row.company || "";
+    const insights = insightFromCsvRow(
+      row as unknown as Record<string, string | undefined>,
+      id,
+      contractTextForCompany(companyName),
+    );
 
     return {
       id,
@@ -131,7 +178,7 @@ export function generateFromCsv(): Db {
       gender: row.gender || "male",
       title: row.title || "",
       company_id: parseInt(row.company_id, 10) || null,
-      company_name: row.company_name || row.company || "",
+      company_name: companyName,
       email_jsonb:
         emails.length > 0 ? emails : [{ email: "", type: "Work" as const }],
       phone_jsonb: phones.length > 0 ? phones : [],
@@ -150,11 +197,34 @@ export function generateFromCsv(): Db {
       sales_id: parseInt(row.sales_id, 10) || 0,
       nb_tasks: parseInt(row.nb_tasks, 10) || 0,
       linkedin_url: row.linkedin_url || null,
+      insights,
     };
   });
 
+  db.contact_insights = db.contacts.map(
+    (contact) => contact.insights ?? insightFromCsvRow({}, Number(contact.id)),
+  );
+  db.copilot_audit = [];
+
+  const contractNotes: ContactNote[] = [];
+  const companiesWithContracts = new Set<string>();
+  for (const row of rows) {
+    const companyName = row.company_name || row.company || "";
+    const text = contractTextForCompany(companyName);
+    if (!text || companiesWithContracts.has(companyName)) continue;
+    companiesWithContracts.add(companyName);
+    contractNotes.push({
+      id: 800000 + parseInt(row.id, 10),
+      contact_id: parseInt(row.id, 10),
+      text,
+      date: row.last_seen || new Date().toISOString(),
+      sales_id: parseInt(row.sales_id, 10) || 0,
+      status: row.status || "warm",
+    });
+  }
+
   // Generate the rest normally (notes, deals, tasks)
-  db.contact_notes = generateContactNotes(db);
+  db.contact_notes = [...contractNotes, ...generateContactNotes(db)];
   db.deals = generateDeals(db);
   db.deal_notes = generateDealNotes(db);
   db.tasks = generateTasks(db);

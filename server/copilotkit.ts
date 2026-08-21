@@ -2,6 +2,7 @@ import { createWorkersAiChat } from "@cloudflare/tanstack-ai";
 import { chat } from "@tanstack/ai";
 import { EventType } from "@ag-ui/core";
 import { EventEncoder } from "@ag-ui/encoder";
+import { getCopilotContract } from "./copilot/store.js";
 
 type RunInput = {
   runId?: string;
@@ -52,7 +53,7 @@ export const shouldForwardCopilotEvent = (event: {
   return !isThinkingStep;
 };
 
-const toTanStackInput = (input: RunInput) => {
+const toTanStackInput = (input: RunInput, env: Env) => {
   const messages = (input.messages ?? [])
     .filter((message) => ["user", "assistant", "tool"].includes(message.role))
     .map((message) => ({
@@ -85,12 +86,32 @@ const toTanStackInput = (input: RunInput) => {
     systemPrompts.push(`Application State:\n${JSON.stringify(input.state)}`);
   }
 
-  const tools = (input.tools ?? []).map((tool) => ({
-    __toolSide: "client" as const,
-    name: tool.name,
-    description: tool.description ?? "",
-    inputSchema: tool.parameters ?? { type: "object", properties: {} },
-  }));
+  const clientTools = (input.tools ?? [])
+    .filter((tool) => tool.name !== "analyzeContract")
+    .map((tool) => ({
+      __toolSide: "client" as const,
+      name: tool.name,
+      description: tool.description ?? "",
+      inputSchema: tool.parameters ?? { type: "object", properties: {} },
+    }));
+
+  const tools = [
+    ...clientTools,
+    {
+      name: "analyzeContract",
+      description:
+        "Load the stored CRM contract text for a contact or company. Use this before rendering ContractRiskReport. Never invent contract clauses.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          contactId: { type: "number" },
+          companyName: { type: "string" },
+        },
+      },
+      execute: async (args: { contactId?: number; companyName?: string }) =>
+        getCopilotContract(env, args),
+    },
+  ];
 
   return { messages, systemPrompts, tools };
 };
@@ -118,7 +139,7 @@ const streamRun = async (request: Request, env: Env, input: RunInput) => {
           runId,
         }),
       );
-      const { messages, systemPrompts, tools } = toTanStackInput(input);
+      const { messages, systemPrompts, tools } = toTanStackInput(input, env);
       const adapter = createWorkersAiChat(
         env.CLOUDFLARE_AI_MODEL || "@cf/openai/gpt-oss-20b",
         { binding: env.AI },

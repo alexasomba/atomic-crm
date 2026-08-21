@@ -1,6 +1,7 @@
 import Papa from "papaparse";
 import { execFile } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -32,7 +33,20 @@ const insert = (table, columns, values) =>
     .map(sql)
     .join(", ")});`;
 
-const expectedCounts = (rows, testEmail) => {
+const companySlug = (name) =>
+  String(name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const truthy = (value) => value === "True" || value === "true" || value === "1";
+const money = (value) => {
+  if (!value) return null;
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? Math.round(parsed) : null;
+};
+
+const expectedCounts = (rows, testEmail, contracts) => {
   const companies = new Set(
     rows.map((row) => number(row.company_id, 0)).filter(Boolean),
   );
@@ -52,19 +66,25 @@ const expectedCounts = (rows, testEmail) => {
       (total, row) => total + Math.min(Math.max(number(row.nb_tasks, 1), 1), 3),
       0,
     );
+  const contractNotes = new Set(
+    rows
+      .map((row) => companySlug(row.company_name || row.company || ""))
+      .filter((slug) => contracts.has(slug)),
+  );
   return {
     companies: companies.size,
     contacts: rows.length + (testEmail ? 1 : 0),
     sales: sales.size,
     tasks,
     deals: companies.size,
-    notes: Math.min(rows.length, 20),
+    notes: Math.min(rows.length, 20) + contractNotes.size,
     tags: tags.size,
     configuration: 1,
+    contact_insights: rows.length + (testEmail ? 1 : 0),
   };
 };
 
-function buildSeedSql(rows, testEmail) {
+function buildSeedSql(rows, testEmail, contracts) {
   const now = "2026-01-01T00:00:00.000Z";
   const companyMap = new Map();
   const salesIds = new Set([0]);
@@ -98,6 +118,8 @@ function buildSeedSql(rows, testEmail) {
     ...(hasFlag("--reset")
       ? [
           "DELETE FROM inbound_email_events;",
+          "DELETE FROM copilot_audit;",
+          "DELETE FROM contact_insights;",
           "DELETE FROM attachments;",
           "DELETE FROM activities;",
           "DELETE FROM notes;",
@@ -290,6 +312,67 @@ function buildSeedSql(rows, testEmail) {
     );
   }
 
+  for (const row of rows) {
+    const contactId = number(row.id);
+    statements.push(
+      insert(
+        "contact_insights",
+        [
+          "contact_id",
+          "lifecycle_stage",
+          "lead_score",
+          "last_activity_date",
+          "last_activity_type",
+          "renewal_amount",
+          "renewal_date",
+          "renewal_forecast_category",
+          "renewal_probability",
+          "contract_attachment_id",
+          "economic_buyer_identified",
+          "budget_confirmed",
+          "legal_review_status",
+          "security_review_status",
+          "champion_confidence",
+          "competitor",
+          "next_best_action",
+          "notes_summary",
+          "updated_at",
+        ],
+        [
+          contactId,
+          row.lifecycle_stage || null,
+          number(row.lead_score, 0),
+          row.last_activity_date || null,
+          row.last_activity_type || null,
+          money(row.renewal_amount),
+          row.renewal_date || null,
+          row.renewal_forecast_category || null,
+          money(row.renewal_probability),
+          null,
+          truthy(row.economic_buyer_identified),
+          truthy(row.budget_confirmed),
+          row.legal_review_status || null,
+          row.security_review_status || null,
+          row.champion_confidence || null,
+          row.competitor || null,
+          row.next_best_action || null,
+          row.notes_summary || null,
+          iso(row.last_seen),
+        ],
+      ),
+    );
+  }
+
+  if (testEmail) {
+    statements.push(
+      insert(
+        "contact_insights",
+        ["contact_id", "lead_score", "updated_at"],
+        [900000, 0, now],
+      ),
+    );
+  }
+
   // Tag IDs 1-100 are reserved for this deterministic fixture. Removing this
   // range makes rerunning the seed converge after older fixture revisions.
   statements.push("DELETE FROM tags WHERE id BETWEEN 1 AND 100;");
@@ -419,6 +502,45 @@ function buildSeedSql(rows, testEmail) {
     );
   }
 
+  const seededContracts = new Set();
+  for (const row of rows) {
+    const slug = companySlug(row.company_name || row.company || "");
+    const text = contracts.get(slug);
+    if (!text || seededContracts.has(slug)) continue;
+    seededContracts.add(slug);
+    statements.push(
+      insert(
+        "notes",
+        [
+          "id",
+          "contact_id",
+          "company_id",
+          "sales_id",
+          "title",
+          "content",
+          "source",
+          "status",
+          "attachments",
+          "created_at",
+          "updated_at",
+        ],
+        [
+          800000 + number(row.id),
+          number(row.id),
+          number(row.company_id, 0) || null,
+          number(row.sales_id, 0),
+          `${slug}.md`,
+          text,
+          "contract",
+          row.status || "warm",
+          [],
+          iso(row.last_seen),
+          iso(row.last_seen),
+        ],
+      ),
+    );
+  }
+
   statements.push(
     insert(
       "configuration",
@@ -451,8 +573,21 @@ async function main() {
   const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true });
   if (parsed.errors.length > 0)
     throw new Error(`Fixture parse failed: ${JSON.stringify(parsed.errors)}`);
+  const contracts = new Map();
+  for (const file of [
+    "gottlieb-and-sons.md",
+    "grady-llc.md",
+    "bergstrom-inc.md",
+    "okuneva-group.md",
+    "schmitt-and-sons.md",
+  ]) {
+    contracts.set(
+      file.replace(/\.md$/, ""),
+      await readFile(path.join("server/contracts", file), "utf8"),
+    );
+  }
   const testEmail = process.env.STAGING_TEST_EMAIL?.trim() || null;
-  const seedSql = buildSeedSql(parsed.data, testEmail);
+  const seedSql = buildSeedSql(parsed.data, testEmail, contracts);
   await mkdir(outputDirectory, { recursive: true });
   await writeFile(outputPath, seedSql);
   console.log(`Generated ${outputPath} from ${parsed.data.length} contacts.`);
@@ -472,7 +607,7 @@ async function main() {
     ],
     { stdio: "inherit" },
   );
-  const expected = expectedCounts(parsed.data, testEmail);
+  const expected = expectedCounts(parsed.data, testEmail, contracts);
   for (const [table, expectedCount] of Object.entries(expected)) {
     const { stdout } = await execFileAsync(
       "wrangler",

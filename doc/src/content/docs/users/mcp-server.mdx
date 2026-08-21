@@ -3,39 +3,35 @@ title: MCP Server
 description: This document explains how to use MCP Server in Atomic CRM.
 ---
 
-You can interact with the data stored in your Atomic CRM instance using an AI assistant like Claude Desktop or Visual Studio Code, thanks to the MCP Server.
+You can interact with the data stored in your Atomic CRM instance using the
+in-repo MCP server. It is a thin authenticated wrapper over the same Cloudflare
+Worker APIs that CopilotKit uses (`/api/contacts`, `/api/leads/top`,
+`/api/contacts/:id/contract`, `/api/crm/tasks`).
 
-![MCP Server](../../images/mcp-server.png)
+## Local development
 
-## Installation
+Start the Worker (and optionally MCP) with:
 
-The MCP server is a third-party application that you need to install and run on your own infrastructure. You can find the installation instructions in the Atomic CRM MCP Server GitHub repository at https://github.com/marmelab/atomic-crm-mcp.
+```sh
+vp run dev:cloudflare
+# optional MCP sidecar
+vp run dev:all
+```
 
-## Adding Atomic CRM as a MCP Server
+The MCP endpoint listens at `http://localhost:3108/mcp` by default. Point it at
+the Worker with `COPILOT_CRM_ORIGIN` (defaults to `http://127.0.0.1:8787`) and
+authenticate with `MCP_AUTH_COOKIE` or `MCP_AUTH_BEARER`.
 
-The MCP server is currently available for the following AI assistants:
+## Tools
 
-- Visual Studio Code
-- Claude Desktop
-- Claude Code
-- ~~Claude Mobile~~
-- ~~ChatGPT Desktop~~
-- ~~ChatGPT Mobile~~
+Once authenticated, you can ask an MCP client to:
 
-Refer to the [MCP Server documentation](https://github.com/marmelab/atomic-crm-mcp#adding-the-mcp-server-to-visual-studio-code) for detailed instructions concerning each AI assistant.
+- Search contacts stored in D1
+- List top leads by lead score
+- Load a contact's stored contract text
+- Create a follow-up task on an existing contact
 
-## Usage
+Do not invent CRM record ids. Search first, then mutate.
 
-Once the MCP server is enabled and authenticated, you can start asking questions about your Atomic CRM data directly from your AI assistant. For example, you can ask:
-
-- "Can you remind me of the pending tasks for the hot contacts?"
-- "List all open deals with a value greater than $10,000."
-- "What are the top 5 companies by revenue?"
-
-The MCP server will process your queries and return the relevant data from your Atomic CRM instance.
-
-You can also perform actions such as creating new contacts, updating deal statuses, or generating reports using natural language commands.
-
-- "Create a new contact for john.doe@acme.com"
-- "The deal #1234 has been won. Update its status."
-- "Add a follow-up task about Jeremiah: I should call him next week."
+The earlier Marmelab `atomic-crm-mcp` package and the markdown contract
+analyzer are not the source of truth for this Cloudflare deployment.

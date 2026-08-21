@@ -12,6 +12,7 @@ import { contactGender } from "../../../contacts/contactGender";
 import type { Company, Contact } from "../../../types";
 import type { Db } from "./types";
 import { randomDate, weightedBoolean } from "./utils";
+import { emptyInsights } from "./contactInsights";
 
 const maxContacts = {
   1: 1,
@@ -96,6 +97,7 @@ export const generateContacts = (db: Db, size = 500): Required<Contact>[] => {
       sales_id: company.sales_id,
       nb_tasks: 0,
       linkedin_url: null,
+      insights: emptyInsights(id),
     };
   });
 };

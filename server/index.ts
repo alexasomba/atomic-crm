@@ -6,24 +6,6 @@ import {
   createCopilotEndpoint,
   BuiltInAgent,
 } from "@copilotkit/runtime/v2";
-import crypto from "node:crypto";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import {
-  loadContacts,
-  getAllContacts,
-  getContactById,
-  getContactByName,
-  searchContacts as searchContactsStore,
-  getContactsByCompany as getContactsByCompanyStore,
-  getTopLeads as getTopLeadsStore,
-  updateContactForecast,
-} from "./data/contacts-store.js";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Load CSV data
-loadContacts(path.join(__dirname, "../test-data/contacts_demo_v2.csv"));
 
 // CopilotKit Intelligence (optional — omit env vars to run without it)
 const intelligence = process.env.INTELLIGENCE_API_KEY
@@ -136,7 +118,7 @@ const runtimeOptions = {
       {
         type: "http" as const,
         url: MCP_SERVER_URL,
-        serverId: "contract-analyzer",
+        serverId: "atomic-crm",
       },
     ],
   },
@@ -178,99 +160,38 @@ const copilotApp = createCopilotEndpoint({
   basePath: "/api/copilotkit",
 });
 
-// REST API for enriched contact data
-app.get("/api/contacts", (c) => {
-  const company = c.req.query("company");
-  const lifecycleStage = c.req.query("lifecycle_stage");
-  const leadScoreMin = c.req.query("lead_score_min");
-  const leadScoreMax = c.req.query("lead_score_max");
-  const status = c.req.query("status");
-  const firstName = c.req.query("first_name");
-  const lastName = c.req.query("last_name");
+const WORKER_ORIGIN = (
+  process.env.COPILOT_CRM_ORIGIN || "http://127.0.0.1:8787"
+).replace(/\/$/, "");
 
-  // Name-based lookup
-  if (firstName && lastName) {
-    const contact = getContactByName(firstName, lastName);
-    return c.json(contact ? [contact] : []);
-  }
-
-  if (company || lifecycleStage || leadScoreMin || leadScoreMax || status) {
-    return c.json(
-      searchContactsStore({
-        company: company || undefined,
-        lifecycleStage: lifecycleStage || undefined,
-        leadScoreMin: leadScoreMin ? parseInt(leadScoreMin, 10) : undefined,
-        leadScoreMax: leadScoreMax ? parseInt(leadScoreMax, 10) : undefined,
-        status: status || undefined,
-      }),
-    );
-  }
-  return c.json(getAllContacts());
-});
-
-app.get("/api/contacts/:id", (c) => {
-  const id = parseInt(c.req.param("id"), 10);
-  const contact = getContactById(id);
-  if (!contact) return c.json({ error: "Not found" }, 404);
-  return c.json(contact);
-});
-
-app.get("/api/companies/:name/contacts", (c) => {
-  const name = decodeURIComponent(c.req.param("name"));
-  return c.json(getContactsByCompanyStore(name));
-});
-
-app.get("/api/leads/top", (c) => {
-  const limit = parseInt(c.req.query("limit") || "10", 10);
-  return c.json(getTopLeadsStore(limit));
-});
-
-app.patch("/api/contacts/:id/forecast", async (c) => {
-  const id = parseInt(c.req.param("id"), 10);
-  const body = await c.req.json();
-  const updated = updateContactForecast(id, body);
-  if (!updated) return c.json({ error: "Not found" }, 404);
-  return c.json(updated);
-});
-
-// In-memory audit log
-const auditEvents: Array<{
-  id: string;
-  timestamp: string;
-  actionType: string;
-  toolName: string | null;
-  contactName: string | null;
-  companyName: string | null;
-  summary: string;
-}> = [];
-
-app.post("/api/audit", async (c) => {
-  const body = await c.req.json();
-  const event = {
-    id: crypto.randomUUID(),
-    timestamp: new Date().toISOString(),
-    actionType: body.actionType || "tool_call",
-    toolName: body.toolName || null,
-    contactName: body.contactName || null,
-    companyName: body.companyName || null,
-    summary: body.summary || "",
+const proxyToWorker = async (c: { req: { raw: Request } }) => {
+  const incoming = new URL(c.req.raw.url);
+  const target = new URL(
+    `${incoming.pathname}${incoming.search}`,
+    WORKER_ORIGIN,
+  );
+  const headers = new Headers(c.req.raw.headers);
+  headers.delete("Host");
+  const body =
+    c.req.raw.method === "GET" || c.req.raw.method === "HEAD"
+      ? undefined
+      : c.req.raw.body;
+  const init: RequestInit & { duplex?: "half" } = {
+    method: c.req.raw.method,
+    headers,
+    body,
+    redirect: "manual",
   };
-  auditEvents.unshift(event);
-  return c.json(event, 201);
-});
+  if (body) init.duplex = "half";
+  return fetch(new Request(target, init));
+};
 
-app.get("/api/audit", (c) => {
-  const contactName = c.req.query("contactName");
-  const companyName = c.req.query("companyName");
-  let filtered = auditEvents;
-  if (contactName) {
-    filtered = filtered.filter((e) => e.contactName === contactName);
-  }
-  if (companyName) {
-    filtered = filtered.filter((e) => e.companyName === companyName);
-  }
-  return c.json(filtered);
-});
+app.all("/api/contacts", proxyToWorker);
+app.all("/api/contacts/*", proxyToWorker);
+app.all("/api/companies/*", proxyToWorker);
+app.all("/api/leads/*", proxyToWorker);
+app.all("/api/audit", proxyToWorker);
+app.all("/api/audit/*", proxyToWorker);
 
 const port = parseInt(process.env.PORT || "4000", 10);
 serve(

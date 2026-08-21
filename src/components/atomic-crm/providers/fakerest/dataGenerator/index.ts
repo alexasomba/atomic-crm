@@ -1,6 +1,7 @@
 import { generateCompanies } from "./companies";
 import { generateContactNotes } from "./contactNotes";
 import { generateContacts } from "./contacts";
+import { generateContactInsights } from "./contactInsights";
 import { generateDealNotes } from "./dealNotes";
 import { generateDeals } from "./deals";
 import { finalize } from "./finalize";
@@ -15,6 +16,8 @@ export default (): Db => {
   db.tags = generateTags(db);
   db.companies = generateCompanies(db);
   db.contacts = generateContacts(db);
+  db.contact_insights = generateContactInsights(db);
+  db.copilot_audit = [];
   db.contact_notes = generateContactNotes(db);
   db.deals = generateDeals(db);
   db.deal_notes = generateDealNotes(db);
