@@ -90,11 +90,10 @@ function WorkspaceUserMessage({
 
 // ─── CopilotWorkspace ────────────────────────────────────────────────────────
 
-const AGENT_ID = "default";
-
 interface CopilotWorkspaceProps {
   className?: string;
   children?: React.ReactNode;
+  agentId: string;
   threadId: string;
   onNewConversation: () => void;
   onSelectThread: (id: string) => void;
@@ -103,6 +102,7 @@ interface CopilotWorkspaceProps {
 export function CopilotWorkspace({
   className,
   children,
+  agentId,
   threadId,
   onNewConversation,
   onSelectThread,
@@ -146,7 +146,7 @@ export function CopilotWorkspace({
       {view === "history" ? (
         <div className="flex-1 min-h-0 overflow-y-auto">
           <ThreadHistory
-            agentId={AGENT_ID}
+            agentId={agentId}
             activeThreadId={threadId}
             onSelectThread={handleSelectThread}
           />
@@ -157,7 +157,7 @@ export function CopilotWorkspace({
           <div className="copilot-chat-area">
             <CopilotChat
               key={chatKey}
-              agentId={AGENT_ID}
+              agentId={agentId}
               threadId={threadId}
               className="copilot-chat-inline"
               messageView={{

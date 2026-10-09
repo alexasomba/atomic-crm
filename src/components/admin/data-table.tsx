@@ -281,7 +281,7 @@ const DataTableRow = ({
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line @typescript-eslint/no-explicit-any
 const isPromise = (value: any): value is Promise<any> =>
   value && typeof value.then === "function";
 
@@ -293,8 +293,9 @@ const DataTableEmpty = () => {
   );
 };
 
-export interface DataTableProps<RecordType extends RaRecord = RaRecord>
-  extends Partial<DataTableBaseProps<RecordType>> {
+export interface DataTableProps<
+  RecordType extends RaRecord = RaRecord,
+> extends Partial<DataTableBaseProps<RecordType>> {
   children: ReactNode;
   className?: string;
   rowClassName?: (record: RecordType) => string | undefined;

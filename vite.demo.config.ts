@@ -1,5 +1,5 @@
 import path from "node:path";
-import { defineConfig } from "vite";
+import { defineConfig } from "vite-plus";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -7,6 +7,13 @@ import createHtmlPlugin from "vite-plugin-simple-html";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  test: {
+    // Vitest v4 compatibility: preserve mock call history.
+    // Remove after tests no longer rely on calls from setup or earlier tests.
+    // https://viteplus.dev/guide/vitest-v5#remove-unneeded-compatibility-settings
+    // https://vitest.dev/guide/migration/#clearmocks-is-enabled-by-default
+    clearMocks: false,
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -33,9 +40,6 @@ export default defineConfig({
     ),
   },
   base: "./",
-  esbuild: {
-    keepNames: true,
-  },
   build: {
     sourcemap: true,
   },
@@ -53,7 +57,6 @@ export default defineConfig({
     },
   },
   resolve: {
-    preserveSymlinks: true,
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },

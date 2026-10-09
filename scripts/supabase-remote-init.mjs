@@ -1,5 +1,5 @@
 import { input, select } from "@inquirer/prompts";
-import { execa } from "execa";
+import { spawn } from "node:child_process";
 import fs from "node:fs";
 
 (async () => {
@@ -51,7 +51,7 @@ import fs from "node:fs";
 })();
 
 async function loginToSupabase() {
-  await execa("npx", ["supabase", "login"], { stdio: "inherit" });
+  await runNpx(["login"], { inheritStdio: true });
 }
 
 async function createProject({
@@ -60,26 +60,18 @@ async function createProject({
   organizationId,
   region,
 }) {
-  const { stdout } = await execa(
-    "npx",
-    [
-      "supabase",
-      "projects",
-      "create",
-      "--output",
-      "json",
-      "--db-password",
-      databasePassword,
-      "--region",
-      region,
-      ...(organizationId ? ["--org-id", organizationId] : []),
-      projectName,
-    ],
-    {
-      stdin: "pipe",
-      stdout: "pipe",
-    },
-  );
+  const { stdout } = await runNpx([
+    "projects",
+    "create",
+    "--output",
+    "json",
+    "--db-password",
+    databasePassword,
+    "--region",
+    region,
+    ...(organizationId ? ["--org-id", organizationId] : []),
+    projectName,
+  ]);
 
   try {
     const matchJSON = stdout.match(new RegExp("{.*}", "s"));
@@ -96,13 +88,12 @@ async function createProject({
 }
 
 async function selectOrganization() {
-  const { stdout: organizationsJson } = await execa(
-    "npx",
-    ["supabase", "orgs", "list", "--output", "json"],
-    {
-      stdout: "pipe",
-    },
-  );
+  const { stdout: organizationsJson } = await runNpx([
+    "orgs",
+    "list",
+    "--output",
+    "json",
+  ]);
 
   const organizations = JSON.parse(organizationsJson);
 
@@ -160,13 +151,7 @@ async function selectRegion() {
 
 async function waitForProjectToBeReady({ projectRef }) {
   console.log("Waiting for project to be ready...");
-  const { stdout } = await execa(
-    "npx",
-    ["supabase", "projects", "list", "--output", "json"],
-    {
-      stdout: "pipe",
-    },
-  );
+  const { stdout } = await runNpx(["projects", "list", "--output", "json"]);
 
   try {
     // The response is an Array of objects or null if there are no projects
@@ -190,20 +175,9 @@ async function waitForProjectToBeReady({ projectRef }) {
 
 let retry = 0;
 async function linkProject({ projectRef, databasePassword }) {
-  await execa(
-    "npx",
-    [
-      "supabase",
-      "link",
-      "--project-ref",
-      projectRef,
-      "--password",
-      databasePassword,
-    ],
-    {
-      stdout: "ignore",
-      stderr: "ignore",
-    },
+  await runNpx(
+    ["link", "--project-ref", projectRef, "--password", databasePassword],
+    { ignoreStdio: true },
   ).catch(() => {
     retry++;
     if (retry === 1) {
@@ -216,10 +190,8 @@ async function linkProject({ projectRef, databasePassword }) {
 }
 
 async function setupDatabase({ databasePassword }) {
-  await execa(
-    "npx",
+  await runNpx(
     [
-      "supabase",
       "db",
       "push",
       "--linked",
@@ -228,30 +200,16 @@ async function setupDatabase({ databasePassword }) {
       "--password",
       databasePassword,
     ],
-    {
-      stdio: "inherit",
-    },
+    { inheritStdio: true },
   );
 }
 
 async function fetchApiKeys({ projectRef }) {
   let publishableKey = "";
   try {
-    const { stdout, exitCode } = await execa(
-      "npx",
-      [
-        "supabase",
-        "projects",
-        "api-keys",
-        "--output",
-        "json",
-        "--project-ref",
-        projectRef,
-      ],
-      {
-        stdout: "pipe",
-        stderr: "ignore",
-      },
+    const { stdout, exitCode } = await runNpx(
+      ["projects", "api-keys", "--output", "json", "--project-ref", projectRef],
+      { ignoreStderr: true, allowNonZero: true },
     );
     // If the exitCode is not 0, the command failed most probably because the project is not ready
     if (exitCode === 0) {
@@ -287,20 +245,44 @@ async function fetchApiKeys({ projectRef }) {
 }
 
 async function setupSupabaseSecrets({ projectRef, publishableKey }) {
-  await execa(
-    "npx",
+  await runNpx(
     [
-      "supabase",
       "secrets",
       "set",
       `SB_PUBLISHABLE_KEY=${publishableKey}`,
       "--project-ref",
       projectRef,
     ],
-    {
-      stdio: "inherit",
-    },
+    { inheritStdio: true },
   );
+}
+
+function runNpx(args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const stdio = options.inheritStdio
+      ? "inherit"
+      : options.ignoreStdio
+        ? "ignore"
+        : ["ignore", "pipe", options.ignoreStderr ? "ignore" : "pipe"];
+    const child = spawn("npx", ["supabase", ...args], {
+      stdio,
+      windowsHide: true,
+    });
+    let stdout = "";
+
+    child.stdout?.setEncoding("utf8").on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.once("error", reject);
+    child.once("close", (code, signal) => {
+      const exitCode = code ?? (signal ? 1 : 0);
+      if (exitCode !== 0 && !options.allowNonZero) {
+        reject(new Error(`Supabase CLI failed with exit code ${exitCode}`));
+        return;
+      }
+      resolve({ stdout, exitCode });
+    });
+  });
 }
 
 async function persistSupabaseEnv({ projectRef, publishableKey }) {

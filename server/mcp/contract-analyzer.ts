@@ -199,26 +199,20 @@ function createMcpServer(): McpServer {
   );
 
   // Register the UI resource that CopilotKit will fetch and render in an iframe
-  registerAppResource(
-    server,
-    resourceUri,
-    resourceUri,
-    { mimeType: RESOURCE_MIME_TYPE },
-    async () => {
-      console.log(
-        `[MCP App] Resource fetched, HTML length: ${latestHtml.length}`,
-      );
-      return {
-        contents: [
-          {
-            uri: resourceUri,
-            mimeType: RESOURCE_MIME_TYPE,
-            text: latestHtml,
-          },
-        ],
-      };
-    },
-  );
+  registerAppResource(server, resourceUri, resourceUri, {}, async () => {
+    console.log(
+      `[MCP App] Resource fetched, HTML length: ${latestHtml.length}`,
+    );
+    return {
+      contents: [
+        {
+          uri: resourceUri,
+          mimeType: RESOURCE_MIME_TYPE,
+          text: latestHtml,
+        },
+      ],
+    };
+  });
 
   return server;
 }

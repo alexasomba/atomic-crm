@@ -10,8 +10,8 @@ export const ExportVCardButton = () => {
   // Fetch the company data on mount
   const { data: company } = useGetOne<Company>(
     "companies",
-    { id: contact?.company_id },
-    { enabled: !!contact?.company_id },
+    { id: contact?.company_id ?? undefined },
+    { enabled: contact?.company_id != null },
   );
 
   const handleExport = async () => {

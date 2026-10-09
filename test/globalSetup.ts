@@ -1,4 +1,4 @@
-import type { GlobalSetupContext } from "vitest/node";
+import type { TestProject } from "vite-plus/test/node";
 import { LLMock } from "@copilotkit/aimock";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURES_DIR = path.join(__dirname, "fixtures");
 
-export default async function setup({ provide }: GlobalSetupContext) {
+export default async function setup({ provide }: TestProject) {
   const mock = new LLMock({
     port: 0,
     latency: 0,

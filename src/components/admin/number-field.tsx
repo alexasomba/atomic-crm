@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* oxlint-disable @typescript-eslint/no-explicit-any */
 import type { HTMLAttributes } from "react";
 import { useFieldValue, useTranslate } from "ra-core";
 import type { FieldProps } from "@/lib/field.type";
@@ -68,8 +68,8 @@ export const NumberField = <
 
 export interface NumberFieldProps<
   RecordType extends Record<string, any> = Record<string, any>,
-> extends FieldProps<RecordType>,
-    HTMLAttributes<HTMLSpanElement> {
+>
+  extends FieldProps<RecordType>, HTMLAttributes<HTMLSpanElement> {
   locales?: string | string[];
   options?: object;
   transform?: (value: any) => number;

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
-import { randomUUID } from "@copilotkit/shared";
 import { Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCopilotOverlay } from "../CopilotOverlayContext";
@@ -15,8 +14,11 @@ export function CopilotOverlayPanel() {
   // useAgent() outside CopilotChat returns the BASE agent while CopilotChat
   // renders messages from a different cloned agent — meaning addMessage +
   // runAgent here would never appear in the chat panel.
-  const [threadId, setThreadId] = useState<string>(() => randomUUID());
-  const { agent } = useAgent({ threadId });
+  const [threadId, setThreadId] = useState<string>(() =>
+    globalThis.crypto.randomUUID(),
+  );
+  const agentId = `overlay-${threadId}`;
+  const { agent } = useAgent({ agentId, runtimeAgentId: "default", threadId });
   const { copilotkit } = useCopilotKit();
 
   useCopilotSetup({
@@ -28,14 +30,18 @@ export function CopilotOverlayPanel() {
 
   const triggerAgent = useCallback(
     async (prompt: string) => {
-      agent.addMessage({ id: randomUUID(), role: "user", content: prompt });
+      agent.addMessage({
+        id: globalThis.crypto.randomUUID(),
+        role: "user",
+        content: prompt,
+      });
       await copilotkit.runAgent({ agent });
     },
     [agent, copilotkit],
   );
 
   const handleNewConversation = useCallback(() => {
-    setThreadId(randomUUID());
+    setThreadId(globalThis.crypto.randomUUID());
   }, []);
 
   const handleSelectThread = useCallback((id: string) => {
@@ -65,6 +71,7 @@ export function CopilotOverlayPanel() {
       {/* Chat workspace (includes thread header, action buttons, chat, and thread history) */}
       <CopilotWorkspace
         className="flex-1 min-h-0"
+        agentId={agentId}
         threadId={threadId}
         onNewConversation={handleNewConversation}
         onSelectThread={handleSelectThread}

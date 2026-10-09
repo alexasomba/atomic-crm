@@ -2,7 +2,7 @@ import {
   ScanFace,
   BookOpenText,
   ChevronsLeftRight,
-  Github,
+  CodeXml,
 } from "lucide-react";
 
 /**
@@ -46,7 +46,7 @@ export const Ready = () => (
       </div>
       <div className="text-xl">
         <a href="https://github.com/marmelab/shadcn-admin-kit">
-          <Github className="inline mr-4 w-10 h-10" />
+          <CodeXml className="inline mr-4 w-10 h-10" />
           GitHub
         </a>
       </div>

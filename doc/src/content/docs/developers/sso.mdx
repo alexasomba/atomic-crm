@@ -32,22 +32,21 @@ In _Authentication > Sign in / Providers_, enable _SAML 2.0_:
    ![New app details screen](../../images/sso-google-3.png)
 
 4. **Download IdP metadata**
-   
+
    This is a very important step. Click on _DOWNLOAD METADATA_ and save the file that was downloaded. You will need to upload this file later.
-  ![IdP metadata screen](../../images/sso-google-4.png)
-  
+   ![IdP metadata screen](../../images/sso-google-4.png)
 
 5. **Add service provider details**
 
    Fill out these service provider details on the next screen. Replace `<project>` with your Supabase project identifier in the URLs below.
 
-   | Detail | Value |
-   |--------|-------|
-   | ACS URL | https://&lt;project&gt;.supabase.co/auth/v1/sso/saml/acs |
-   | Entity ID | https://&lt;project&gt;.supabase.co/auth/v1/sso/saml/metadata |
-   | Start URL | Your application URL (optional) |
-   | Name ID format | EMAIL |
-   | Name ID | Basic Information > Primary email |
+   | Detail         | Value                                                         |
+   | -------------- | ------------------------------------------------------------- |
+   | ACS URL        | https://&lt;project&gt;.supabase.co/auth/v1/sso/saml/acs      |
+   | Entity ID      | https://&lt;project&gt;.supabase.co/auth/v1/sso/saml/metadata |
+   | Start URL      | Your application URL (optional)                               |
+   | Name ID format | EMAIL                                                         |
+   | Name ID        | Basic Information > Primary email                             |
 
    ![Service provider details screen](../../images/sso-google-5.png)
 
@@ -56,15 +55,15 @@ In _Authentication > Sign in / Providers_, enable _SAML 2.0_:
    To properly map the identity details to the sales fields in Atomic CRM, add the following mappings:
 
    | Google Directory attributes | App attributes |
-   |-----------------------------|----------------|
-   | Primary email | `email` |
-   | First name | `first_name` |
-   | Last name | `last_name` |
+   | --------------------------- | -------------- |
+   | Primary email               | `email`        |
+   | First name                  | `first_name`   |
+   | Last name                   | `last_name`    |
 
    ![Attribute mapping screen](../../images/sso-google-6.png)
 
 7. **Configure user access**
-   
+
    You can configure which Google Workspace user accounts will get access to Atomic CRM. This is important if you wish to limit access to your software engineering teams.
 
    You can configure this access by clicking on the _User access_ card (or down-arrow). Follow the instructions on screen.
@@ -93,7 +92,7 @@ Save the following JSON in a `mapping.json` file:
 Then, run the following command where the `metadata.xml` file is the file you downloaded at _step 4_ and `mapping.json` the file you created just now. Replace `<your-project>` with your Supabase project identifier and `company.com` with your company domain:
 
 ```sh
-npx supabase sso add --type saml --project-ref <your-project> \
+pnpm dlx supabase sso add --type saml --project-ref <your-project> \
   --metadata-file /path/to/saml/metadata.xml \
   --attribute-mapping-file /path/to/mapping.json \
   --domains company.com
@@ -102,12 +101,14 @@ npx supabase sso add --type saml --project-ref <your-project> \
 ### Enable Google Workspace SSO in Login Page
 
 Provide the `VITE_GOOGLE_WORKPLACE_DOMAIN` environment variable, for instance by adding it to your `.env` file:
+
 ```sh title=".env"
 ...
 VITE_GOOGLE_WORKPLACE_DOMAIN=company.com
 ```
 
 You can optionally disable email/password authentication by providing the `VITE_DISABLE_EMAIL_PASSWORD_AUTHENTICATION` environment variable:
+
 ```sh title=".env"
 ...
 VITE_DISABLE_EMAIL_PASSWORD_AUTHENTICATION=true

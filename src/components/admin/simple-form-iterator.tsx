@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* oxlint-disable @typescript-eslint/no-explicit-any */
 import get from "lodash/get";
 import * as React from "react";
 import type { ReactElement } from "react";
@@ -248,8 +248,7 @@ export const SimpleFormIteratorItem = React.forwardRef(
   },
 );
 
-export interface SimpleFormIteratorItemProps
-  extends SimpleFormIteratorItemBaseProps {
+export interface SimpleFormIteratorItemProps extends SimpleFormIteratorItemBaseProps {
   disabled?: boolean;
   disableRemove?: boolean | SimpleFormIteratorDisableRemoveFunction;
   disableReordering?: boolean;

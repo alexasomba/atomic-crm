@@ -1,4 +1,4 @@
-import { describe, it, expect, inject } from "vitest";
+import { describe, it, expect, inject } from "vite-plus/test";
 
 /**
  * These tests run in browser mode (Chromium). The aimock server runs in Node

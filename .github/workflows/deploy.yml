@@ -25,13 +25,15 @@ jobs:
                   persist-credentials: false
 
             # No cache — deploy builds must be hermetic
-            - name: "⚙️ Setup node"
-              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+            - name: "⚙️ Setup Node and pnpm"
+              uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
               with:
-                  node-version: 22
+                  node-version-file: .node-version
+                  cache: false
+                  install: false
 
             - name: "\U0001F4E5 Download deps"
-              run: make doc-install
+              run: pnpm install --frozen-lockfile
 
             - name: "\U0001F528 Build Registry"
               run: make registry-build
@@ -62,6 +64,13 @@ jobs:
               with:
                   persist-credentials: false
 
+            - name: "⚙️ Setup Node and pnpm"
+              uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
+              with:
+                  node-version-file: .node-version
+                  cache: false
+                  install: false
+
             - name: "⚙️ Setup git"
               run: |
                 git remote set-url origin "https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}"
@@ -76,10 +85,10 @@ jobs:
                   name: doc-artifacts
 
             - name: "\U0001F4E1 Deploy Registry"
-              run: cd public/r && npx gh-pages -b gh-pages -d ./ -s atomic-crm.json -e r -m "Deploy registry" --remove r
+              run: pnpm dlx gh-pages -b gh-pages -d public/r -s atomic-crm.json -e r -m "Deploy registry" --remove r
 
             - name: "\U0001F4E1 Deploy Documentation"
-              run: cd doc && npx gh-pages -b gh-pages -d dist -e doc -m "Deploy docs" --remove doc
+              run: pnpm dlx gh-pages -b gh-pages -d doc/dist -e doc -m "Deploy docs" --remove doc
 
     # ─── Demo ────────────────────────────────────────────────────────
     build-demo:
@@ -98,16 +107,18 @@ jobs:
                   persist-credentials: false
 
             # No cache — deploy builds must be hermetic
-            - name: "⚙️ Setup node"
-              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+            - name: "⚙️ Setup Node and pnpm"
+              uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
               with:
-                  node-version: 22
+                  node-version-file: .node-version
+                  cache: false
+                  install: false
 
             - name: "\U0001F4E5 Download deps"
-              run: npm ci
+              run: pnpm install --frozen-lockfile
 
             - name: "\U0001F528 Build"
-              run: npm run build:demo
+              run: pnpm run build:demo
 
             - name: "\U0001F4E4 Upload demo artifacts"
               uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -134,10 +145,12 @@ jobs:
               with:
                   persist-credentials: false
 
-            - name: "⚙️ Setup node"
-              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+            - name: "⚙️ Setup Node and pnpm"
+              uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
               with:
-                  node-version: 22
+                  node-version-file: .node-version
+                  cache: false
+                  install: false
 
             - name: "⚙️ Setup git"
               run: |
@@ -157,7 +170,7 @@ jobs:
                   path: dist
 
             - name: "\U0001F4E1 Deploy GitHub pages"
-              run: npx gh-pages --remote production -d dist -b "${DEPLOY_BRANCH:-gh-pages}"
+              run: pnpm dlx gh-pages --remote production -d dist -b "${DEPLOY_BRANCH:-gh-pages}"
               env:
                   GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN || secrets.GITHUB_TOKEN }}
                   DEPLOY_BRANCH: ${{ vars.DEPLOY_BRANCH }}
@@ -183,16 +196,18 @@ jobs:
                   persist-credentials: false
 
             # No cache — deploy builds must be hermetic
-            - name: "⚙️ Setup node"
-              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+            - name: "⚙️ Setup Node and pnpm"
+              uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
               with:
-                  node-version: 22
+                  node-version-file: .node-version
+                  cache: false
+                  install: false
 
             - name: "\U0001F4E5 Download deps"
-              run: npm ci
+              run: pnpm install --frozen-lockfile
 
             - name: "\U0001F528 Build"
-              run: npm run build
+              run: pnpm run build
 
             - name: "\U0001F4E4 Upload supabase artifacts"
               uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -231,6 +246,13 @@ jobs:
               with:
                   persist-credentials: false
 
+            - name: "⚙️ Setup Node and pnpm"
+              uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
+              with:
+                  node-version-file: .node-version
+                  cache: false
+                  install: false
+
             - name: "⚙️ Setup git"
               run: |
                   echo "Deploying to pages to $DEPLOY_REPOSITORY"
@@ -253,23 +275,23 @@ jobs:
 
             - if: ${{ env.IS_SUPABASE_CONFIGURED }}
               name: "\U0001F517 Supabase Link"
-              run: npx supabase link --project-ref $SUPABASE_PROJECT_ID
+              run: supabase link --project-ref $SUPABASE_PROJECT_ID
 
             - if: ${{ env.IS_SUPABASE_CONFIGURED }}
               name: "\U0001F4E1 Push supabase migrations"
-              run: npx supabase db push
+              run: supabase db push
 
             - if: ${{ env.IS_SUPABASE_CONFIGURED && env.POSTMARK_WEBHOOK_USER && env.POSTMARK_WEBHOOK_PASSWORD && env.POSTMARK_WEBHOOK_AUTHORIZED_IPS }}
               name: "\U0001F4E1 Push supabase postmark webhook user secret"
               run: |
-                  npx supabase secrets set "POSTMARK_WEBHOOK_USER=$POSTMARK_WEBHOOK_USER"
-                  npx supabase secrets set "POSTMARK_WEBHOOK_PASSWORD=$POSTMARK_WEBHOOK_PASSWORD"
-                  npx supabase secrets set "POSTMARK_WEBHOOK_AUTHORIZED_IPS=$POSTMARK_WEBHOOK_AUTHORIZED_IPS"
-                  npx supabase secrets set "VITE_INBOUND_EMAIL=$VITE_INBOUND_EMAIL"
+                  supabase secrets set "POSTMARK_WEBHOOK_USER=$POSTMARK_WEBHOOK_USER"
+                  supabase secrets set "POSTMARK_WEBHOOK_PASSWORD=$POSTMARK_WEBHOOK_PASSWORD"
+                  supabase secrets set "POSTMARK_WEBHOOK_AUTHORIZED_IPS=$POSTMARK_WEBHOOK_AUTHORIZED_IPS"
+                  supabase secrets set "VITE_INBOUND_EMAIL=$VITE_INBOUND_EMAIL"
 
             - if: ${{ env.IS_SUPABASE_CONFIGURED }}
               name: "\U0001F4E1 Deploy supabase functions"
-              run: npx supabase functions deploy
+              run: supabase functions deploy
 
             - if: ${{ !env.SUPABASE_ACCESS_TOKEN }}
               name: Check SUPABASE_ACCESS_TOKEN secret
@@ -308,7 +330,7 @@ jobs:
               run: echo ':warning:Supabase deployment skipped' >> $GITHUB_STEP_SUMMARY
 
             - name: "\U0001F4E1 Deploy GitHub pages"
-              run: npx gh-pages --remote production -d dist -b "${DEPLOY_BRANCH:-gh-pages}"
+              run: pnpm dlx gh-pages --remote production -d dist -b "${DEPLOY_BRANCH:-gh-pages}"
               env:
                   GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN || secrets.GITHUB_TOKEN }}
                   DEPLOY_BRANCH: ${{ vars.DEPLOY_BRANCH }}

@@ -2,10 +2,10 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import tailwindcss from "@tailwindcss/vite";
-import { server } from "typescript";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://marmelab.com",
   base: "/atomic-crm/doc/",
   vite: {
     plugins: [tailwindcss()],
@@ -16,6 +16,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Atomic CRM",
+      disable404Route: true,
       favicon: "./public/favicon.svg",
       customCss: ["./src/styles/global.css"],
       logo: {
@@ -96,7 +97,7 @@ export default defineConfig({
         },
         {
           label: "Developers Documentation",
-          autogenerate: { directory: "developers" },
+          items: [{ autogenerate: { directory: "developers" } }],
         },
         {
           label: "What's New",

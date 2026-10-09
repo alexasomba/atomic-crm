@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useGetList } from "ra-core";
 import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
-import { randomUUID } from "@copilotkit/shared";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bot, ClipboardList, Users } from "lucide-react";
@@ -23,8 +22,11 @@ export const Dashboard = () => {
   // a shared threadId, agent.addMessage here goes to the BASE agent while
   // CopilotChat renders messages from a different cloned agent and the
   // panel never updates).
-  const [threadId, setThreadId] = useState<string>(() => randomUUID());
-  const { agent } = useAgent({ threadId });
+  const [threadId, setThreadId] = useState<string>(() =>
+    globalThis.crypto.randomUUID(),
+  );
+  const agentId = `dashboard-${threadId}`;
+  const { agent } = useAgent({ agentId, runtimeAgentId: "default", threadId });
   const { copilotkit } = useCopilotKit();
   const [rightTab, setRightTab] = useState("tasks");
 
@@ -44,14 +46,18 @@ export const Dashboard = () => {
   const triggerAgent = useCallback(
     async (prompt: string) => {
       setRightTab("copilot");
-      agent.addMessage({ id: randomUUID(), role: "user", content: prompt });
+      agent.addMessage({
+        id: globalThis.crypto.randomUUID(),
+        role: "user",
+        content: prompt,
+      });
       await copilotkit.runAgent({ agent });
     },
     [agent, copilotkit],
   );
 
   const handleNewConversation = useCallback(() => {
-    setThreadId(randomUUID());
+    setThreadId(globalThis.crypto.randomUUID());
   }, []);
 
   const handleSelectThread = useCallback((id: string) => {
@@ -136,6 +142,7 @@ export const Dashboard = () => {
             >
               <CopilotWorkspace
                 className="flex-1 min-h-0"
+                agentId={agentId}
                 threadId={threadId}
                 onNewConversation={handleNewConversation}
                 onSelectThread={handleSelectThread}

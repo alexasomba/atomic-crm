@@ -11,7 +11,6 @@ import { Separator } from "@/components/ui/separator";
 import { Pencil } from "lucide-react";
 import { Link } from "react-router";
 import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
-import { randomUUID } from "@copilotkit/shared";
 import { Bot, FileSearch, TrendingUp, Info } from "lucide-react";
 
 import MobileHeader from "../layout/MobileHeader";
@@ -207,7 +206,11 @@ const ContactShowContentMobile = () => {
 
 const ContactShowContent = () => {
   const { record, isPending } = useShowContext<Contact>();
-  const { agent } = useAgent();
+  const [threadId, setThreadId] = useState<string>(() =>
+    globalThis.crypto.randomUUID(),
+  );
+  const agentId = `contact-${threadId}`;
+  const { agent } = useAgent({ agentId, runtimeAgentId: "default", threadId });
   const { copilotkit } = useCopilotKit();
   const [asideTab, setAsideTab] = useState("info");
   const { requestCopilotTab } = useDemoContext();
@@ -219,6 +222,14 @@ const ContactShowContent = () => {
   }, [requestCopilotTab]);
 
   const { registerPage } = useCopilotOverlay();
+
+  const handleNewConversation = useCallback(() => {
+    setThreadId(globalThis.crypto.randomUUID());
+  }, []);
+
+  const handleSelectThread = useCallback((id: string) => {
+    setThreadId(id);
+  }, []);
 
   useEffect(() => {
     return registerPage(() => setAsideTab("copilot"));
@@ -241,7 +252,11 @@ const ContactShowContent = () => {
   const triggerAgent = useCallback(
     async (prompt: string) => {
       setAsideTab("copilot");
-      agent.addMessage({ id: randomUUID(), role: "user", content: prompt });
+      agent.addMessage({
+        id: globalThis.crypto.randomUUID(),
+        role: "user",
+        content: prompt,
+      });
       await copilotkit.runAgent({ agent });
     },
     [agent, copilotkit],
@@ -303,7 +318,7 @@ const ContactShowContent = () => {
                 }
                 queryOptions={{
                   // We want infinite pagination so we need to disable placeHolder data to avoid flicker duplicating previous page before showing the new one
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // oxlint-disable-next-line @typescript-eslint/ban-ts-comment
                   //@ts-expect-error
                   placeholderData: null,
                 }}
@@ -344,7 +359,13 @@ const ContactShowContent = () => {
             >
               {/* Action buttons — pinned top, disabled while agent runs */}
               {/* Copilot workspace — inside the aside */}
-              <CopilotWorkspace className="flex-1 min-h-0">
+              <CopilotWorkspace
+                className="flex-1 min-h-0"
+                agentId={agentId}
+                threadId={threadId}
+                onNewConversation={handleNewConversation}
+                onSelectThread={handleSelectThread}
+              >
                 <div className="flex gap-1.5 flex-wrap px-3 py-2 shrink-0">
                   <Button
                     variant="outline"

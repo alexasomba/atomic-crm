@@ -157,14 +157,14 @@ export type ActivityCompanyCreated = {
   type: typeof COMPANY_CREATED;
   company_id: Identifier;
   company: Company;
-  sales_id: Identifier;
+  sales_id?: Identifier | null;
   date: string;
 } & Pick<RaRecord, "id">;
 
 export type ActivityContactCreated = {
   type: typeof CONTACT_CREATED;
-  company_id: Identifier;
-  sales_id?: Identifier;
+  company_id?: Identifier | null;
+  sales_id?: Identifier | null;
   contact: Contact;
   date: string;
 } & Pick<RaRecord, "id">;

@@ -148,7 +148,7 @@ export const FileInput = (props: FileInputProps) => {
   const files = value ? (Array.isArray(value) ? value : [value]) : [];
 
   const onDrop = (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     newFiles: any[],
     rejectedFiles: FileRejection[],
     event: DropEvent,
@@ -168,7 +168,7 @@ export const FileInput = (props: FileInputProps) => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line @typescript-eslint/no-explicit-any
   const onRemove = (file: any) => async () => {
     if (validateFileRemoval) {
       try {
@@ -262,7 +262,7 @@ export const FileInput = (props: FileInputProps) => {
       {children && (
         <div className="previews flex flex-col gap-1">
           {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // oxlint-disable-next-line @typescript-eslint/no-explicit-any
             files.map((file: any, index: number) => (
               <FileInputPreview
                 key={index}
@@ -292,12 +292,12 @@ export type FileInputProps = Omit<InputProps, "type"> & {
   minSize?: DropzoneOptions["minSize"];
   multiple?: DropzoneOptions["multiple"];
   options?: DropzoneOptions;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line @typescript-eslint/no-explicit-any
   onRemove?: (file: any) => void;
   placeholder?: ReactNode;
   removeIcon?: ComponentType<{ className?: string }>;
   inputProps?: DropzoneInputProps & React.ComponentProps<"input">;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line @typescript-eslint/no-explicit-any
   validateFileRemoval?(file: any): boolean | Promise<boolean>;
 };
 
@@ -355,7 +355,7 @@ export const FileInputPreview = (props: FileInputPreviewProps) => {
 };
 
 export interface FileInputPreviewProps extends HTMLAttributes<HTMLDivElement> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line @typescript-eslint/no-explicit-any
   file: any;
   onRemove: () => void;
   removeIcon?: React.ComponentType<{ className?: string }>;

@@ -20,9 +20,8 @@ import {
   useLocation,
   useMatch,
   useNavigate,
-} from "react-router-dom";
+} from "react-router";
 import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
-import { randomUUID } from "@copilotkit/shared";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ActivityLog } from "../activity/ActivityLog";
@@ -92,7 +91,11 @@ const CompanyShowContentMobile = () => {
 
 const CompanyShowContent = () => {
   const { record, isPending } = useShowContext<Company>();
-  const { agent } = useAgent();
+  const [threadId, setThreadId] = useState<string>(() =>
+    globalThis.crypto.randomUUID(),
+  );
+  const agentId = `company-${threadId}`;
+  const { agent } = useAgent({ agentId, runtimeAgentId: "default", threadId });
   const { copilotkit } = useCopilotKit();
   const [asideTab, setAsideTab] = useState("info");
   const navigate = useNavigate();
@@ -121,6 +124,14 @@ const CompanyShowContent = () => {
 
   const { registerPage } = useCopilotOverlay();
 
+  const handleNewConversation = useCallback(() => {
+    setThreadId(globalThis.crypto.randomUUID());
+  }, []);
+
+  const handleSelectThread = useCallback((id: string) => {
+    setThreadId(id);
+  }, []);
+
   useEffect(() => {
     return registerPage(() => setAsideTab("copilot"));
   }, [registerPage]);
@@ -128,7 +139,11 @@ const CompanyShowContent = () => {
   const triggerAgent = useCallback(
     async (prompt: string) => {
       setAsideTab("copilot");
-      agent.addMessage({ id: randomUUID(), role: "user", content: prompt });
+      agent.addMessage({
+        id: globalThis.crypto.randomUUID(),
+        role: "user",
+        content: prompt,
+      });
       await copilotkit.runAgent({ agent });
     },
     [agent, copilotkit],
@@ -245,7 +260,13 @@ const CompanyShowContent = () => {
               className="mt-0 flex-1 min-h-0 flex flex-col"
               forceMount
             >
-              <CopilotWorkspace className="flex-1 min-h-0">
+              <CopilotWorkspace
+                className="flex-1 min-h-0"
+                agentId={agentId}
+                threadId={threadId}
+                onNewConversation={handleNewConversation}
+                onSelectThread={handleSelectThread}
+              >
                 <div className="flex gap-1.5 flex-wrap px-3 py-2 shrink-0">
                   <Button
                     variant="outline"

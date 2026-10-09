@@ -17,9 +17,9 @@ make start-demo       # Start full-stack with FakeRest data provider
 ### Testing and Code Quality
 
 ```bash
-make test             # Run unit tests (vitest)
+make test             # Run unit tests (Vitest)
 make typecheck        # Run TypeScript type checking
-make lint             # Run ESLint and Prettier checks
+make lint             # Run Vite+ lint and format checks
 ```
 
 ### Building
@@ -31,10 +31,10 @@ make build            # Build production bundle (runs tsc + vite build)
 ### Database Management
 
 ```bash
-npx supabase migration new <name>  # Create new migration
-npx supabase migration up          # Apply migrations locally
-npx supabase db push               # Push migrations to remote
-npx supabase db reset              # Reset local database (destructive)
+pnpm dlx supabase migration new <name>  # Create new migration
+pnpm dlx supabase migration up          # Apply migrations locally
+pnpm dlx supabase db push               # Push migrations to remote
+pnpm dlx supabase db reset              # Reset local database (destructive)
 ```
 
 ### Registry (Shadcn Components)
@@ -154,7 +154,7 @@ The project uses TypeScript path aliases configured in `tsconfig.json` and `comp
 ### Adding Custom Fields
 
 When modifying contact or company data structures:
-1. Create a migration: `npx supabase migration new <name>`
+1. Create a migration: `pnpm dlx supabase migration new <name>`
 2. Update the sample CSV: `src/components/atomic-crm/contacts/contacts_export.csv`
 3. Update the import function: `src/components/atomic-crm/contacts/useContactImport.tsx`
 4. If using FakeRest, update data generators in `src/components/atomic-crm/providers/fakerest/dataGenerator/`
@@ -179,6 +179,8 @@ Import `test-data/contacts.csv` via the Contacts page → Import button.
 - Inbucket (email testing): http://localhost:54324/
 
 ## Important Notes
+
+- The monorepo uses pnpm workspaces and Vite+; use the pinned Node version in `.node-version` (Node 22) and run commands from the repository root.
 
 - The codebase is intentionally small (~15,000 LOC in `src/components/atomic-crm`) for easy customization
 - Modify files in `src/components/admin` and `src/components/ui` directly - they are meant to be customized

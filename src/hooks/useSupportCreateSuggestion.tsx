@@ -74,7 +74,7 @@ export const useSupportCreateSuggestion = <T = unknown,>(
             : createLabel,
       );
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     handleChange: async (eventOrValue: MouseEvent | any) => {
       const value = eventOrValue?.target?.value || eventOrValue;
       const finalValue = Array.isArray(value) ? [...value].pop() : value;
@@ -116,7 +116,7 @@ export const useSupportCreateSuggestion = <T = unknown,>(
         </CreateSuggestionContext.Provider>
       ) : null,
     getOptionDisabled: (option) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // oxlint-disable-next-line @typescript-eslint/no-explicit-any
       (option as any)?.id === createHintValue || option === createHintValue,
   };
 };
@@ -144,7 +144,7 @@ export interface UseSupportCreateValue<T = unknown> {
   createHintId: string;
   getCreateItem: (filterValue?: string) => {
     id: Identifier;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   };
   handleChange: (eventOrValue: ChangeEvent | T) => Promise<void>;
@@ -184,5 +184,5 @@ export const useCreateSuggestionContext = () => {
 /**
  * @deprecated Use `OnCreateHandler` from "ra-core" when available.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line @typescript-eslint/no-explicit-any
 export type OnCreateHandler = (filter?: string) => any | Promise<any>;

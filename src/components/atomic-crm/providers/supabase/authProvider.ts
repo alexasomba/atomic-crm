@@ -50,6 +50,15 @@ export async function getIsInitialized() {
   return isInitialized;
 }
 
+export function setIsInitializedCache(value: boolean) {
+  const storage = getLocalStorage();
+  if (value) {
+    storage?.setItem(IS_INITIALIZED_CACHE_KEY, "true");
+  } else {
+    storage?.removeItem(IS_INITIALIZED_CACHE_KEY);
+  }
+}
+
 const getSale = async () => {
   const storage = getLocalStorage();
   const cachedValue = storage?.getItem(CURRENT_SALE_CACHE_KEY);

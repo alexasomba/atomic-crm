@@ -18,7 +18,7 @@ import type {
 import type { ConfigurationContextValue } from "../../root/ConfigurationContext";
 import { getActivityLog } from "../commons/activity";
 import { ATTACHMENTS_BUCKET } from "../commons/attachments";
-import { getIsInitialized } from "./authProvider";
+import { getIsInitialized, setIsInitializedCache } from "./authProvider";
 import { supabase } from "./supabase";
 
 if (import.meta.env.VITE_SUPABASE_URL === undefined) {
@@ -94,7 +94,7 @@ const dataProviderWithCustomMethods = {
     }
 
     // Update the is initialized cache
-    getIsInitialized._is_initialized_cache = true;
+    setIsInitializedCache(true);
 
     return {
       id: response.data.user.id,

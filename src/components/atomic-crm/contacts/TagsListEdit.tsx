@@ -33,8 +33,10 @@ export const TagsListEdit = () => {
   );
   const { data: tags, isPending: isPendingRecordTags } = useGetMany<Tag>(
     "tags",
-    { ids: record?.tags },
-    { enabled: record && record.tags && record.tags.length > 0 },
+    {
+      ids: record?.tags?.filter((id): id is number => typeof id === "number"),
+    },
+    { enabled: record?.tags?.some((id) => typeof id === "number") ?? false },
   );
   const [update] = useUpdate<Contact>();
 

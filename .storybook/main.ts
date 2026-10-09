@@ -1,5 +1,8 @@
 import type { StorybookConfig } from "@storybook/react-vite";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const storybookDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.stories.@(ts|tsx)"],
@@ -10,10 +13,16 @@ const config: StorybookConfig = {
   },
   viteFinal: async (config) => {
     config.resolve ??= {};
-    config.resolve.alias = {
-      ...(config.resolve.alias ?? {}),
-      "@": path.resolve(__dirname, "../src"),
-    };
+    const currentAliases = config.resolve.alias;
+    const aliases = Array.isArray(currentAliases)
+      ? currentAliases
+      : Object.entries(currentAliases ?? {}).map(([find, value]) =>
+          typeof value === "string" ? { find, replacement: value } : value,
+        );
+    config.resolve.alias = [
+      ...aliases,
+      { find: "@", replacement: path.resolve(storybookDirectory, "../src") },
+    ];
     return config;
   },
 };

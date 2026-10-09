@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* oxlint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from "react";
 import { useEffect, useState, isValidElement, Children } from "react";
 import type { InferredTypeMap } from "ra-core";
@@ -81,7 +81,7 @@ const ShowViewGuesser = (props: ShowGuesserProps) => {
         )
         .sort();
 
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.log(
         `Guessed Show:
 

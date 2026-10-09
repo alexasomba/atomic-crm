@@ -17,52 +17,52 @@ We're going to add a custom field to the Contacts table: a "Referred By" text fi
 3. Click on the `contacts` table in the list of tables.
 4. Click on the "New Column" button to add a new column to the table.
 
-    ![Supabase Tables](../../images/supabase-tables.png)
+   ![Supabase Tables](../../images/supabase-tables.png)
 
 5. In the "Add new column to contacts" dialog, enter the following details:
-    - Name: `referred_by`
-    - Type: `text`
-    - Default value: leave empty
-    - Allow Nullable: checked
+   - Name: `referred_by`
+   - Type: `text`
+   - Default value: leave empty
+   - Allow Nullable: checked
 6. Finally, click on the "Save" button to add the new column to the table.
 
-    ![Supabase New Column](../../images/supabase-new-column.png)
+   ![Supabase New Column](../../images/supabase-new-column.png)
 
 Atomic CRM uses views to simplify the queries. You need to update the `contacts_summary` view to include the new `referred_by` field.
 
 1. Click on the "SQL Editor" menu in the left sidebar.
 2. Enter the following SQL query to update the `contacts_summary` view:
 
-    ```sql
-    drop view "public"."contacts_summary";
-    create view "public"."contacts_summary"
-        with (security_invoker=on)
-        as
-    select
-        co.*,
-        c.name as company_name,
-        count(distinct t.id) as nb_tasks
-    from
-        "public"."contacts" co
-    left join
-        "public"."tasks" t on co.id = t.contact_id
-    left join
-        "public"."companies" c on co.company_id = c.id
-    group by
-        co.id, c.name;
-    ```
+   ```sql
+   drop view "public"."contacts_summary";
+   create view "public"."contacts_summary"
+       with (security_invoker=on)
+       as
+   select
+       co.*,
+       c.name as company_name,
+       count(distinct t.id) as nb_tasks
+   from
+       "public"."contacts" co
+   left join
+       "public"."tasks" t on co.id = t.contact_id
+   left join
+       "public"."companies" c on co.company_id = c.id
+   group by
+       co.id, c.name;
+   ```
 
-    ![Supabase SQL Editor](../../images/supabase-sql-editor.png)
+   ![Supabase SQL Editor](../../images/supabase-sql-editor.png)
 
 3. Click on the "Run" button to execute the SQL command. You will need to confirm the action since it will drop and recreate the view.
 
 4. Create a [migration](../migrations/) for these schema changes, to allow them to be replicated in production. Run the following command in your terminal:
 
-    ```sh
-    npx supabase db diff -f create_referred_by
-    ```
+   ```sh
+   pnpm dlx supabase db diff -f create_referred_by
+   ```
 
-    This will create a new migration file in the `supabase/migrations` folder. Supabase will automatically apply this migration when you deploy to production.
+   This will create a new migration file in the `supabase/migrations` folder. Supabase will automatically apply this migration when you deploy to production.
 
 That's it! You've just added a custom field to the Contacts entity. Supabase automatically updates the API to include the new field.
 
@@ -110,10 +110,7 @@ const ContactMiscInputs = () => {
   return (
     <div className="flex flex-col gap-4">
       <h6 className="text-lg font-semibold">Misc</h6>
-      <TextInput
-        source="referred_by"
-        helperText={false}
-      />
+      <TextInput source="referred_by" helperText={false} />
       <TextInput
         source="background"
         label="Background info (bio, how you met, etc)"

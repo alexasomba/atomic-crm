@@ -29,8 +29,8 @@ export function useUpdateRenewalForecast() {
         .describe("Proposed new renewal probability (0-100)"),
       reason: z.string().describe("Reason for the proposed change"),
     }),
-    render: ({ args, respond, status }) => (
-      <ForecastCard args={args} respond={respond} status={status} />
+    render: ({ args, respond }) => (
+      <ForecastCard args={args} respond={respond} />
     ),
   });
 }
@@ -46,10 +46,9 @@ interface ForecastCardProps {
     reason: string;
   }>;
   respond: ((response: unknown) => void) | undefined;
-  status: string;
 }
 
-function ForecastCard({ args, respond, status }: ForecastCardProps) {
+function ForecastCard({ args, respond }: ForecastCardProps) {
   const { data: identity } = useGetIdentity({ staleTime: 0 });
   const isAdmin = !!(identity as { administrator?: boolean })?.administrator;
 

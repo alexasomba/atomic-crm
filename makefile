@@ -4,105 +4,104 @@ help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 install: package.json ## install dependencies
-	npm install;
-	@(cd server && npm install)
+	pnpm install
 
 start-supabase: ## start supabase locally
-	npx supabase start
+	pnpm dlx supabase start
 
 start-supabase-functions: ## start the supabase Functions watcher
-	npx supabase functions serve
+	pnpm dlx supabase functions serve
 
 supabase-migrate-database: ## apply the migrations to the database
-	npx supabase migration up
+	pnpm dlx supabase migration up
 
 supabase-reset-database: ## reset (and clear!) the database
-	npx supabase db reset
+	pnpm dlx supabase db reset
 
 start-app: ## start the app locally
-	npm run dev
+	pnpm run dev
 
 install-server: ## install server dependencies
-	@(cd server && npm install)
+	pnpm install --filter atomic-crm-server
 
 start-server: ## start the CopilotKit runtime server
-	@(cd server && npm run dev)
+	pnpm --filter atomic-crm-server run dev
 
 start-mcp: ## start the MCP contract analyzer server
-	@(cd server && npm run dev:mcp)
+	pnpm --filter atomic-crm-server run dev:mcp
 
 start: start-supabase start-app ## start the stack locally
 
 start-demo: ## start the app locally in demo mode
-	npm run dev:demo
+	pnpm run dev:demo
 
 start-all: ## start everything (app + CopilotKit server + MCP server)
-	npm run dev:all
+	pnpm run dev:all
 
 stop-supabase: ## stop local supabase
-	npx supabase stop
+	pnpm dlx supabase stop
 
 stop: stop-supabase ## stop the stack locally
 
 build: ## build the app
-	npm run build
+	pnpm run build
 
 build-demo: ## build the app in demo mode
-	npm run build:demo
+	pnpm run build:demo
 
 prod-start: build supabase-deploy
-	open http://127.0.0.1:3000 && npx serve -l tcp://127.0.0.1:3000 dist
+	open http://127.0.0.1:3000 && pnpm exec vp preview --host 127.0.0.1 --port 3000
 
 prod-deploy: build supabase-deploy
-	npm run ghpages:deploy
+	pnpm run ghpages:deploy
 
 supabase-remote-init:
-	npm run supabase:remote:init
+	pnpm run supabase:remote:init
 	$(MAKE) supabase-deploy
 
 supabase-deploy:
-	npx supabase db push
-	npx supabase functions deploy
+	pnpm dlx supabase db push
+	pnpm dlx supabase functions deploy
 
 test:
-	npm test
+	pnpm test
 
 test-ci:
-	CI=1 npm test
+	CI=1 pnpm test
 
 lint:
-	npm run lint
-	npm run prettier
+	pnpm run lint
+	pnpm run prettier
 
 publish:
-	npm publish
+	pnpm publish
 
 typecheck:
-	npm run typecheck
+	pnpm run typecheck
 
 doc-install:
-	@(cd doc && npm install)
+	pnpm install
 
 doc: doc-dev
 
 doc-dev:
-	@(cd doc && npm run dev)
+	pnpm --filter atomic-crm-doc run dev
 
 doc-build:
-	@(cd doc && npm run build)
+	pnpm --filter atomic-crm-doc run build
 
 doc-preview: doc-build
-	@(cd doc && npm run preview)
+	pnpm --filter atomic-crm-doc run preview
 
 doc-deploy:
-	@(cd doc && npx gh-pages -b gh-pages -d dist -e doc -m "Deploy docs" --remove doc)
+	pnpm exec gh-pages -b gh-pages -d doc/dist -e doc -m "Deploy docs" --remove doc
 
 registry-build: ## build the shadcn registry
-	npm run registry:build
+	pnpm run registry:build
 
 registry-deploy: registry-build ## Deploy the shadcn registry (Automatically done by CI/CD pipeline)
-	@(cd public/r && npx gh-pages -b gh-pages -d ./ -s atomic-crm.json -e r -m "Deploy registry" --remove r)
+	pnpm exec gh-pages -b gh-pages -d public/r -s atomic-crm.json -e r -m "Deploy registry" --remove r
 
 registry-gen: ## Generate the shadcn registry (ran automatically by a pre-commit hook)
-	npm run registry:gen
-	npx prettier --config ./.prettierrc.json --write "registry.json"
+	pnpm run registry:gen
+	pnpm exec vp fmt --write registry.json

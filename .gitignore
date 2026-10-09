@@ -7,6 +7,7 @@
 
 # dependencies
 /node_modules
+**/node_modules/
 
 # testing
 /coverage
@@ -30,6 +31,7 @@ supabase/.branches
 supabase/.temp
 
 dist/
+/storybook-static/
 /lib/
 .env
 *storybook.log
@@ -46,3 +48,4 @@ docs/superpowers
 docs/loom-script.md
 docs/manifesto.md
 .worktrees/
+.vitest/

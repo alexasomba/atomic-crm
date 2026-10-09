@@ -8,7 +8,6 @@ import {
 } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
-import { randomUUID } from "@copilotkit/shared";
 import { useDataProvider } from "ra-core";
 import { DemoContext, type DemoContextValue } from "./DemoContext";
 import { useDemoStateMachine } from "./useDemoStateMachine";
@@ -123,7 +122,11 @@ function DemoActiveProvider({
 
   const triggerAgent = useCallback(
     async (prompt: string) => {
-      agent.addMessage({ id: randomUUID(), role: "user", content: prompt });
+      agent.addMessage({
+        id: globalThis.crypto.randomUUID(),
+        role: "user",
+        content: prompt,
+      });
       await copilotkit.runAgent({ agent });
     },
     [agent, copilotkit],
@@ -247,7 +250,7 @@ function DemoActiveProvider({
       hasInitNavigated.current = true;
       navigate("/");
     }
-  }, [contactId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [contactId]); // oxlint-disable-line react-hooks/exhaustive-deps
 
   // requestCopilotTab: true when we are about to trigger agent (S2/S3/S4 entry)
   const requestCopilotTab =

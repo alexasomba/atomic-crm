@@ -123,10 +123,7 @@ Rules for persona narration:
 - Be concise and actionable.`,
 });
 
-const runtime = new CopilotRuntime({
-  intelligence,
-  identifyUser: () => ({ id: "jordan-beamson", name: "Jordan Beamson" }),
-  // identifyUser: () => ({ id: process.env.INTELLIGENCE_USER_ID ?? "crm-user" }),
+const runtimeOptions = {
   licenseToken: process.env.COPILOTKIT_LICENSE_TOKEN,
   agents: { default: builtInAgent },
   // MCP Apps middleware — contract analyzer available via MCP protocol.
@@ -141,7 +138,15 @@ const runtime = new CopilotRuntime({
       },
     ],
   },
-});
+};
+const runtime = intelligence
+  ? new CopilotRuntime({
+      ...runtimeOptions,
+      intelligence,
+      identifyUser: () => ({ id: "jordan-beamson", name: "Jordan Beamson" }),
+      // identifyUser: () => ({ id: process.env.INTELLIGENCE_USER_ID ?? "crm-user" }),
+    })
+  : new CopilotRuntime(runtimeOptions);
 
 // Main Hono app
 const app = new Hono();

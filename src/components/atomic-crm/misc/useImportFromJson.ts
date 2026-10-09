@@ -591,7 +591,7 @@ export const useImportFromJson = (): [
     };
 
     let currentTask: Promise<any> | null = null;
-    let currentBatch: Array<Promise<void>> = [];
+    let currentBatch: Array<Promise<unknown>> = [];
     const BATCH_SIZE = 50;
 
     const parser = new JSONParser({

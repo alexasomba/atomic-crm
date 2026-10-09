@@ -24,26 +24,26 @@ If you already created a project on [supabase.com](https://supabase.com/), you c
 First, log into your Supabase account:
 
 ```sh
-npx supabase login
+pnpm dlx supabase login
 ```
 
 Now, link the local project to the Supabase instance. You'll be asked to enter the database password.
 
 ```sh
-npx supabase link --project-ref ********************
+pnpm dlx supabase link --project-ref ********************
 ```
 
 Set up secrets for the Supabase instance (follow this [guide](https://supabase.com/docs/guides/api/api-keys#where-to-find-keys) to find your publishable key):
 
 ```sh
-npx supabase secrets set SB_PUBLISHABLE_KEY=<publishable_key>
+pnpm dlx supabase secrets set SB_PUBLISHABLE_KEY=<publishable_key>
 ```
 
 Then, apply the migrations and deploy the edge functions:
 
 ```sh
-npx supabase db push
-npx supabase functions deploy
+pnpm dlx supabase db push
+pnpm dlx supabase functions deploy
 ```
 
 Finally, add a `.env.production.local` file in the root directory with your remote Supabase credentials:

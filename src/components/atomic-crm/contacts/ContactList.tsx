@@ -133,15 +133,14 @@ const exporter: Exporter<Contact> = async (records, fetchRelatedRecords) => {
   const tags = await fetchRelatedRecords<Tag>(records, "tags", "tags");
 
   const contacts = records.map((contact) => {
+    const sale = contact.sales_id == null ? undefined : sales[contact.sales_id];
     const exportedContact = {
       ...contact,
       company:
         contact.company_id != null
           ? companies[contact.company_id].name
           : undefined,
-      sales: `${sales[contact.sales_id].first_name} ${
-        sales[contact.sales_id].last_name
-      }`,
+      sales: sale ? `${sale.first_name} ${sale.last_name}` : undefined,
       tags: contact.tags.map((tagId) => tags[tagId].name).join(", "),
       email_work: contact.email_jsonb?.find((email) => email.type === "Work")
         ?.email,

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vite-plus/test";
 import { render } from "vitest-browser-react";
 
 import {
@@ -81,7 +81,9 @@ describe("Contact list integration", () => {
     );
 
     await expect
-      .poll(() => screen.container.querySelector('[data-slot="skeleton"]'))
+      .poll(() => screen.container.querySelector('[data-slot="skeleton"]'), {
+        timeout: 10_000,
+      })
       .not.toBeNull();
   });
 

@@ -19,7 +19,7 @@
       "dependencies": [
         "@hello-pangea/dnd@^18.0.1",
         "@nivo/bar@^0.99.0",
-        "faker@^5.5.3",
+        "@faker-js/faker@^10.6.0",
         "jsonexport@^3.2.0",
         "papaparse@^5.5.3",
         "ra-supabase-core@^3.5.1",

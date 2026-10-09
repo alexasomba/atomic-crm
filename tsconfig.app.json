@@ -24,13 +24,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "types": ["vitest/globals", "faker"],
-
-    // Shadcn
-    "baseUrl": ".",
+    "types": ["vitest/globals"],
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "demo", "vitest.d.ts"]
+  "include": ["src", "demo", "test", "vitest.d.ts"]
 }

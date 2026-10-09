@@ -1,10 +1,4 @@
 {
-  "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "git add"
-  ],
-  "*.{json,css,md}": [
-      "prettier",
-      "git add"
-  ]
+  "*.{js,jsx,ts,tsx}": ["vp lint --fix", "git add"],
+  "*.{json,css,md}": ["vp fmt", "git add"]
 }

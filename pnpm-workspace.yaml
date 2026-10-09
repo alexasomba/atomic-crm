@@ -1,0 +1,30 @@
+packages:
+  - server
+  - doc
+  - packages/license-verifier
+
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@1.1.0
+  vitest: 5.0.3
+  vite-plus: 1.1.0
+  "@vitest/browser-playwright": 5.0.3
+overrides:
+  "@copilotkit/license-verifier": "workspace:*"
+  "decode-uri-component": 0.5.0
+  katex: 0.18.7
+  postcss-nested: 7.0.2
+  postcss-selector-parser: 7.1.6
+  undici@5.29.0: 6.29.0
+  vite@*: "catalog:"
+  vitest@*: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"
+    vite-plus: "1.1.0"
+allowBuilds:
+  esbuild: true
+  "@scarf/scarf": false
