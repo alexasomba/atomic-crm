@@ -1,12 +1,4 @@
-import {
-  company as fakerCompany,
-  internet,
-  lorem,
-  name,
-  phone,
-  random,
-} from "faker/locale/en_US";
-
+import { faker } from "@faker-js/faker";
 import { defaultNoteStatuses } from "../../../root/defaultConfiguration";
 import { contactGender } from "../../../contacts/contactGender";
 import type { Company, Contact } from "../../../types";
@@ -23,7 +15,10 @@ const maxContacts = {
 };
 
 const getRandomContactDetailsType = () =>
-  random.arrayElement(["Work", "Home", "Other"]) as "Work" | "Home" | "Other";
+  faker.helpers.arrayElement(["Work", "Home", "Other"]) as
+    | "Work"
+    | "Home"
+    | "Other";
 
 export const generateContacts = (db: Db, size = 500): Required<Contact>[] => {
   const nbAvailblePictures = 223;
@@ -32,22 +27,27 @@ export const generateContacts = (db: Db, size = 500): Required<Contact>[] => {
   return Array.from(Array(size).keys()).map((id) => {
     const has_avatar =
       weightedBoolean(25) && numberOfContacts < nbAvailblePictures;
-    const gender = random.arrayElement(contactGender).value;
-    const first_name = name.firstName(gender as any);
-    const last_name = name.lastName();
+    const gender = faker.helpers.arrayElement(contactGender).value;
+    const firstNameGender =
+      gender === "female" || gender === "male" ? gender : undefined;
+    const first_name = faker.person.firstName(firstNameGender);
+    const last_name = faker.person.lastName();
     const email_jsonb = [
       {
-        email: internet.email(first_name, last_name),
+        email: faker.internet.email({
+          firstName: first_name,
+          lastName: last_name,
+        }),
         type: getRandomContactDetailsType(),
       },
     ];
     const phone_jsonb = [
       {
-        number: phone.phoneNumber(),
+        number: faker.phone.number(),
         type: getRandomContactDetailsType(),
       },
       {
-        number: phone.phoneNumber(),
+        number: faker.phone.number(),
         type: getRandomContactDetailsType(),
       },
     ];
@@ -58,7 +58,7 @@ export const generateContacts = (db: Db, size = 500): Required<Contact>[] => {
           ".jpeg"
         : undefined,
     };
-    const title = fakerCompany.bsAdjective();
+    const title = faker.company.buzzAdjective();
 
     if (has_avatar) {
       numberOfContacts++;
@@ -67,7 +67,7 @@ export const generateContacts = (db: Db, size = 500): Required<Contact>[] => {
     // choose company with people left to know
     let company: Required<Company>;
     do {
-      company = random.arrayElement(db.companies);
+      company = faker.helpers.arrayElement(db.companies);
     } while (company.nb_contacts >= maxContacts[company.size]);
     company.nb_contacts++;
 
@@ -84,15 +84,15 @@ export const generateContacts = (db: Db, size = 500): Required<Contact>[] => {
       company_name: company.name,
       email_jsonb,
       phone_jsonb,
-      background: lorem.sentence(),
-      acquisition: random.arrayElement(["inbound", "outbound"]),
+      background: faker.lorem.sentence(),
+      acquisition: faker.helpers.arrayElement(["inbound", "outbound"]),
       avatar,
       first_seen: first_seen,
       last_seen: last_seen,
       has_newsletter: weightedBoolean(30),
-      status: random.arrayElement(defaultNoteStatuses).value,
-      tags: random
-        .arrayElements(db.tags, random.arrayElement([0, 0, 0, 1, 1, 2]))
+      status: faker.helpers.arrayElement(defaultNoteStatuses).value,
+      tags: faker.helpers
+        .arrayElements(db.tags, faker.helpers.arrayElement([0, 0, 0, 1, 1, 2]))
         .map((tag) => tag.id), // finalize
       sales_id: company.sales_id,
       nb_tasks: 0,

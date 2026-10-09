@@ -1,4 +1,4 @@
-import { random } from "faker/locale/en_US";
+import { faker } from "@faker-js/faker";
 import type { ContactInsights } from "../../../types";
 import type { Db } from "./types";
 
@@ -67,18 +67,27 @@ export const generateContactInsights = (db: Db): ContactInsights[] =>
   db.contacts.map((contact) => ({
     id: contact.id,
     contact_id: contact.id,
-    lifecycle_stage: random.arrayElement(["Lead", "Qualified", "Customer"]),
-    lead_score: random.number({ min: 10, max: 99 }),
+    lifecycle_stage: faker.helpers.arrayElement([
+      "Lead",
+      "Qualified",
+      "Customer",
+    ]),
+    lead_score: faker.number.int({ min: 10, max: 99 }),
     last_activity_date: contact.last_seen,
-    last_activity_type: random.arrayElement(["Email", "Call", "Note", "Task"]),
+    last_activity_type: faker.helpers.arrayElement([
+      "Email",
+      "Call",
+      "Note",
+      "Task",
+    ]),
     renewal_amount: null,
     renewal_date: null,
     renewal_forecast_category: null,
     renewal_probability: null,
     contract_attachment_id: null,
     contract_text: null,
-    economic_buyer_identified: random.boolean(),
-    budget_confirmed: random.boolean(),
+    economic_buyer_identified: faker.datatype.boolean(),
+    budget_confirmed: faker.datatype.boolean(),
     legal_review_status: "Not Started",
     security_review_status: "Not Started",
     champion_confidence: "Medium",

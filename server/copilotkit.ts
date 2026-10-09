@@ -161,12 +161,6 @@ const streamRun = async (request: Request, env: Env, input: RunInput) => {
       for await (const event of response) {
         if (abortController.signal.aborted) break;
         if (!shouldForwardCopilotEvent(event)) continue;
-        if (
-          event.type === EventType.RUN_STARTED ||
-          event.type === EventType.RUN_FINISHED
-        ) {
-          continue;
-        }
         await writer.write(encode(encoder, event));
       }
       if (!abortController.signal.aborted) {

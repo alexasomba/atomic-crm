@@ -24,5 +24,9 @@
   "devDependencies": {
     "@types/papaparse": "catalog:",
     "tsx": "catalog:"
-  }
+  },
+  "engines": {
+    "node": ">=22.22.2"
+  },
+  "packageManager": "pnpm@12.10.1"
 }

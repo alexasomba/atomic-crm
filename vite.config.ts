@@ -8,6 +8,9 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ["@floating-ui/utils/dom", "@tanstack/query-core"],
+  },
   run: {
     cache: {
       scripts: true,
@@ -1447,6 +1450,7 @@ export default defineConfig({
       registerType: "autoUpdate",
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
+        globIgnores: ["stats.html"],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MiB
       },
       manifest: false, // Use existing manifest.json from public/
@@ -1472,7 +1476,7 @@ export default defineConfig({
     },
   },
   resolve: {
-    preserveSymlinks: true,
+    preserveSymlinks: false,
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@segment/analytics-node": path.resolve(
