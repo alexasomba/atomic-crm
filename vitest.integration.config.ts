@@ -12,7 +12,9 @@ export default defineConfig({
       "jsonexport/dist",
       "lodash",
       "papaparse",
-      "@tanstack/query-core",
+      "@base-ui/react > use-sync-external-store/shim",
+      "@base-ui/react > use-sync-external-store/shim/with-selector",
+      "@tanstack/react-query > @tanstack/query-core",
       "@tanstack/react-router",
       "@tanstack/router-core",
       "@tanstack/history",
@@ -20,6 +22,7 @@ export default defineConfig({
       "seroval",
       "seroval-plugins",
     ],
+    exclude: ["@base-ui/react"],
   },
   test: {
     globals: true,
@@ -34,7 +37,7 @@ export default defineConfig({
     },
   },
   resolve: {
-    preserveSymlinks: true,
+    preserveSymlinks: false,
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },

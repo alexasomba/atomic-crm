@@ -78,7 +78,7 @@ jobs:
               run: CI=1 pnpm exec vp run test:node
 
             - name: "\U0001F50E Integration Tests"
-              run: CI=1 pnpm exec vp run test:integration -- --run
+              run: CI=1 pnpm run test:integration
 
 
     build:

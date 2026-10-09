@@ -5,7 +5,7 @@
   "scripts": {
     "test:node": "vp test run --config vitest.node.config.ts",
     "test:worker": "vp test run --config vitest.node.config.ts test/cloudflare-worker.test.ts",
-    "test:integration": "vp test --config vitest.integration.config.ts",
+    "test:integration": "vp test --config vitest.integration.config.ts --run",
     "test:tanstack": "VITE_ROUTER=tanstack vp test --run",
     "test:integration:tanstack": "VITE_ROUTER=tanstack vp test --config vitest.integration.config.ts --run",
     "dev:demo": "vp dev --config vite.demo.config.ts",
