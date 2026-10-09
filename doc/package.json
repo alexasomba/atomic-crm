@@ -18,7 +18,10 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "gh-pages": "^6.3.0"
+    "gh-pages": "6.1.1"
+  },
+  "overrides": {
+    "postcss-nested": "7.0.2"
   },
   "engines": {
     "node": ">=22.22.2"

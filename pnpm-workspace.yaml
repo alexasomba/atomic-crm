@@ -427,7 +427,7 @@ catalog:
   "concurrently": "^10.0.6"
   "eslint-plugin-storybook": "^10.6.1"
   "expect-type": "^1.4.0"
-  "gh-pages": "^6.3.0"
+  "gh-pages": "6.1.1"
   "glob": "^13.0.6"
   "graphql": "^17.0.2"
   "hasown": "2.0.4"
