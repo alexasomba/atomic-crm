@@ -4,11 +4,11 @@ help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 install: package.json ## install dependencies
-	vp install
+	pnpm install
 	@(cd server && npm install)
 
 start-app: ## start the app locally
-	vp run dev:cloudflare
+	pnpm exec vp run dev:cloudflare
 
 install-server: ## install server dependencies
 	@(cd server && npm install)
@@ -22,19 +22,19 @@ start-mcp: ## start the MCP contract analyzer server
 start: start-app ## start the stack locally
 
 start-demo: ## start the app locally in demo mode
-	vp run dev:demo
+	pnpm exec vp run dev:demo
 
 start-all: ## start everything (app + Cloudflare Worker + MCP server)
-	vp run dev:all
+	pnpm exec vp run dev:all
 
 stop: ## stop the local stack (Ctrl-C terminates vp run dev:cloudflare)
 	@true
 
 build: ## build the app
-	vp build
+	pnpm exec vp build
 
 build-demo: ## build the app in demo mode
-	vp run build:demo
+	pnpm exec vp run build:demo
 
 prod-start: build
 	open http://127.0.0.1:3000 && npx serve -l tcp://127.0.0.1:3000 dist
@@ -44,19 +44,19 @@ prod-deploy: build
 
 
 test:
-	vp test
+	pnpm exec vp test
 
 test-ci:
-	CI=1 vp test
+	CI=1 pnpm exec vp test
 
 lint:
-	vp check
+	pnpm exec vp check
 
 publish:
 	npm publish
 
 typecheck:
-	vp check --no-fmt --no-lint
+	pnpm exec vp check --no-fmt --no-lint
 
 doc-install:
 	@(cd doc && npm install)
@@ -76,11 +76,11 @@ doc-deploy:
 	@(cd doc && npx gh-pages -b gh-pages -d dist -e doc -m "Deploy docs" --remove doc)
 
 registry-build: ## build the shadcn registry
-	vp run registry:build
+	pnpm exec vp run registry:build
 
 registry-deploy: registry-build ## Deploy the shadcn registry (Automatically done by CI/CD pipeline)
 	@(cd public/r && npx gh-pages -b gh-pages -d ./ -s atomic-crm.json -e r -m "Deploy registry" --remove r)
 
 registry-gen: ## Generate the shadcn registry (ran automatically by a pre-commit hook)
-	vp run registry:gen
-	vp fmt registry.json --write
+	pnpm exec vp run registry:gen
+	pnpm exec vp fmt registry.json --write

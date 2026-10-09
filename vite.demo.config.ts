@@ -44,7 +44,7 @@ export default defineConfig({
     },
   },
   resolve: {
-    preserveSymlinks: true,
+    preserveSymlinks: false,
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@segment/analytics-node": path.resolve(
