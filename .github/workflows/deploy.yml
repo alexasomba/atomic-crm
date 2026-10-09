@@ -65,6 +65,14 @@ jobs:
               with:
                   persist-credentials: false
 
+            - name: "⚙️ Setup node"
+              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+              with:
+                  node-version: 22.23.3
+
+            - name: "📦 Install workspace dependencies"
+              run: corepack enable && pnpm install --frozen-lockfile
+
             - name: "⚙️ Setup git"
               run: |
                 git remote set-url origin "https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}"
@@ -79,10 +87,10 @@ jobs:
                   name: doc-artifacts
 
             - name: "\U0001F4E1 Deploy Registry"
-              run: cd public/r && npx gh-pages -b gh-pages -d ./ -s atomic-crm.json -e r -m "Deploy registry" --remove r
+              run: cd public/r && pnpm exec gh-pages -b gh-pages -d ./ -s atomic-crm.json -e r -m "Deploy registry" --remove r
 
             - name: "\U0001F4E1 Deploy Documentation"
-              run: cd doc && npx gh-pages -b gh-pages -d dist -e doc -m "Deploy docs" --remove doc
+              run: cd doc && pnpm exec gh-pages -b gh-pages -d dist -e doc -m "Deploy docs" --remove doc
 
     # ─── Demo ────────────────────────────────────────────────────────
     build-demo:
@@ -142,6 +150,9 @@ jobs:
               with:
                   node-version: 22.23.3
 
+            - name: "📦 Install workspace dependencies"
+              run: corepack enable && pnpm install --frozen-lockfile
+
             - name: "⚙️ Setup git"
               run: |
                   echo "Deploying to pages to $DEMO_DEPLOY_REPOSITORY"
@@ -160,7 +171,7 @@ jobs:
                   path: dist
 
             - name: "\U0001F4E1 Deploy GitHub pages"
-              run: npx gh-pages --remote production -d dist -b "${DEPLOY_BRANCH:-gh-pages}"
+              run: pnpm exec gh-pages --remote production -d dist -b "${DEPLOY_BRANCH:-gh-pages}"
               env:
                   GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN || secrets.GITHUB_TOKEN }}
                   DEPLOY_BRANCH: ${{ vars.DEPLOY_BRANCH }}

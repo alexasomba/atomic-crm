@@ -40,7 +40,7 @@ prod-start: build
 	open http://127.0.0.1:3000 && npx serve -l tcp://127.0.0.1:3000 dist
 
 prod-deploy: build
-	npm run ghpages:deploy
+	pnpm run ghpages:deploy
 
 
 test:
@@ -73,13 +73,13 @@ doc-preview: doc-build
 	@(cd doc && npm run preview)
 
 doc-deploy:
-	@(cd doc && npx gh-pages -b gh-pages -d dist -e doc -m "Deploy docs" --remove doc)
+	@(cd doc && pnpm exec gh-pages -b gh-pages -d dist -e doc -m "Deploy docs" --remove doc)
 
 registry-build: ## build the shadcn registry
 	pnpm exec vp run registry:build
 
 registry-deploy: registry-build ## Deploy the shadcn registry (Automatically done by CI/CD pipeline)
-	@(cd public/r && npx gh-pages -b gh-pages -d ./ -s atomic-crm.json -e r -m "Deploy registry" --remove r)
+	@(cd public/r && pnpm exec gh-pages -b gh-pages -d ./ -s atomic-crm.json -e r -m "Deploy registry" --remove r)
 
 registry-gen: ## Generate the shadcn registry (ran automatically by a pre-commit hook)
 	pnpm exec vp run registry:gen
