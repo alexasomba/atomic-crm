@@ -117,7 +117,7 @@ const ImageEditorDialog = (props: ImageEditorDialogProps) => {
       props.onClose();
 
       if (props.onSave) {
-        handleSubmit(props.onSave)();
+        void handleSubmit(props.onSave)();
       }
     }
   };
@@ -125,7 +125,7 @@ const ImageEditorDialog = (props: ImageEditorDialogProps) => {
   const deleteImage = () => {
     setValue(props.source, null, { shouldDirty: true });
     if (props.onSave) {
-      handleSubmit(props.onSave)();
+      void handleSubmit(props.onSave)();
     }
     setImageSrc(undefined);
     props.onClose();

@@ -44,6 +44,7 @@ export default defineConfig({
       "**/node_modules/**",
       "doc/**",
       "test/cloudflare-worker.test.ts",
+      "test/crm-data-integrity.test.ts",
       "src/**/*.integration.test.{ts,tsx}",
     ],
   },

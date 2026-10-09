@@ -77,8 +77,8 @@ const NoteCreateButton = ({
 
   const handleSuccess = (data: any) => {
     reset(resetValues, { keepValues: false });
-    refetch();
-    update(reference, {
+    void refetch();
+    void update(reference, {
       id: (record && record.id) as unknown as Identifier,
       data: {
         last_seen:

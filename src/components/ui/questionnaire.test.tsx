@@ -19,7 +19,8 @@ it("navigates through questions and submits selected answers", async () => {
       items={[{ name: "goal" }, { name: "context" }]}
       onSubmit={(event) => {
         event.preventDefault();
-        submitted = String(new FormData(event.currentTarget).get("context"));
+        const value = new FormData(event.currentTarget).get("context");
+        submitted = typeof value === "string" ? value : "";
       }}
     >
       <QuestionnaireProgress />

@@ -54,7 +54,7 @@ export const Task = ({
   };
 
   const handleCheck = () => () => {
-    update("tasks", {
+    void update("tasks", {
       id: task.id,
       data: {
         done_date: task.done_date ? null : new Date().toISOString(),
@@ -73,7 +73,7 @@ export const Task = ({
       return;
     }
 
-    queryClient.invalidateQueries({ queryKey: ["tasks", "getList"] });
+    void queryClient.invalidateQueries({ queryKey: ["tasks", "getList"] });
   }, [queryClient, isUpdatePending, isSuccess, variables]);
 
   const labelId = `checkbox-list-label-${task.id}`;
@@ -149,7 +149,7 @@ export const Task = ({
             <DropdownMenuItem
               className="cursor-pointer h-12 md:h-8 px-4 md:px-2 text-base md:text-sm"
               onClick={() => {
-                update("tasks", {
+                void update("tasks", {
                   id: task.id,
                   data: {
                     due_date: new Date(Date.now() + 24 * 60 * 60 * 1000)
@@ -165,7 +165,7 @@ export const Task = ({
             <DropdownMenuItem
               className="cursor-pointer h-12 md:h-8 px-4 md:px-2 text-base md:text-sm"
               onClick={() => {
-                update("tasks", {
+                void update("tasks", {
                   id: task.id,
                   data: {
                     due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)

@@ -84,9 +84,11 @@ describe("Contact list integration", () => {
       </CrmTestProvider>,
     );
 
-    await expect
-      .poll(() => screen.container.querySelector('[data-slot="skeleton"]'))
-      .not.toBeNull();
+    await vi.waitFor(() => {
+      expect(
+        screen.container.querySelector('[data-slot="skeleton"]'),
+      ).not.toBeNull();
+    });
   });
 
   it("renders the mobile error state when loading contacts fails", async () => {

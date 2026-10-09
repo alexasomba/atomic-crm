@@ -289,8 +289,10 @@ function CopilotBrief({ onSubmit }: { onSubmit: (prompt: string) => void }) {
         onSubmit={(event) => {
           event.preventDefault();
           const form = new FormData(event.currentTarget);
-          const intent = String(form.get("intent") ?? "");
-          const context = String(form.get("context") ?? "");
+          const rawIntent = form.get("intent");
+          const intent = typeof rawIntent === "string" ? rawIntent : "";
+          const rawContext = form.get("context");
+          const context = typeof rawContext === "string" ? rawContext : "";
           onSubmit(
             `Help me with this CRM brief. Goal: ${intent}. Relevant context: ${context}. Show the next best actions.`,
           );

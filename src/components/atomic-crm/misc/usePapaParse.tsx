@@ -29,7 +29,7 @@ type usePapaParseProps<T> = {
   batchSize?: number;
 
   // processBatch returns the number of imported items
-  processBatch(batch: T[]): Promise<void>;
+  processBatch: (batch: T[]) => Promise<void>;
 };
 
 export function usePapaParse<T>({

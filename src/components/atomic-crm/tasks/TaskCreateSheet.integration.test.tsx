@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it, vi } from "vite-plus/test";
 import { render } from "vitest-browser-react";
 
 import {
@@ -75,17 +75,17 @@ describe("TaskCreateSheet integration", () => {
       .element(screen.getByText("Create Task"))
       .not.toBeInTheDocument();
 
-    await expect
-      .poll(async () => {
-        const { data } = await scenario.dataProvider.getList("tasks", {
-          filter: {},
-          pagination: { page: 1, perPage: 10 },
-          sort: { field: "id", order: "ASC" },
-        });
+    await vi.waitFor(async () => {
+      const { data } = await scenario.dataProvider.getList("tasks", {
+        filter: {},
+        pagination: { page: 1, perPage: 10 },
+        sort: { field: "id", order: "ASC" },
+      });
 
-        return data.some((task) => task.text === "Follow up about onboarding");
-      })
-      .toBe(true);
+      expect(
+        data.some((task) => task.text === "Follow up about onboarding"),
+      ).toBe(true);
+    });
 
     const tasks = await scenario.dataProvider.getList("tasks", {
       filter: {},

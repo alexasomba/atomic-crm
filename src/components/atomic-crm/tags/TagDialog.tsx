@@ -19,8 +19,8 @@ type TagDialogProps = {
   open: boolean;
   tag?: Pick<Tag, "name" | "color">;
   title: string;
-  onSubmit(tag: Pick<Tag, "name" | "color">): Promise<void>;
-  onClose(): void;
+  onSubmit: (tag: Pick<Tag, "name" | "color">) => Promise<void>;
+  onClose: () => void;
 };
 
 export function TagDialog({

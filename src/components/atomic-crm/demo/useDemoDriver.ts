@@ -163,7 +163,7 @@ export function useDemoDriver({
       setElementReady(true);
       return;
     }
-    highlightState(state);
+    void highlightState(state);
   }, [state, highlightState, skipDriver, setElementReady]);
 
   // S4 auto-transition: poll for HITL card
@@ -171,7 +171,7 @@ export function useDemoDriver({
     if (state !== "S4_FORECAST_PROPOSAL") return;
     let cancelled = false;
 
-    waitForElement('[data-demo="hitl-card"]').then((el) => {
+    void waitForElement('[data-demo="hitl-card"]').then((el) => {
       if (!cancelled && el) {
         advanceRef.current();
       }
@@ -191,7 +191,7 @@ export function useDemoDriver({
 
     const autoStep = autoAgentSteps[state as keyof typeof autoAgentSteps];
     if (autoStep) {
-      highlightState(state, autoStep);
+      void highlightState(state, autoStep);
     }
   }, [
     state,

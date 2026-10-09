@@ -89,7 +89,10 @@ export function useCopilotSetup({ context }: CopilotSetupOptions) {
       if (ignoredTools.has(name)) return <></>;
 
       if (status === "complete") {
-        logComponentRender(name, (parameters as Record<string, unknown>) ?? {});
+        void logComponentRender(
+          name,
+          (parameters as Record<string, unknown>) ?? {},
+        );
       }
       const isComplete = status === "complete";
       return (

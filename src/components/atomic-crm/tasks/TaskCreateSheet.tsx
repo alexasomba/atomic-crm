@@ -43,7 +43,7 @@ export const TaskCreateSheet = ({
       id: referenceRecordId,
     });
     if (!contact) return;
-    update("contacts", {
+    void update("contacts", {
       id: referenceRecordId as unknown as Identifier,
       data: { last_seen: new Date().toISOString() },
       previousData: contact,

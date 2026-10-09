@@ -6,8 +6,8 @@ import { TagDialog } from "./TagDialog";
 type TagEditModalProps = {
   tag: Tag;
   open: boolean;
-  onClose(): void;
-  onSuccess?(tag: Tag): Promise<void>;
+  onClose: () => void;
+  onSuccess?: (tag: Tag) => Promise<void>;
 };
 
 export function TagEditModal({

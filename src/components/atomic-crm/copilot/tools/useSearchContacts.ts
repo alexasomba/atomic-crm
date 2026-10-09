@@ -37,7 +37,8 @@ export function useSearchContacts() {
           typeof params.firstName === "string" ? params.firstName : undefined,
         lastName:
           typeof params.lastName === "string" ? params.lastName : undefined,
-        company: typeof params.company === "string" ? params.company : undefined,
+        company:
+          typeof params.company === "string" ? params.company : undefined,
         lifecycleStage:
           typeof params.lifecycleStage === "string"
             ? params.lifecycleStage

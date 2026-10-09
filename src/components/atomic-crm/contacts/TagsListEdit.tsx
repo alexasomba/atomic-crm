@@ -48,7 +48,7 @@ export const TagsListEdit = () => {
       throw new Error("No contact record found");
     }
     const tags = [...(record.tags ?? []), id];
-    update("contacts", {
+    void update("contacts", {
       id: record.id,
       data: { tags },
       previousData: record,

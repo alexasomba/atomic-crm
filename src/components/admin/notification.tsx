@@ -41,7 +41,7 @@ export const Notification = (props: ToasterProps) => {
     if (notifications.length) {
       const notification = takeNotification();
       if (notification) {
-        const { message, type = "info", notificationOptions } = notification;
+        const { message, type, notificationOptions } = notification;
         const { messageArgs, undoable } = notificationOptions || {};
 
         const beforeunload = (e: BeforeUnloadEvent) => {

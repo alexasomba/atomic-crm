@@ -51,7 +51,7 @@ const SAMPLE_URL = `data:text/csv;name=crm_contacts_sample.csv;charset=utf-8,${e
 
 type ContactImportModalProps = {
   open: boolean;
-  onClose(): void;
+  onClose: () => void;
 };
 
 export function ContactImportDialog({

@@ -141,6 +141,7 @@ api.post("/audit", async (context) => {
   if (!body.success) return context.json({ error: body.error.flatten() }, 400);
   const event = await writeCopilotAudit(context.env.DB, {
     ...body.data,
+    actionType: body.data.actionType ?? "tool_call",
     salesId: context.get("sale").id,
   });
   return context.json(event, 201);

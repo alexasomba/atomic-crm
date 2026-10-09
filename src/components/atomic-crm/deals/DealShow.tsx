@@ -192,7 +192,7 @@ const ArchiveButton = ({ record }: { record: Deal }) => {
   const notify = useNotify();
   const refresh = useRefresh();
   const handleClick = () => {
-    update(
+    void update(
       "deals",
       {
         id: record.id,

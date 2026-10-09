@@ -31,7 +31,9 @@ export const Error = (props: InternalErrorProps & {}) => {
       ? (error.message ?? "")
       : typeof error === "string"
         ? error
-        : String(error ?? "Unknown error");
+        : error == null
+          ? "Unknown error"
+          : JSON.stringify(error);
 
   return (
     <div className="flex flex-col items-center md:p-16 gap-5" {...rest}>
