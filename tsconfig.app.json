@@ -28,8 +28,7 @@
       "vite-plus/client",
       "@vitest/browser",
       "vitest",
-      "vitest/globals",
-      "faker"
+      "vitest/globals"
     ],
     "paths": {
       "vite-plus/test": ["./node_modules/vitest/dist/index.d.ts"],

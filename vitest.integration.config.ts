@@ -8,11 +8,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   optimizeDeps: {
     include: [
-      "faker/locale/en",
-      "faker/locale/en_US",
+      "@faker-js/faker",
       "jsonexport/dist",
       "lodash",
       "papaparse",
+      "@tanstack/query-core",
       "@tanstack/react-router",
       "@tanstack/router-core",
       "@tanstack/history",

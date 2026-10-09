@@ -8,13 +8,16 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   optimizeDeps: {
     include: [
-      "@testing-library/dom",
+      "@testing-library/dom > pretty-format",
+      "@testing-library/dom > lz-string",
+      "@base-ui/react",
       "ansi-regex",
       "ansi-styles",
       "aria-query",
       "dom-accessibility-api",
-      "pretty-format",
+      "react-dropzone",
       "react-is",
+      "cmdk",
       "@tanstack/react-router",
       "@tanstack/router-core",
       "@tanstack/history",
@@ -22,6 +25,7 @@ export default defineConfig({
       "seroval",
       "seroval-plugins",
     ],
+    exclude: ["@testing-library/dom"],
   },
   test: {
     globals: true,
@@ -49,7 +53,7 @@ export default defineConfig({
     ],
   },
   resolve: {
-    preserveSymlinks: true,
+    preserveSymlinks: false,
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
