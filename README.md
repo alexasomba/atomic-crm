@@ -187,3 +187,12 @@ Atomic CRM components are published as a Shadcn Registry file:
 ## License
 
 This project is licensed under the MIT License, courtesy of [Marmelab](https://marmelab.com). See the [LICENSE.md](./LICENSE.md) file for details.
+
+### Dependency compatibility
+
+`query-string` 7 remains compatible with react-admin's named imports. The tracked
+pnpm patch adapts its CommonJS decoder import to the default export in
+`decode-uri-component` 0.5, which fixes malformed-input denial of service. Remove
+this patch when upgrading react-admin to a release that supports the newer
+query-string API. React Compiler eligibility checks are reported as warnings;
+runtime hook rules and type checks remain errors. React Compiler is not enabled.

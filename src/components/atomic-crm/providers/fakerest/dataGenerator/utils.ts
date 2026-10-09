@@ -3,7 +3,8 @@ import faker from "faker/locale/en";
 export const weightedArrayElement = (values: any[], weights: any) =>
   faker.random.arrayElement(
     values.reduce(
-      (acc, value, index) => acc.concat(new Array(weights[index]).fill(value)),
+      (acc, value, index) =>
+        acc.concat(Array.from({ length: weights[index] }, () => value)),
       [],
     ),
   );

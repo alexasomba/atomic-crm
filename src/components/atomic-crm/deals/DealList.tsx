@@ -26,18 +26,19 @@ const DealList = () => {
   if (!identity) return null;
 
   const dealFilters = [
-    <SearchInput source="q" alwaysOn />,
-    <ReferenceInput source="company_id" reference="companies">
+    <SearchInput key="q" source="q" alwaysOn />,
+    <ReferenceInput key="company" source="company_id" reference="companies">
       <AutocompleteInput label={false} placeholder="Company" />
     </ReferenceInput>,
     <SelectInput
+      key="category"
       source="category"
       emptyText="Category"
       choices={dealCategories}
       optionText="label"
       optionValue="value"
     />,
-    <OnlyMineInput source="sales_id" alwaysOn />,
+    <OnlyMineInput key="sales" source="sales_id" alwaysOn />,
   ];
 
   return (

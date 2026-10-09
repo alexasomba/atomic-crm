@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
  * );
  */
 export const SearchInput = (inProps: SearchInputProps) => {
-  const { label, className, disableClearable, source = "q", ...rest } = inProps;
+  const { label, className, disableClearable, source, ...rest } = inProps;
 
   const translate = useTranslate();
   const { setValue } = useFormContext();

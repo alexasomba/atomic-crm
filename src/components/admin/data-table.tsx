@@ -142,7 +142,7 @@ DataTable.NumberCol = DataTableNumberColumn;
 
 const DataTableHead = ({ children }: { children: ReactNode }) => {
   const data = useDataTableDataContext();
-  const { hasBulkActions = false } = useDataTableConfigContext();
+  const { hasBulkActions } = useDataTableConfigContext();
   const { onSelect } = useDataTableCallbacksContext();
   const selectedIds = useDataTableSelectedIdsContext();
   const handleToggleSelectAll = (checked: boolean) => {
@@ -217,7 +217,7 @@ const DataTableRow = ({
 }) => {
   const { rowClick, handleToggleItem } = useDataTableCallbacksContext();
   const selectedIds = useDataTableSelectedIdsContext();
-  const { hasBulkActions = false } = useDataTableConfigContext();
+  const { hasBulkActions } = useDataTableConfigContext();
 
   const record = useRecordContext();
   if (!record) {

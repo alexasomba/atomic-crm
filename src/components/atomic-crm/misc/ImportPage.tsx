@@ -105,7 +105,7 @@ const ImportFromJsonForm = ({
 }) => (
   <Form
     onSubmit={(values: any) => {
-      importFile(values.file.rawFile);
+      void importFile(values.file.rawFile);
     }}
   >
     <FileInput className="mt-4" source="file" validate={required()}>

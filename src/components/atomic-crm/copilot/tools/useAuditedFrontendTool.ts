@@ -15,7 +15,7 @@ export function useAuditedFrontendTool(
       ? async (args: any, context: any) => {
           try {
             const result = await originalHandler(args, context);
-            logToolCall(options.name, args);
+            void logToolCall(options.name, args);
             return result;
           } catch (err) {
             // Returning a structured error keeps the result in the agent's

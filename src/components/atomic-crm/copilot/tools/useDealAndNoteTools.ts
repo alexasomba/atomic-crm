@@ -94,8 +94,7 @@ export function useCreateNote() {
           text: String(params.text),
           content: String(params.text),
           date: new Date().toISOString(),
-          status:
-            typeof params.status === "string" ? params.status : undefined,
+          status: typeof params.status === "string" ? params.status : undefined,
         },
       });
       return { success: true, noteId: result.data.id };

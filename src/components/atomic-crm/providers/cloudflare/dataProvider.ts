@@ -48,6 +48,9 @@ const fromApiRecord = (resource: string, value: Record<string, unknown>) => {
   const record = Object.fromEntries(
     Object.entries(value).map(([key, entry]) => [toSnakeCase(key), entry]),
   );
+  if (resource === "deals") return { ...record, index: record.position };
+  if (["notes", "contact_notes", "deal_notes"].includes(resource))
+    return { ...record, text: record.content };
   if (resource !== "contacts") return record;
   return {
     ...record,
@@ -76,8 +79,11 @@ const getList = async (resource: string, params: GetListParams) => {
     page: String(params.pagination?.page ?? 1),
     perPage: String(params.pagination?.perPage ?? 25),
   });
-  const query = params.filter?.q;
-  if (typeof query === "string" && query.length > 0) search.set("q", query);
+  search.set("filter", JSON.stringify(params.filter ?? {}));
+  if (params.sort) {
+    search.set("sort", params.sort.field);
+    search.set("order", params.sort.order);
+  }
   const result = await request<{
     data: Record<string, unknown>[];
     total: number;

@@ -37,7 +37,7 @@ export function ForecastCard({
     const timer = setTimeout(() => {
       hasAutoResponded.current = true;
       respond({ approved: false, reason: "insufficient_role" });
-      logToolCall("updateRenewalForecast", {
+      void logToolCall("updateRenewalForecast", {
         contactName: args.contactName,
         summary: `Forecast proposal shown to non-admin user (approval requires admin role)`,
       });
@@ -80,7 +80,7 @@ export function ForecastCard({
                   renewal_probability: args.proposedProbability,
                 });
                 respond({ approved: true });
-                logToolCall("updateRenewalForecast", {
+                void logToolCall("updateRenewalForecast", {
                   contactName: args.contactName,
                   summary: `Approved renewal forecast for ${args.contactName}: ${args.currentCategory} → ${args.proposedCategory}`,
                 });
@@ -93,7 +93,7 @@ export function ForecastCard({
               variant="outline"
               onClick={() => {
                 respond({ approved: false });
-                logToolCall("updateRenewalForecast", {
+                void logToolCall("updateRenewalForecast", {
                   contactName: args.contactName,
                   summary: `Rejected renewal forecast for ${args.contactName}`,
                 });

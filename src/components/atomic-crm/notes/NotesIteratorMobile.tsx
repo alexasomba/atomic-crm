@@ -52,7 +52,7 @@ export const NotesIteratorMobile = ({
         <div className="text-center mt-2">
           <Button
             onClick={() => {
-              refetch();
+              void refetch();
             }}
           >
             <RotateCcw />

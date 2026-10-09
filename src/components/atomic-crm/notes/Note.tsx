@@ -62,7 +62,7 @@ export const Note = ({
   });
 
   const handleDelete = () => {
-    deleteNote(resource, { id: note.id, previousData: note });
+    void deleteNote(resource, { id: note.id, previousData: note });
   };
 
   const handleEnterEditMode = () => {
@@ -75,7 +75,7 @@ export const Note = ({
   };
 
   const handleNoteUpdate: SubmitHandler<FieldValues> = (values) => {
-    update(
+    void update(
       resource,
       { id: note.id, data: values, previousData: note },
       {

@@ -1,6 +1,26 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
-import { count, eq, like, or } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  count,
+  eq,
+  ne,
+  gt,
+  gte,
+  lt,
+  lte,
+  inArray,
+  isNull,
+  isNotNull,
+  getTableColumns,
+  like,
+  or,
+  sql,
+  type SQL,
+} from "drizzle-orm";
+import type { SQLiteTable } from "drizzle-orm/sqlite-core";
 import { z } from "zod";
 import { createAuth } from "../auth.js";
 import { createDb } from "../db/client.js";
@@ -180,6 +200,166 @@ const normalizeWritable = (
   };
 };
 
+// Updates only carry fields the caller supplied. Creation defaults never belong in PATCH.
+const normalizePatch = (
+  resource: keyof typeof writableResources,
+  input: Record<string, unknown>,
+) => {
+  const patch: Record<string, unknown> = {
+    updatedAt: new Date().toISOString(),
+  };
+  for (const [key, value] of Object.entries(input)) {
+    if (key === "index") {
+      if (!("position" in input)) patch.position = value;
+      continue;
+    }
+    const column = key.replace(/_([a-z])/g, (_, letter: string) =>
+      letter.toUpperCase(),
+    );
+    patch[column] = value;
+  }
+  if ("text" in input) {
+    if (resource === "tasks") {
+      if (!("title" in input)) patch.title = input.text ?? "Task";
+      if (!("description" in input)) patch.description = input.text;
+    } else {
+      delete patch.text;
+      if (!("content" in input)) patch.content = input.text;
+    }
+  }
+  if ("contact_ids" in input && !("contact_id" in input))
+    patch.contactId = (input.contact_ids as number[])[0] ?? null;
+  return patch;
+};
+
+const listRows = async (context: Context<CrmEnv>, table: SQLiteTable) => {
+  const columns = getTableColumns(table);
+  const aliases: Record<string, string> = {
+    index: "position",
+    title: table === contacts ? "jobTitle" : "title",
+  };
+  const columnFor = (key: string) =>
+    columns[
+      aliases[key] ??
+        key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase())
+    ];
+  const page = Number(context.req.query("page") ?? 1);
+  const perPage = Number(context.req.query("perPage") ?? 25);
+  if (
+    !Number.isSafeInteger(page) ||
+    page < 1 ||
+    !Number.isSafeInteger(perPage) ||
+    perPage < 1 ||
+    perPage > 100
+  )
+    throw new Error("Invalid pagination");
+  const filter = JSON.parse(context.req.query("filter") ?? "{}") as Record<
+    string,
+    unknown
+  >;
+  if (!filter || Array.isArray(filter) || typeof filter !== "object")
+    throw new Error("Invalid filter");
+  const conditions: SQL[] = [];
+  for (const [key, value] of Object.entries(filter)) {
+    if (key === "q") continue;
+    const [field, operator = "eq"] = key.split("@");
+    // Counts are computed against the same contact, never against the current page.
+    const sourceColumn =
+      field === "nb_tasks" && table === contacts
+        ? sql`(SELECT count(*) FROM ${tasks} WHERE ${tasks.contactId} = ${contacts.id} AND ${tasks.doneDate} IS NULL)`
+        : field === "deal_id" && table === activities
+          ? sql`json_extract(${activities.metadata}, '$.deal_id')`
+          : columnFor(field!);
+    if (!sourceColumn) throw new Error(`Unsupported filter: ${key}`);
+    const column = sql`${sourceColumn}`;
+    const scalar = typeof value === "boolean" ? Number(value) : value;
+    if (
+      value !== null &&
+      typeof value !== "string" &&
+      typeof value !== "number" &&
+      typeof value !== "boolean" &&
+      !Array.isArray(value)
+    )
+      throw new Error(`Invalid filter value: ${key}`);
+    let condition: SQL | undefined;
+    if (operator === "eq" || operator === "is")
+      condition = value == null ? isNull(column) : eq(column, scalar);
+    else if (operator === "neq" || operator === "not.is")
+      condition = value == null ? isNotNull(column) : ne(column, scalar);
+    else if (operator === "in" && Array.isArray(value))
+      condition = value.length ? inArray(column, value) : sql`0`;
+    else if (operator === "gt") condition = gt(column, scalar);
+    else if (operator === "gte") condition = gte(column, scalar);
+    else if (operator === "lt") condition = lt(column, scalar);
+    else if (operator === "lte") condition = lte(column, scalar);
+    else if (operator === "cs" && Array.isArray(value))
+      condition =
+        and(
+          ...value.map(
+            (entry) =>
+              sql`EXISTS (SELECT 1 FROM json_each(${column}) WHERE value = ${entry})`,
+          ),
+        ) ?? sql`1`;
+    else if (
+      (operator === "like" || operator === "ilike") &&
+      typeof value === "string"
+    )
+      condition = like(column, value);
+    if (!condition) throw new Error(`Unsupported filter: ${key}`);
+    conditions.push(condition);
+  }
+  const query = String(filter.q ?? context.req.query("q") ?? "").trim();
+  if (query) {
+    const searchable = [
+      columns.name,
+      columns.firstName,
+      columns.lastName,
+      columns.email,
+      columns.title,
+      columns.content,
+    ].filter(Boolean);
+    if (searchable.length)
+      conditions.push(
+        or(...searchable.map((column) => like(column!, `%${query}%`)))!,
+      );
+  }
+  const sort = context.req.query("sort") ?? "id";
+  const sortColumn = columnFor(sort);
+  if (!sortColumn) throw new Error(`Unsupported sort: ${sort}`);
+  const order = context.req.query("order") ?? "ASC";
+  if (order !== "ASC" && order !== "DESC")
+    throw new Error("Invalid sort direction");
+  const where = and(...conditions);
+  const db = createDb(context.env.DB);
+  const [data, totals] = await Promise.all([
+    db
+      .select()
+      .from(table)
+      .where(where)
+      .orderBy(
+        order === "DESC" ? desc(sortColumn) : asc(sortColumn),
+        asc(columns.id!),
+      )
+      .limit(perPage)
+      .offset((page - 1) * perPage)
+      .all(),
+    db.select({ total: count() }).from(table).where(where).all(),
+  ]);
+  return { data, total: totals[0]?.total ?? 0 };
+};
+const listResource = async (context: Context<CrmEnv>, table: SQLiteTable) => {
+  try {
+    return context.json(await listRows(context, table));
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      /^(Invalid |Unsupported |Unexpected |Expected )/.test(error.message)
+    )
+      return context.json({ error: error.message }, 400);
+    throw error;
+  }
+};
+
 api.use("/*", async (context, next) => {
   const session = await createAuth(context.env).api.getSession({
     headers: context.req.raw.headers,
@@ -202,28 +382,7 @@ const requireAdministrator = (context: Context<CrmEnv>) => {
   return sale.role === "admin";
 };
 
-api.get("/companies", async (context) => {
-  const page = Math.max(Number(context.req.query("page") ?? 1), 1);
-  const perPage = Math.min(
-    Math.max(Number(context.req.query("perPage") ?? 25), 1),
-    100,
-  );
-  const query = context.req.query("q")?.trim();
-  const where = query ? like(companies.name, `%${query}%`) : undefined;
-  const db = createDb(context.env.DB);
-  const [data, [{ total }]] = await Promise.all([
-    db
-      .select()
-      .from(companies)
-      .where(where)
-      .orderBy(companies.name)
-      .limit(perPage)
-      .offset((page - 1) * perPage)
-      .all(),
-    db.select({ total: count() }).from(companies).where(where).all(),
-  ]);
-  return context.json({ data, total });
-});
+api.get("/companies", (context) => listResource(context, companies));
 
 api.post("/companies", async (context) => {
   const body = companyInput.safeParse(await context.req.json());
@@ -322,19 +481,23 @@ api.delete("/companies/:id", async (context) => {
 api.get("/sales", async (context) => {
   if (!requireAdministrator(context))
     return context.json({ error: "Forbidden" }, 403);
-  const rows = await createDb(context.env.DB).select().from(sales).all();
-  return context.json({
-    data: rows.map((sale) => ({
-      id: sale.id,
-      user_id: sale.userId,
-      first_name: sale.firstName,
-      last_name: sale.lastName,
-      email: sale.email,
-      administrator: sale.role === "admin",
-      disabled: sale.disabled,
-    })),
-    total: rows.length,
-  });
+  try {
+    const result = await listRows(context, sales);
+    return context.json({
+      ...result,
+      data: result.data.map((row) => ({
+        ...row,
+        administrator: row.role === "admin",
+      })),
+    });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      /^(Invalid |Unsupported |Unexpected |Expected )/.test(error.message)
+    )
+      return context.json({ error: error.message }, 400);
+    throw error;
+  }
 });
 
 api.post("/sales", async (context) => {
@@ -469,74 +632,7 @@ api.patch("/sales/:id", async (context) => {
     : context.json({ error: "Sales record not found" }, 404);
 });
 
-api.get("/:resource", async (context) => {
-  const table =
-    readTables[context.req.param("resource") as keyof typeof readTables];
-  if (!table) return context.json({ error: "Resource not found" }, 404);
-
-  const page = Math.max(Number(context.req.query("page") ?? 1), 1);
-  const perPage = Math.min(
-    Math.max(Number(context.req.query("perPage") ?? 25), 1),
-    100,
-  );
-  const db = createDb(context.env.DB);
-  const rows = await db
-    .select()
-    .from(table as never)
-    .limit(perPage)
-    .offset((page - 1) * perPage)
-    .all();
-  return context.json({ data: rows, total: rows.length });
-});
-
-api.get("/:resource/:id", async (context) => {
-  const table =
-    readTables[context.req.param("resource") as keyof typeof readTables];
-  const id = Number(context.req.param("id"));
-  if (!table) return context.json({ error: "Resource not found" }, 404);
-  if (!Number.isSafeInteger(id))
-    return context.json({ error: "Invalid id" }, 400);
-
-  const [row] = await createDb(context.env.DB)
-    .select()
-    .from(table as never)
-    .where(eq((table as typeof tasks).id, id))
-    .limit(1)
-    .all();
-  return row
-    ? context.json({ data: row })
-    : context.json({ error: "Record not found" }, 404);
-});
-
-api.get("/contacts", async (context) => {
-  const db = createDb(context.env.DB);
-  const page = Math.max(Number(context.req.query("page") ?? 1), 1);
-  const perPage = Math.min(
-    Math.max(Number(context.req.query("perPage") ?? 25), 1),
-    100,
-  );
-  const query = context.req.query("q")?.trim();
-  const where = query
-    ? or(
-        like(contacts.firstName, `%${query}%`),
-        like(contacts.lastName, `%${query}%`),
-        like(contacts.email, `%${query}%`),
-      )
-    : undefined;
-
-  const [data, [{ total }]] = await Promise.all([
-    db
-      .select()
-      .from(contacts)
-      .where(where)
-      .limit(perPage)
-      .offset((page - 1) * perPage)
-      .all(),
-    db.select({ total: count() }).from(contacts).where(where).all(),
-  ]);
-
-  return context.json({ data, total });
-});
+api.get("/contacts", (context) => listResource(context, contacts));
 
 api.get("/contacts/:id", async (context) => {
   const id = Number(context.req.param("id"));
@@ -644,6 +740,33 @@ api.delete("/contacts/:id", async (context) => {
     : context.json({ error: "Contact not found" }, 404);
 });
 
+api.get("/:resource", async (context) => {
+  const table =
+    readTables[context.req.param("resource") as keyof typeof readTables];
+  if (!table) return context.json({ error: "Resource not found" }, 404);
+
+  return listResource(context, table);
+});
+
+api.get("/:resource/:id", async (context) => {
+  const table =
+    readTables[context.req.param("resource") as keyof typeof readTables];
+  const id = Number(context.req.param("id"));
+  if (!table) return context.json({ error: "Resource not found" }, 404);
+  if (!Number.isSafeInteger(id))
+    return context.json({ error: "Invalid id" }, 400);
+
+  const [row] = await createDb(context.env.DB)
+    .select()
+    .from(table as never)
+    .where(eq((table as typeof tasks).id, id))
+    .limit(1)
+    .all();
+  return row
+    ? context.json({ data: row })
+    : context.json({ error: "Record not found" }, 404);
+});
+
 api.post("/:resource", async (context) => {
   const resource = context.req.param(
     "resource",
@@ -675,12 +798,7 @@ api.patch("/:resource/:id", async (context) => {
   const parsed = definition.input.partial().safeParse(await context.req.json());
   if (!parsed.success)
     return context.json({ error: parsed.error.flatten() }, 400);
-  const values = normalizeWritable(
-    resource,
-    parsed.data,
-    new Date().toISOString(),
-  );
-  delete (values as Record<string, unknown>).createdAt;
+  const values = normalizePatch(resource, parsed.data);
   const [row] = await createDb(context.env.DB)
     .update(definition.table as typeof tasks)
     .set(values as never)

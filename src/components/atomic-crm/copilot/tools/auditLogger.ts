@@ -35,24 +35,31 @@ function extractNames(args: Record<string, unknown>): {
   };
 }
 
+const textArgument = (value: unknown, fallback = "") =>
+  typeof value === "string" || typeof value === "number"
+    ? String(value)
+    : fallback;
+
 const summaryRules: Record<string, (args: Record<string, unknown>) => string> =
   {
     getContactsByCompany: (a) =>
-      `Fetched contacts for ${a.companyName || "unknown"}`,
-    getTopLeads: (a) => `Fetched top ${a.limit || 10} leads`,
+      `Fetched contacts for ${textArgument(a.companyName || "unknown")}`,
+    getTopLeads: (a) => `Fetched top ${textArgument(a.limit || 10)} leads`,
     searchContacts: (a) =>
-      `Searched contacts${a.company ? ` for ${a.company}` : ""}`,
-    createTask: (a) => `Created task: ${a.description || "untitled"}`,
+      `Searched contacts${a.company ? ` for ${textArgument(a.company)}` : ""}`,
+    createTask: (a) =>
+      `Created task: ${textArgument(a.description || "untitled")}`,
     draftEmail: (a) =>
-      `Drafted email to ${a.contactName || "unknown"}: ${a.subject || ""}`,
+      `Drafted email to ${textArgument(a.contactName || "unknown")}: ${textArgument(a.subject || "")}`,
     updateContactStatus: (a) =>
-      `Updated contact status to ${a.status || "unknown"}`,
+      `Updated contact status to ${textArgument(a.status || "unknown")}`,
     listDeals: (a) =>
-      `Listed deals${a.companyName ? ` for ${a.companyName}` : ""}`,
-    updateDeal: (a) => `Updated deal ${a.dealId ?? ""}`,
-    createNote: (a) => `Created a note for contact ${a.contactId ?? ""}`,
+      `Listed deals${a.companyName ? ` for ${textArgument(a.companyName)}` : ""}`,
+    updateDeal: (a) => `Updated deal ${textArgument(a.dealId ?? "")}`,
+    createNote: (a) =>
+      `Created a note for contact ${textArgument(a.contactId ?? "")}`,
     analyzeContract: (a) =>
-      `Loaded contract for ${a.companyName || a.contactId || "unknown"}`,
+      `Loaded contract for ${textArgument(a.companyName || a.contactId || "unknown")}`,
   };
 
 function generateSummary(

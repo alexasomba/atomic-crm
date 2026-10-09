@@ -85,7 +85,11 @@ export const FileInput = (props: FileInputProps) => {
     className,
     inputProps: inputPropsOptions,
 
+    // Dropzone removal is a receiver-free callback, not an instance method.
+    // oxlint-disable-next-line typescript/unbound-method
     onRemove: onRemoveProp,
+    // React Admin invokes this validation hook without a receiver.
+    // oxlint-disable-next-line typescript/unbound-method
     validateFileRemoval,
 
     placeholder,

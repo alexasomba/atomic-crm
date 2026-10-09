@@ -46,7 +46,7 @@ export const InfinitePagination = ({
       const [target] = entries;
       if (target.isIntersecting && hasNextPage && !isFetchingNextPage) {
         setHasRequestedNextPage(true);
-        fetchNextPage();
+        void fetchNextPage();
       }
     },
   );

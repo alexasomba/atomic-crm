@@ -32,7 +32,7 @@ export function TagChip({ tag, onUnlink }: TagChipProps) {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onUnlink();
+            void onUnlink();
           }}
           className="transition-colors p-0 ml-1 cursor-pointer"
         >

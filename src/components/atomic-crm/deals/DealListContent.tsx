@@ -65,8 +65,8 @@ export const DealListContent = () => {
     );
 
     // persist the changes
-    updateDealStage(sourceDeal, destinationDeal, dataProvider).then(() => {
-      refetch();
+    void updateDealStage(sourceDeal, destinationDeal, dataProvider).then(() => {
+      void refetch();
     });
   };
 

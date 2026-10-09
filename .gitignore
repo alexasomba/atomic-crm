@@ -46,3 +46,6 @@ docs/superpowers
 docs/loom-script.md
 docs/manifesto.md
 .worktrees/
+
+# Browser-test failure artifacts
+.vitest/

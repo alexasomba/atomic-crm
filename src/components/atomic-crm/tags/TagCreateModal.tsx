@@ -5,8 +5,8 @@ import { TagDialog } from "./TagDialog";
 
 type TagCreateModalProps = {
   open: boolean;
-  onClose(): void;
-  onSuccess?(tag: Tag): Promise<void>;
+  onClose: () => void;
+  onSuccess?: (tag: Tag) => Promise<void>;
 };
 
 export function TagCreateModal({

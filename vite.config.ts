@@ -140,6 +140,12 @@ export default defineConfig({
               allow: ["warn", "error"],
             },
           ],
+          // Compiler eligibility diagnostics remain visible as warnings until
+          // React Compiler is enabled; runtime hook correctness stays enforced.
+          "react/set-state-in-effect": "warn",
+          "react/purity": "warn",
+          "react/refs": "warn",
+          "react/immutability": "warn",
           "react/rules-of-hooks": "error",
           "react/exhaustive-deps": "warn",
           "react/only-export-components": [

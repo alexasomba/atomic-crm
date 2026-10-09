@@ -431,7 +431,7 @@ type InboundEmailJob = {
 
 type ParsedMailbox = { address?: string; group?: ParsedMailbox[] };
 
-const mailboxAddresses = (mailboxes: ParsedMailbox[] | undefined) =>
+const mailboxAddresses = (mailboxes: ParsedMailbox[] | undefined): string[] =>
   (mailboxes ?? []).flatMap((mailbox) =>
     mailbox.address
       ? [mailbox.address.trim().toLowerCase()]

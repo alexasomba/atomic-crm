@@ -37,7 +37,8 @@
     "ghpages:deploy": "node ./scripts/ghpages-deploy.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typecheck:worker": "tsc -p server/tsconfig.check.json --noEmit"
   },
   "dependencies": {
     "@cloudflare/tanstack-ai": "catalog:",
@@ -391,11 +392,11 @@
     "storybook": "catalog:",
     "tinybench": "catalog:",
     "typescript": "catalog:",
-    "vite": "npm:@voidzero-dev/vite-plus-core@0.2.8",
+    "vite": "catalog:",
     "vite-plugin-pwa": "catalog:",
     "vite-plugin-simple-html": "catalog:",
     "vite-plus": "catalog:",
-    "vitest": "4.1.10",
+    "vitest": "catalog:",
     "vitest-browser-react": "catalog:",
     "wrangler": "catalog:"
   },
@@ -407,8 +408,8 @@
     }
   },
   "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@0.2.8",
-    "vitest": "4.1.10"
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.1.0",
+    "vitest": "5.0.3"
   },
   "packageManager": "pnpm@11.20.0"
 }
